@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EC23301 — Electromagnetic Fields · Exam Intelligence Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EAF0F6;
+    --paper-2:#DEE8F1;
+    --card:#F6F9FC;
+    --ink:#0B2A4A;
+    --ink-soft:#3A5878;
+    --grid:#C4D4E4;
+    --grid-strong:#9FB6CC;
+    --amber:#C97A2B;
+    --amber-soft:#F3DDBC;
+    --teal:#146B63;
+    --teal-soft:#CDE7E2;
+    --brick:#AE4232;
+    --brick-soft:#F1D4CD;
+    --green:#2E7D5B;
+    --green-soft:#D4E9DE;
+    --line:#B9CBDC;
+    --shadow: 0 1px 0 rgba(11,42,74,0.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0/32px 32px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/32px 32px,
+      var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--amber-soft);}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px 100px;}
+
+  /* ---------- HEADER ---------- */
+  header{
+    padding:48px 24px 28px;
+    max-width:1180px;margin:0 auto;
+    border-bottom:2px solid var(--grid-strong);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--teal); font-weight:600;
+    display:flex; align-items:center; gap:10px; margin-bottom:14px;
+  }
+  .eyebrow::before{
+    content:""; width:22px;height:1px;background:var(--teal);display:inline-block;
+  }
+  h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:clamp(28px,4.2vw,46px);
+    line-height:1.05;
+    margin:0 0 12px;
+    letter-spacing:-.01em;
+  }
+  h1 span{color:var(--amber);}
+  .sub{
+    font-size:15.5px; color:var(--ink-soft); max-width:640px; line-height:1.55;
+    margin:0 0 28px;
+  }
+  .statrow{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:0;
+    border-top:1px solid var(--grid-strong);
+  }
+  .stat{
+    padding:16px 18px 4px 0; border-right:1px solid var(--grid-strong);
+  }
+  .stat:last-child{border-right:none;}
+  .stat .n{
+    font-family:'IBM Plex Mono',monospace; font-size:26px; font-weight:700; color:var(--ink);
+  }
+  .stat .l{
+    font-size:11.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.08em; margin-top:2px;
+  }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(234,240,246,0.94); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--grid-strong);
+  }
+  .navin{
+    max-width:1180px;margin:0 auto;padding:0 24px;
+    display:flex; gap:2px; overflow-x:auto;
+  }
+  .navbtn{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px; font-weight:600; letter-spacing:.03em;
+    padding:14px 16px; background:none; border:none; cursor:pointer;
+    color:var(--ink-soft); white-space:nowrap;
+    border-bottom:2px solid transparent;
+    transition:color .15s, border-color .15s;
+  }
+  .navbtn:hover{color:var(--ink);}
+  .navbtn.active{color:var(--amber); border-bottom-color:var(--amber);}
+
+  section.panel{display:none; padding-top:36px;}
+  section.panel.active{display:block; animation:fade .35s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  h2.title{
+    font-family:'Space Grotesk',sans-serif; font-size:26px; font-weight:700;
+    margin:0 0 4px; display:flex; align-items:baseline; gap:12px;
+  }
+  h2.title .tag{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--teal);
+    background:var(--teal-soft); padding:3px 9px; border-radius:3px; font-weight:600;
+  }
+  .desc{color:var(--ink-soft); font-size:14.5px; max-width:720px; margin:8px 0 28px; line-height:1.6;}
+
+  /* circuit divider */
+  .trace{margin:34px 0 30px;}
+  .trace svg{width:100%;height:14px;display:block;}
+  .trace path{stroke:var(--grid-strong); stroke-width:2; fill:none;}
+  .trace circle{fill:var(--amber);}
+
+  /* ---------- OVERVIEW: recurrence bars ---------- */
+  .panelblock{
+    background:var(--card); border:1px solid var(--line); border-radius:6px;
+    padding:24px 26px; margin-bottom:22px; box-shadow:var(--shadow);
+  }
+  .blocklabel{
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; text-transform:uppercase;
+    letter-spacing:.1em; color:var(--ink-soft); margin-bottom:16px; font-weight:600;
+  }
+  .spectrum-row{display:flex; align-items:center; gap:14px; padding:9px 0; border-bottom:1px dashed var(--grid);}
+  .spectrum-row:last-child{border-bottom:none;}
+  .spectrum-label{width:230px; flex-shrink:0; font-size:13.5px; font-weight:500;}
+  .spectrum-label small{display:block; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; font-size:11px; margin-top:1px;}
+  .spectrum-track{flex:1; height:20px; background:var(--paper-2); border-radius:2px; position:relative; overflow:hidden;}
+  .spectrum-fill{
+    height:100%; border-radius:2px; position:relative;
+    background:repeating-linear-gradient(90deg, var(--amber) 0 3px, transparent 3px 6px);
+    width:0%; transition:width 1s cubic-bezier(.2,.8,.2,1);
+  }
+  .spectrum-track.solid .spectrum-fill{background:var(--teal);}
+  .spectrum-val{width:44px; text-align:right; font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:700; flex-shrink:0;}
+
+  .cols3{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:22px;}
+  .callout{
+    background:var(--card); border:1px solid var(--line); border-radius:6px; padding:20px;
+    border-top:3px solid var(--amber);
+  }
+  .callout.hard{border-top-color:var(--brick);}
+  .callout.fast{border-top-color:var(--green);}
+  .callout h3{
+    font-family:'Space Grotesk',sans-serif; font-size:15px; margin:0 0 10px;
+    text-transform:uppercase; letter-spacing:.04em;
+  }
+  .callout ul{margin:0; padding-left:18px; font-size:13.5px; line-height:1.7; color:var(--ink-soft);}
+  .callout ul li b{color:var(--ink);}
+
+  table.ranktable{width:100%; border-collapse:collapse; font-size:13.5px;}
+  table.ranktable th{
+    text-align:left; font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--ink-soft); padding:8px 10px; border-bottom:2px solid var(--grid-strong);
+    cursor:pointer; user-select:none;
+  }
+  table.ranktable th:hover{color:var(--amber);}
+  table.ranktable td{padding:9px 10px; border-bottom:1px solid var(--grid);}
+  table.ranktable tr:hover td{background:var(--paper-2);}
+  .pill{
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:700;
+    padding:2px 8px; border-radius:20px;
+  }
+  .pill.unitI{background:#E4D9F5;color:#5B3C99;}
+  .pill.unitII{background:var(--teal-soft);color:var(--teal);}
+  .pill.unitIII{background:var(--amber-soft);color:var(--amber);}
+  .pill.unitIV{background:var(--green-soft);color:var(--green);}
+  .pill.unitV{background:var(--brick-soft);color:var(--brick);}
+
+  /* ---------- UNIT PANEL ---------- */
+  .unithead{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px; margin-bottom:6px;}
+  .gauge{
+    display:flex; align-items:center; gap:10px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .gauge .ring{
+    width:58px;height:58px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700; font-size:15px; color:var(--ink);
+    background: conic-gradient(var(--amber) calc(var(--pct)*1%), var(--paper-2) 0);
+  }
+  .gauge .ring::before{
+    content:""; width:44px;height:44px;border-radius:50%;background:var(--card);position:absolute;
+  }
+  .gauge .ring span{z-index:1;}
+  .gauge .glabel{font-size:11px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em;}
+
+  .controls{display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 20px;}
+  .chip{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
+    padding:7px 14px; border-radius:20px; border:1px solid var(--line); background:var(--card);
+    cursor:pointer; color:var(--ink-soft); transition:all .15s;
+  }
+  .chip:hover{border-color:var(--amber);}
+  .chip.active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+  .sortbar{display:flex; align-items:center; gap:10px; margin-left:auto; font-size:12px; color:var(--ink-soft);}
+  .sortbar select{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; padding:6px 8px; border-radius:4px;
+    border:1px solid var(--line); background:var(--card); color:var(--ink);
+  }
+
+  .topicgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:16px; margin-bottom:30px;}
+  .tcard{
+    background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px;
+    cursor:pointer; transition:box-shadow .15s, transform .15s;
+  }
+  .tcard:hover{box-shadow:0 4px 18px rgba(11,42,74,0.08); transform:translateY(-1px);}
+  .tcard-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .tcard h4{font-family:'Space Grotesk',sans-serif; font-size:15.5px; margin:0; line-height:1.3;}
+  .probchip{
+    font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:13px;
+    padding:3px 9px; border-radius:4px; flex-shrink:0; white-space:nowrap;
+  }
+  .probchip.p-high{background:var(--green-soft); color:var(--green);}
+  .probchip.p-med{background:var(--amber-soft); color:var(--amber);}
+  .probchip.p-low{background:var(--brick-soft); color:var(--brick);}
+
+  .tbar{height:6px; background:var(--paper-2); border-radius:3px; margin:12px 0 10px; overflow:hidden;}
+  .tbar i{display:block; height:100%; background:var(--amber); border-radius:3px; width:0; transition:width .8s ease;}
+
+  .tmeta{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:10px;}
+  .tag-sm{
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600;
+    padding:2px 7px; border-radius:3px; border:1px solid var(--line); color:var(--ink-soft);
+  }
+  .tag-sm.tough-Easy{border-color:var(--green); color:var(--green);}
+  .tag-sm.tough-Medium{border-color:var(--amber); color:var(--amber);}
+  .tag-sm.tough-Hard{border-color:var(--brick); color:var(--brick);}
+
+  .treason{
+    font-size:12.5px; color:var(--ink-soft); line-height:1.55; max-height:0; overflow:hidden;
+    transition:max-height .3s ease, margin .3s ease; margin-top:0;
+  }
+  .tcard.open .treason{max-height:200px; margin-top:8px; padding-top:10px; border-top:1px dashed var(--grid);}
+  .tcard .expand-hint{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--teal); margin-top:4px;}
+
+  .qblock{margin-bottom:28px;}
+  .qlabel{
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; text-transform:uppercase; letter-spacing:.09em;
+    color:var(--ink-soft); margin-bottom:12px; font-weight:600; display:flex; align-items:center; gap:8px;
+  }
+  .qlabel::after{content:"";flex:1;height:1px;background:var(--grid-strong);}
+  .qlist{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px;}
+  .qlist li{
+    background:var(--card); border:1px solid var(--line); border-left:3px solid var(--amber);
+    padding:12px 16px; font-size:13.5px; line-height:1.5; border-radius:0 4px 4px 0;
+  }
+  .qlist.small li{border-left-color:var(--teal);}
+  .qlist li b{font-family:'IBM Plex Mono',monospace; color:var(--amber); margin-right:8px;}
+  .qlist.small li b{color:var(--teal);}
+
+  .numgrid{display:flex; flex-direction:column; gap:10px;}
+  .numcard{
+    background:var(--card); border:1px solid var(--line); border-radius:6px;
+    padding:14px 18px; display:grid; grid-template-columns:1fr auto; gap:6px 16px; align-items:start;
+  }
+  .numcard .nstmt{font-size:13.5px; line-height:1.55; grid-column:1;}
+  .numcard .nstmt::before{content:"№ "; font-family:'IBM Plex Mono',monospace; color:var(--brick); font-weight:700;}
+  .numcard .nprob{
+    font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:13px; grid-row:1; grid-column:2;
+    padding:3px 9px; border-radius:4px; white-space:nowrap; height:fit-content;
+  }
+  .numcard .nhits{
+    grid-column:1/-1; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--teal);
+    background:var(--teal-soft); display:inline-block; padding:3px 9px; border-radius:3px; width:fit-content;
+  }
+  .priorow{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:10px;}
+  .priobox{border-radius:6px; padding:16px 18px; font-size:13px;}
+  .priobox.high{background:var(--green-soft); border:1px solid #a9d3bd;}
+  .priobox.low{background:var(--paper-2); border:1px solid var(--line);}
+  .priobox h4{margin:0 0 8px; font-family:'IBM Plex Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:.06em;}
+  .priobox.high h4{color:var(--green);}
+  .priobox.low h4{color:var(--ink-soft);}
+  .priobox ul{margin:0; padding-left:16px; line-height:1.7; color:var(--ink);}
+
+  footer{
+    max-width:1180px;margin:40px auto 0; padding:20px 24px; border-top:1px solid var(--grid-strong);
+    font-size:12px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace;
+  }
+  @media(max-width:720px){
+    .statrow{grid-template-columns:repeat(2,1fr);}
+    .cols3{grid-template-columns:1fr;}
+    .priorow{grid-template-columns:1fr;}
+    .spectrum-label{width:140px; font-size:12px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Exam Intelligence Report</div>
+  <h1>EC23301 Electromagnetic Fields<br><span>Probable Question Forecast</span></h1>
+  <p class="sub">Evidence-based prediction built from 13 previous papers (EC23301 Reg&nbsp;2023 &amp; its predecessor EC5302 Reg&nbsp;2019/2021, 2020–2025) mapped against the official 5-unit syllabus. Click a unit tab to drill in.</p>
+  <div class="statrow">
+    <div class="stat"><div class="n">13</div><div class="l">Papers analyzed</div></div>
+    <div class="stat"><div class="n">2020–25</div><div class="l">Year span</div></div>
+    <div class="stat"><div class="n">37 / 26</div><div class="l">Topics / numericals mapped</div></div>
+    <div class="stat"><div class="n">5 / 5</div><div class="l">End-sems w/ Maxwell derivation</div></div>
+  </div>
+</header>
+
+<nav>
+  <div class="navin" id="navin"></div>
+</nav>
+
+<div class="wrap">
+  <section class="panel" id="panel-overview"></section>
+  <section class="panel" id="panel-1"></section>
+  <section class="panel" id="panel-2"></section>
+  <section class="panel" id="panel-3"></section>
+  <section class="panel" id="panel-4"></section>
+  <section class="panel" id="panel-5"></section>
+</div>
+
+<footer>EC23301 / EC5302 · Anna University CEG · Analysis based on IA-I, IA-II and End-Semester papers 2020–2025 · Not an official source, use as a study-prioritization tool.</footer>
+
+<script>
+/* ============================= DATA ============================= */
+const UNIT_META = [
+  {id:"1", roman:"I",  name:"Vector Calculus & Introduction", recurrence:92, color:"unitI"},
+  {id:"2", roman:"II", name:"Static Electric Field",          recurrence:78, color:"unitII"},
+  {id:"3", roman:"III",name:"Static Magnetic Field",          recurrence:83, color:"unitIII"},
+  {id:"4", roman:"IV", name:"Time-Varying Fields & Maxwell's Equations", recurrence:95, color:"unitIV"},
+  {id:"5", roman:"V",  name:"Plane EM Waves in Isotropic Media", recurrence:80, color:"unitV"},
+];
+
+const UNITS = {
+"1": {
+  intro:"Every single end-semester paper analyzed (5/5) pairs a Divergence-Theorem-verification question against a Stokes-Theorem-verification question as the compulsory Q11 OR-block. This unit is the most structurally predictable in the whole exam.",
+  topics:[
+    {name:"Divergence Theorem — statement + verification (cylindrical/wedge volume)", prob:95, tough:"Medium", hours:2, type:"Problem-solving-heavy",
+      reason:"Appears as the Q11 OR-pair in 5/5 end-sem papers (Dec'24, Nov/Dec'25, Arrear May'25 ×2, Nov/Dec'21, Nov/Dec'22). Vector fields like A=(10r³/4)aᵣ or A=2ρzaρ+3zsinφaφ−4ρcosφaz recur almost verbatim."},
+    {name:"Stokes' Theorem — statement + verification (rectangular/triangular path)", prob:90, tough:"Medium", hours:2, type:"Problem-solving-heavy",
+      reason:"Alternates with Divergence Theorem in the same Q11 slot. H=6xyax−3y²ay is a word-for-word repeat across Dec'24 and Nov/Dec'21 papers."},
+    {name:"Gradient of a scalar field (2-mark)", prob:78, tough:"Easy", hours:0.5, type:"Formula-heavy",
+      reason:"V = e⁻ᶻ sin2x cosh y (or a close variant) appears identically in at least 3 separate papers as a Part-A opener."},
+    {name:"Divergence / Curl of a given vector at a point", prob:72, tough:"Easy", hours:0.5, type:"Formula-heavy",
+      reason:"Standard Part-A Q1/Q2 slot in nearly every paper — quick 2-mark scoring opportunity."},
+    {name:"Vector identities: ∇·(∇×A)=0, ∇×(∇V)=0, ∇·(VA)=V∇·A+A·∇V", prob:55, tough:"Medium", hours:1, type:"Concept-heavy",
+      reason:"Recurs in IA papers (Assessment-I Oct'21 Q2 & Q4) as short-proof questions."},
+    {name:"Circulation of F around a closed path (line integral)", prob:50, tough:"Medium", hours:1.5, type:"Problem-solving-heavy",
+      reason:"Direct Q11(a) variant in Nov/Dec'25 & Arrear May'25 — F=x²ax−xzay−y²az around a prism path."},
+    {name:"Coordinate systems: dl, ds, dv elements / conversions", prob:38, tough:"Easy", hours:1, type:"Memory-heavy",
+      reason:"Occasional appearance, low mark value (2 marks), inconsistent across paper sets."},
+  ],
+  numericals:[
+    {stmt:"Verify the Divergence Theorem for A = (10r³/4)aᵣ (cylindrical) over r=1m to r=2m, z=0 to z=10m.", hits:"Nov/Dec'21, similar form Dec'24 (wedge 0<ρ<2, 0<φ<45°, 0<z<5)", prob:80},
+    {stmt:"Verify Stokes' Theorem for H = 6xyax − 3y²ay over the rectangular path 2≤x≤5, −1≤y≤1, z=0.", hits:"Dec'24 & Nov/Dec'21 — word-for-word identical", prob:75},
+    {stmt:"Given F = x²ax − xzay − y²az, calculate the circulation of F around the closed prism path shown.", hits:"Nov/Dec'25, Arrear May'25 ×2", prob:65},
+    {stmt:"If G(r) = 10e⁻²ᶻ(ρaρ+az), determine the flux of G out of the cylinder ρ=1, 0≤z≤1; confirm using the Divergence Theorem.", hits:"Nov/Dec'25, Arrear May'25 ×2", prob:65},
+    {stmt:"Line x=0, y=0, 0<z<10m carries current 2A along az. Calculate H at (5,15,0) and (5,−15,0).", hits:"Dec'24 IA-II", prob:35},
+  ],
+  q16:[
+    "State and derive the Divergence Theorem. Verify it for a given vector field over a cylindrical wedge / cuboid volume.",
+    "State and derive Stokes' Theorem. Verify both sides for a given vector field over a rectangular or triangular path.",
+    "Given a vector function with unknown constants, determine the constants for the field to be irrotational, then verify the relevant theorem."
+  ],
+  q8:[
+    "Find the gradient of a given scalar field at a specified point.",
+    "Prove that the divergence of the curl of any vector field is zero.",
+    "Given a vector field, find its divergence/curl at a stated point in cylindrical or spherical coordinates."
+  ],
+  high:["Divergence Theorem verification","Stokes' Theorem verification","Gradient of scalar field (2-mark)"],
+  low:["dl / ds / dv element conversions","Standalone coordinate-system matching questions"]
+},
+"2": {
+  intro:"Gauss's Law applications (line/sheet/sphere) and the coaxial-capacitor-via-Laplace's-equation problem dominate the high-mark slots; point-charge force problems dominate Part-B.",
+  topics:[
+    {name:"Gauss's Law — D for line charge, sheet charge, charged sphere", prob:85, tough:"Medium", hours:2, type:"Formula-heavy",
+      reason:"Compulsory 15-mark Part-C in Dec'24 and Arrear May'25 ('State Gauss law, determine D for line/sheet/sphere'); repeats across IA papers too."},
+    {name:"Coaxial / spherical capacitor via Laplace's equation", prob:70, tough:"Hard", hours:2.5, type:"Problem-solving-heavy",
+      reason:"Verbatim Part-C compulsory Q16 in Nov/Dec'25 and Arrear May'25 with identical numbers (a=2mm, b=10mm, L=0.1m, V₀=100V)."},
+    {name:"Force / field due to symmetric point-charge configurations", prob:75, tough:"Medium", hours:1.5, type:"Problem-solving-heavy",
+      reason:"Q12 recurs across Nov/Dec'25, Arrear May'25 and multiple EC5302 papers — 4 equal charges on ±axes, find force at (0,0,3)."},
+    {name:"Electric field between an electric dipole + flux-line explanation", prob:55, tough:"Medium", hours:1.5, type:"Concept-heavy",
+      reason:"Q12(a) in both Nov/Dec'25 and Arrear May'25."},
+    {name:"Boundary conditions between two dielectrics (numeric D₁→D₂)", prob:60, tough:"Medium", hours:1, type:"Formula-heavy",
+      reason:"Numeric variant recurs (Dec'24 Q8) plus similar IA questions."},
+    {name:"Poisson's & Laplace's equations — statement/derivation", prob:50, tough:"Easy", hours:1, type:"Memory-heavy",
+      reason:"Frequent 2-mark opener in Assessment/IA papers."},
+    {name:"Layered dielectric capacitor: D, P, σf, σp, potential difference", prob:45, tough:"Medium", hours:1.5, type:"Problem-solving-heavy",
+      reason:"Full Part-C style numeric appears at least once (polystyrene capacitor, εr=2.55) — plausible re-use."},
+    {name:"Point form of Ohm's law / equation of continuity", prob:40, tough:"Easy", hours:1, type:"Concept-heavy",
+      reason:"Shows up as a sub-part (4–5 marks) rather than a full question, but recurs steadily."},
+  ],
+  numericals:[
+    {stmt:"Coaxial cylindrical capacitor, a=2.0mm, b=10.0mm, L=0.10m, V₀=100V. Using Laplace's equation find V(r), Eᵣ(r), charge/length, C' and total C.", hits:"Nov/Dec'25 AND Arrear May'25 — identical numbers, both sittings", prob:70},
+    {stmt:"Four point charges of 20µC each at ±4m on x,y axes. Determine the force on a 200µC charge at (0,0,3)m.", hits:"Nov/Dec'25", prob:55},
+    {stmt:"Semi-infinite line charge (200 nC/m) from −∞ to 0 along z-axis. Find E at P(0,0,2); force on 1µC charge placed there.", hits:"Nov/Dec'25", prob:50},
+    {stmt:"Polystyrene-filled parallel-plate capacitor, εr=2.55, E=10 kV/m, plate gap=1.5mm. Find D, P, σf, σp, and V.", hits:"EC5302 Dec'24-style end sem, Part-C compulsory", prob:45},
+    {stmt:"Conducting spherical shells a=10cm, b=30cm, V(a)=100V, V(b)=0, εr=2.5. Find V, E between shells, induced charge, capacitance.", hits:"Nov/Dec'21", prob:40},
+    {stmt:"Sea water: σ=4 S/m, εr=80, µr=1, f=100MHz. Calculate skin depth.", hits:"Dec'24 IA-II", prob:35},
+  ],
+  q16:[
+    "State Gauss's law. Using Gauss's law, determine the electric flux density due to (i) an infinite line charge (ii) an infinite sheet of charge (iii) a uniformly charged sphere.",
+    "A coaxial cylindrical capacitor with inner radius a and outer radius b is held at potential V₀. Using Laplace's equation find V(r), E(r), charge/length, and total capacitance.",
+    "Determine the electric field / force at a point due to four (or three) equal point charges placed symmetrically on the axes."
+  ],
+  q8:[
+    "Show that E = −∇V.",
+    "Given D₁ in region 1 (εr1), find D₂ in region 2 (εr2) using dielectric boundary conditions.",
+    "Find the capacitance of a parallel-plate / coaxial-cylinder capacitor from given dimensions."
+  ],
+  high:["Gauss's law flux-density derivations (line/sheet/sphere)","Coaxial capacitor via Laplace's equation","Force due to symmetric point charges"],
+  low:["Full equation-of-continuity derivation as a standalone 13-mark question"]
+},
+"3": {
+  intro:"The EM boundary-condition derivation and the parallel-current-carrying-conductor force problem are the two most reliable high-mark anchors — together they appear in nearly every end-sem paper.",
+  topics:[
+    {name:"Electromagnetic boundary condition (conductor–free space, dielectric–dielectric)", prob:90, tough:"Hard", hours:2, type:"Concept-heavy",
+      reason:"Q14 OR-pair recurs in virtually every end-sem paper alongside the Maxwell's-equations derivation — one of the two always appears."},
+    {name:"Force between two current-carrying conductors (rectangular loop ‖ infinite wire)", prob:85, tough:"Medium", hours:2, type:"Problem-solving-heavy",
+      reason:"Near-identical numeric question (I₁=10A, I₂=5A, ρ₀=20cm, a=10cm, b=30cm) in Dec'24, Nov/Dec'25, Arrear May'25 ×2, and Nov/Dec'21."},
+    {name:"H due to a circular or triangular current loop (Biot–Savart)", prob:70, tough:"Medium", hours:1.5, type:"Problem-solving-heavy",
+      reason:"Recurs across IA-II Nov'24 and multiple end-sems (loop x²+y²=9, triangular loop carrying 10A)."},
+    {name:"Self / mutual inductance derivation + energy stored", prob:55, tough:"Medium", hours:1.5, type:"Formula-heavy",
+      reason:"IA-II Nov'24 Q6, plus coaxial-cable self-inductance derivation in EC5302 papers."},
+    {name:"Vector magnetic potential from Biot–Savart law", prob:50, tough:"Medium", hours:1, type:"Concept-heavy",
+      reason:"Recurs in Dec'24 Q13(a)(i) and multiple EC5302 assessments."},
+    {name:"Ampere's circuital law — infinite line, sheet, coaxial cable", prob:60, tough:"Medium", hours:1.5, type:"Formula-heavy",
+      reason:"Recurs across IA-II Nov'24 and Dec'24 papers as an 8-mark derivation."},
+    {name:"Torque on a rectangular current loop / magnetic moment", prob:40, tough:"Medium", hours:1, type:"Concept-heavy",
+      reason:"Frequent in EC5302 papers, less consistently seen in the newer EC23301 set."},
+  ],
+  numericals:[
+    {stmt:"Rectangular loop carrying I₂=5A placed parallel to an infinite filament carrying I₁=10A, ρ₀=20cm, a=10cm, b=30cm. Find the force between the two elements and the force on the loop.", hits:"Dec'24, Nov/Dec'25, Arrear May'25 ×2, Nov/Dec'21 — the most repeated numeric in the paper", prob:80},
+    {stmt:"Conducting triangular loop carries 10A. Find H at (0,0,5) due to side 1 and side 3 of the loop.", hits:"Nov/Dec'25, Arrear May'25 ×2", prob:60},
+    {stmt:"Circular loop on x²+y²=9 (or 16), z=0 carries 10A along aφ. Determine H at (0,0,4) and (0,0,−4) using Biot–Savart's law.", hits:"Dec'24 IA-II, similar in Nov/Dec'22", prob:55},
+    {stmt:"20mH solenoid, length l, area A, N=100 turns. Find the ratio of cross-sectional area to length.", hits:"Nov/Dec'25, Arrear May'25 ×2", prob:45},
+    {stmt:"200-turn coil, r=5cm, B changes 0.3T→0.7T over 0.2s, coil resistance 5Ω. Calculate induced EMF and current.", hits:"Nov/Dec'25", prob:35},
+  ],
+  q16:[
+    "Derive the electromagnetic boundary condition at the interface between (i) a good conductor and free space (ii) two dielectric media.",
+    "A rectangular loop carrying current I₂ is placed parallel to an infinitely long filament carrying I₁. Determine the force between the two elements and the force experienced by the loop.",
+    "Derive the vector magnetic potential from Biot–Savart's law and use it to find H / flux for a given current distribution."
+  ],
+  q8:[
+    "Find H at a point on the axis of a circular or triangular current loop.",
+    "A solenoid inductor has length l, area A and N turns — find the ratio of cross-sectional area to length.",
+    "State and derive Ampere's circuital law for an infinite line current."
+  ],
+  high:["EM boundary condition derivation","Parallel-wire force problem"],
+  low:["Hysteresis loop / classification of magnetic materials (mostly EC5302-only, largely dropped in EC23301)"]
+},
+"4": {
+  intro:"The full four-Maxwell's-equation derivation is the single most guaranteed 13-mark question in the entire syllabus — it appeared in every one of the 5 end-semester papers analyzed.",
+  topics:[
+    {name:"Derive all four Maxwell's equations from basic laws (point & integral form)", prob:95, tough:"Hard", hours:3, type:"Concept-heavy",
+      reason:"Appears as a guaranteed OR-alternative in Q14 in 5/5 end-sem papers — the single highest-confidence prediction in this report."},
+    {name:"Faraday's law & induced EMF (transformer / motional EMF numeric)", prob:75, tough:"Medium", hours:1.5, type:"Formula-heavy",
+      reason:"Recurs in IA-II Nov'24 Q7, Dec'24 Q14(a)(ii), and rotating-loop EMF numerics in EC5302 papers."},
+    {name:"Maxwell's equations in static / time-varying / phasor form (2-mark)", prob:65, tough:"Easy", hours:1, type:"Memory-heavy",
+      reason:"Recurs as a Part-A recall question across nearly every paper set."},
+    {name:"Conduction current vs. displacement current", prob:62, tough:"Easy", hours:0.5, type:"Concept-heavy",
+      reason:"Recurs as a 2-mark question in IA-I/II Oct–Nov'24, Nov/Dec'25 and Arrear May'25 ×2."},
+    {name:"EMF induced in an N-turn loop with time-varying B (circular loop numeric)", prob:50, tough:"Medium", hours:1.5, type:"Problem-solving-heavy",
+      reason:"Appears in Dec'24 Q14(b)(ii) and similarly in Nov/Dec'22."},
+    {name:"Equation of continuity & how Maxwell modified Ampere's law", prob:45, tough:"Medium", hours:1, type:"Concept-heavy",
+      reason:"Explicitly asked: 'Show how Ampere's law is modified using the continuity equation' (Nov/Dec'21)."},
+  ],
+  numericals:[
+    {stmt:"Flux through each turn of a 100-turn coil is (t³−2t) mWb. Find the induced EMF at t=2 seconds.", hits:"Nov/Dec'25, Arrear May'25 ×2", prob:55},
+    {stmt:"E = 10cos(10⁸t − 3y)ax V/m in a certain medium — identify the type of medium.", hits:"Nov/Dec'25, Arrear May'25 ×2", prob:45},
+    {stmt:"Circular N-turn loop, radius b, in field B=B₀cos(πr/2b)sin(ωt)az. Find the EMF induced in the loop.", hits:"Nov/Dec'25", prob:35},
+    {stmt:"Coil with 200 turns, radius 5cm, field changes 0.3T to 0.7T over 0.2s, R=5Ω — find induced EMF and current magnitudes.", hits:"Nov/Dec'25", prob:35},
+  ],
+  q16:[
+    "Derive all four of Maxwell's equations from basic laws, in both point and integral form. Show how Ampere's law is modified using the continuity equation.",
+    "Find the transformer EMF induced in a stationary closed path in a time-varying B field, then solve a coil/EMF numeric.",
+    "Illustrate the integral and point form of Maxwell's equations for static fields, then find the EMF induced in a given circular loop."
+  ],
+  q8:[
+    "Write Maxwell's equations in static, time-varying and phasor form.",
+    "What is the difference between conduction current and displacement current?",
+    "Given flux Φ(t) through an N-turn coil, find the induced EMF at a specified time."
+  ],
+  high:["Full Maxwell's-equations derivation — treat as non-negotiable"],
+  low:["Potential functions (A, V) derived standalone from Maxwell's equations — rarely a full question on its own"]
+},
+"5": {
+  intro:"Wave-equation derivation and uniform-plane-wave characteristics form a fixed OR-pair at Q15 in almost every paper; numeric α/β/skin-depth problems are the most repeated Part-A/B pattern in the whole exam.",
+  topics:[
+    {name:"Wave equation derivation for E, H (time-harmonic fields, free space)", prob:85, tough:"Hard", hours:2, type:"Concept-heavy",
+      reason:"Q15(b) alternates with plane-wave characteristics, appearing in nearly every end-sem paper analyzed."},
+    {name:"Characteristics of uniform plane waves + normal incidence on a conductor", prob:80, tough:"Hard", hours:2, type:"Concept-heavy",
+      reason:"Q15(a) OR-pair recurs in Dec'24, Nov/Dec'25, and Arrear May'25 ×2."},
+    {name:"Numeric: given E(x,t), find α, β, λ, velocity, skin depth", prob:75, tough:"Medium", hours:2, type:"Problem-solving-heavy",
+      reason:"E = 16e⁻⁰·⁰⁵ˣ sin(2×10⁸t−2x)az (or close variants) recurs near-identically in 3+ separate papers across Part-A and Part-B."},
+    {name:"Poynting theorem — statement, derivation, average power numeric", prob:60, tough:"Medium", hours:1.5, type:"Concept-heavy",
+      reason:"Recurs across EC5302 end-sems and IA-II papers as an 8-mark component."},
+    {name:"Intrinsic impedance / propagation constant for a general medium", prob:55, tough:"Medium", hours:1.5, type:"Formula-heavy",
+      reason:"Appears as Q15(a)(i) in Nov/Dec'25 and Arrear May'25."},
+    {name:"Skin depth / depth of penetration — define & calculate", prob:55, tough:"Easy", hours:1, type:"Formula-heavy",
+      reason:"Recurs as a 2-mark question in almost every IA and end-sem paper."},
+    {name:"Reflection & transmission coefficients — definitions & relationship", prob:42, tough:"Medium", hours:1, type:"Formula-heavy",
+      reason:"2-mark recall recurs (Nov/Dec'25, Arrear May'25); full 13-mark derivation seen once (Nov/Dec'21)."},
+  ],
+  numericals:[
+    {stmt:"E = 16e⁻⁰·⁰⁵ˣ sin(2×10⁸t − 2x)az V/m — find (a) propagation constant, (b) wavelength, (c) speed of the wave.", hits:"Dec'24 IA-II, near-identical variants recur across multiple IA papers", prob:65},
+    {stmt:"In free space, H = 0.1cos(2×10⁸t − kx)ay A/m. Calculate k and the time period T.", hits:"Nov/Dec'25, Arrear May'25 ×2", prob:55},
+    {stmt:"Calculate the velocity of a plane wave in a lossless medium with εr=4, µr=1.2.", hits:"Nov/Dec'25", prob:45},
+    {stmt:"State intrinsic impedance of a medium; give its numerical value for free space.", hits:"Nov/Dec'25, Arrear May'25 ×2", prob:50},
+    {stmt:"E = 4sin(2π×10⁷t − 0.8x)az V/m in a nonmagnetic medium — find εr, η, time-average power, and total power crossing a stated plane.", hits:"Nov/Dec'21-style, recurs in EC5302 end sems", prob:40},
+  ],
+  q16:[
+    "Derive the wave equation for E and H fields for free-space conditions from Maxwell's equations (time-harmonic form).",
+    "Explain the characteristics of a uniform plane wave and its behaviour when incident normally on a conductor interface.",
+    "Given E(x,t) in a lossy medium, find εr / η, direction of propagation, time-average power carried, and total power crossing a stated plane."
+  ],
+  q8:[
+    "Define intrinsic impedance of a medium; state its value for free space.",
+    "Define reflection and transmission coefficients and the relationship between them.",
+    "Given E = A cos(ωt − βx), find β, wavelength, and skin depth for the stated medium."
+  ],
+  high:["Wave-equation derivation","Uniform plane wave / normal incidence characteristics","α/β/skin-depth numeric pattern"],
+  low:["Group velocity derivation as a standalone full question (mentioned in syllabus, rarely asked alone)"]
+}
+};
+
+const OVERVIEW = {
+  ratio:[
+    {topic:"Gradient of scalar field (2-mark)", unit:"I", prob:78, hours:0.5, ratio:156},
+    {topic:"Divergence/Curl of vector (2-mark)", unit:"I", prob:72, hours:0.5, ratio:144},
+    {topic:"Maxwell's equations in 3 forms (2-mark)", unit:"IV", prob:65, hours:1, ratio:65},
+    {topic:"Conduction vs displacement current", unit:"IV", prob:62, hours:0.5, ratio:124},
+    {topic:"Skin depth define & calculate", unit:"V", prob:55, hours:1, ratio:55},
+    {topic:"Divergence Theorem verification", unit:"I", prob:95, hours:2, ratio:47.5},
+    {topic:"Stokes' Theorem verification", unit:"I", prob:90, hours:2, ratio:45},
+    {topic:"EM boundary condition derivation", unit:"III", prob:90, hours:2, ratio:45},
+    {topic:"Force between parallel wires", unit:"III", prob:85, hours:2, ratio:42.5},
+    {topic:"Gauss's law flux density derivation", unit:"II", prob:85, hours:2, ratio:42.5},
+    {topic:"Wave equation derivation", unit:"V", prob:85, hours:2, ratio:42.5},
+    {topic:"Maxwell's equations full derivation", unit:"IV", prob:95, hours:3, ratio:31.7},
+    {topic:"Coaxial capacitor via Laplace's eq.", unit:"II", prob:70, hours:2.5, ratio:28},
+  ],
+  top20:[
+    "Maxwell's equations — full derivation (Unit IV) — 95%",
+    "Divergence Theorem verification (Unit I) — 95%",
+    "EM boundary condition derivation (Unit III) — 90%",
+    "Stokes' Theorem verification (Unit I) — 90%",
+    "Wave equation derivation (Unit V) — 85%",
+    "Force between parallel current-carrying conductors (Unit III) — 85%",
+    "Gauss's law: D for line/sheet/sphere (Unit II) — 85%",
+    "Uniform plane wave / normal incidence (Unit V) — 80%",
+  ]
+};
+
+/* ============================= RENDER ============================= */
+const navin = document.getElementById("navin");
+const tabs = [{id:"overview", label:"Overview"}].concat(UNIT_META.map(u=>({id:u.id, label:"Unit "+u.roman})));
+tabs.forEach((t,i)=>{
+  const b=document.createElement("button");
+  b.className="navbtn"+(i===0?" active":"");
+  b.textContent=t.label;
+  b.onclick=()=>showPanel(t.id);
+  b.dataset.id=t.id;
+  navin.appendChild(b);
+});
+
+function probClass(p){ return p>=75 ? "p-high" : p>=50 ? "p-med" : "p-low"; }
+
+function renderOverview(){
+  const el = document.getElementById("panel-overview");
+  let bars = UNIT_META.map(u=>`
+    <div class="spectrum-row">
+      <div class="spectrum-label">Unit ${u.roman}<small>${u.name}</small></div>
+      <div class="spectrum-track"><div class="spectrum-fill" data-pct="${u.recurrence}"></div></div>
+      <div class="spectrum-val">${u.recurrence}%</div>
+    </div>`).join("");
+
+  let ratioRows = [...OVERVIEW.ratio].sort((a,b)=>b.ratio-a.ratio).map(r=>`
+    <tr>
+      <td>${r.topic}</td>
+      <td><span class="pill unit${r.unit}">UNIT ${r.unit}</span></td>
+      <td>${r.prob}%</td>
+      <td>${r.hours}h</td>
+      <td><b>${r.ratio}</b></td>
+    </tr>`).join("");
+
+  el.innerHTML = `
+    <h2 class="title">Overview <span class="tag">All units</span></h2>
+    <p class="desc">Recurrence Index = share of analyzed end-semester papers in which a near-identical or structurally identical high-mark question from that unit appeared. Because Anna University's part structure fixes marks per unit (2×2 + 1×13 + partial Part-C), recurrence — not raw marks — is the real signal of predictability.</p>
+
+    <div class="panelblock">
+      <div class="blocklabel">Recurrence Index by Unit</div>
+      ${bars}
+    </div>
+
+    <div class="cols3">
+      <div class="callout">
+        <h3>Safest scoring topics</h3>
+        <ul>
+          <li><b>Gradient / divergence / curl basics</b> (Unit I) — formulaic, 2-mark, low variance.</li>
+          <li><b>Maxwell's equations in 3 forms</b> (Unit IV) — pure recall.</li>
+          <li><b>Skin depth definitions</b> (Unit V) — same formula reused across papers.</li>
+        </ul>
+      </div>
+      <div class="callout hard">
+        <h3>Hardest topics</h3>
+        <ul>
+          <li><b>EM boundary condition derivation</b> (Unit III) — multi-case, notation-heavy.</li>
+          <li><b>Full Maxwell's-equations derivation</b> (Unit IV) — long, four sub-derivations.</li>
+          <li><b>Wave equation derivation</b> (Unit V) — vector-calculus-in-phasor-form.</li>
+          <li><b>Coaxial capacitor via Laplace's equation</b> (Unit II) — boundary-value problem.</li>
+        </ul>
+      </div>
+      <div class="callout fast">
+        <h3>Fastest units to complete</h3>
+        <ul>
+          <li><b>Unit I</b> — ~7h total; repetitive theorem-verification pattern, low topic count.</li>
+          <li><b>Unit IV's Part-A layer</b> — memory-based definitions, fast to lock in even though the 13-mark derivation is long.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="panelblock">
+      <div class="blocklabel">Top 20% of topics → ~80% of marks</div>
+      <ul class="qlist small">
+        ${OVERVIEW.top20.map((t,i)=>`<li><b>${String(i+1).padStart(2,'0')}</b>${t}</li>`).join("")}
+      </ul>
+    </div>
+
+    <div class="panelblock">
+      <div class="blocklabel">Probability-to-Effort Ratio (probability % ÷ study hours) — sorted highest first</div>
+      <table class="ranktable">
+        <thead><tr><th>Topic</th><th>Unit</th><th>Prob.</th><th>Hours</th><th>Ratio</th></tr></thead>
+        <tbody>${ratioRows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderUnit(id){
+  const meta = UNIT_META.find(u=>u.id===id);
+  const data = UNITS[id];
+  const el = document.getElementById("panel-"+id);
+
+  const types = ["All", ...new Set(data.topics.map(t=>t.type))];
+  const chips = types.map((t,i)=>`<button class="chip${i===0?" active":""}" data-type="${t}">${t}</button>`).join("");
+
+  el.innerHTML = `
+    <div class="unithead">
+      <div>
+        <h2 class="title">Unit ${meta.roman} <span class="tag">${data.topics.length} topics mapped</span></h2>
+        <p class="desc" style="margin-top:8px;max-width:760px;">${meta.name}. ${data.intro}</p>
+      </div>
+      <div class="gauge">
+        <div class="ring" style="--pct:${meta.recurrence}; position:relative;"><span>${meta.recurrence}%</span></div>
+        <div class="glabel">Recurrence<br>Index</div>
+      </div>
+    </div>
+
+    <div class="controls">
+      ${chips}
+      <div class="sortbar">
+        Sort by
+        <select id="sort-${id}">
+          <option value="prob">Probability</option>
+          <option value="tough">Toughness</option>
+          <option value="hours">Study time</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="topicgrid" id="grid-${id}"></div>
+
+    <div class="qblock">
+      <div class="qlabel">Recurring numericals &amp; problems (exact repeat pattern)</div>
+      <div class="numgrid">
+        ${data.numericals.map(n=>`
+          <div class="numcard">
+            <div class="nstmt">${n.stmt}</div>
+            <div class="nprob probchip ${probClass(n.prob)}">${n.prob}%</div>
+            <div class="nhits">Seen in: ${n.hits}</div>
+          </div>`).join("")}
+      </div>
+    </div>
+
+    <div class="qblock">
+      <div class="qlabel">Most probable 13 / 15-mark questions</div>
+      <ul class="qlist">${data.q16.map((q,i)=>`<li><b>Q${i+1}</b>${q}</li>`).join("")}</ul>
+    </div>
+
+    <div class="qblock">
+      <div class="qlabel">Most probable 8 / 2-mark questions</div>
+      <ul class="qlist small">${data.q8.map((q,i)=>`<li><b>Q${i+1}</b>${q}</li>`).join("")}</ul>
+    </div>
+
+    <div class="priorow">
+      <div class="priobox high">
+        <h4>High priority</h4>
+        <ul>${data.high.map(h=>`<li>${h}</li>`).join("")}</ul>
+      </div>
+      <div class="priobox low">
+        <h4>Low priority (skip if time-limited)</h4>
+        <ul>${data.low.map(h=>`<li>${h}</li>`).join("")}</ul>
+      </div>
+    </div>
+  `;
+
+  let currentType = "All";
+  let currentSort = "prob";
+
+  function draw(){
+    const grid = document.getElementById("grid-"+id);
+    let list = data.topics.filter(t => currentType==="All" || t.type===currentType);
+    const toughRank = {Hard:3, Medium:2, Easy:1};
+    if(currentSort==="prob") list = [...list].sort((a,b)=>b.prob-a.prob);
+    if(currentSort==="tough") list = [...list].sort((a,b)=>toughRank[b.tough]-toughRank[a.tough]);
+    if(currentSort==="hours") list = [...list].sort((a,b)=>b.hours-a.hours);
+
+    grid.innerHTML = list.map((t,idx)=>`
+      <div class="tcard" data-idx="${idx}">
+        <div class="tcard-top">
+          <h4>${t.name}</h4>
+          <span class="probchip ${probClass(t.prob)}">${t.prob}%</span>
+        </div>
+        <div class="tbar"><i style="width:${t.prob}%"></i></div>
+        <div class="tmeta">
+          <span class="tag-sm tough-${t.tough}">${t.tough}</span>
+          <span class="tag-sm">${t.hours}h</span>
+          <span class="tag-sm">${t.type}</span>
+        </div>
+        <div class="expand-hint">+ tap for examiner-pattern evidence</div>
+        <div class="treason">${t.reason}</div>
+      </div>
+    `).join("");
+
+    grid.querySelectorAll(".tcard").forEach(card=>{
+      card.addEventListener("click", ()=> card.classList.toggle("open"));
+    });
+  }
+
+  el.querySelectorAll(".chip").forEach(chip=>{
+    chip.addEventListener("click", ()=>{
+      el.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+      chip.classList.add("active");
+      currentType = chip.dataset.type;
+      draw();
+    });
+  });
+  document.getElementById("sort-"+id).addEventListener("change", e=>{
+    currentSort = e.target.value;
+    draw();
+  });
+
+  draw();
+}
+
+function showPanel(id){
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+  document.getElementById("panel-"+id).classList.add("active");
+  navin.querySelectorAll(".navbtn").forEach(b=>b.classList.toggle("active", b.dataset.id===id));
+  if(id==="overview"){
+    requestAnimationFrame(()=>{
+      document.querySelectorAll(".spectrum-fill").forEach(f=>{ f.style.width = f.dataset.pct+"%"; });
+    });
+  }
+}
+
+/* init */
+renderOverview();
+UNIT_META.forEach(u=>renderUnit(u.id));
+showPanel("overview");
+</script>
+</body>
+</html>
