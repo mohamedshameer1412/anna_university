@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWP Exam Prediction — EC23501</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2333;
+    --border: #30363d;
+    --accent: #f0a500;
+    --accent2: #e05c3a;
+    --accent3: #3ddc84;
+    --accent4: #58a6ff;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --high: #f85149;
+    --mid: #f0a500;
+    --low: #3ddc84;
+    --unit1: #c084fc;
+    --unit2: #60a5fa;
+    --unit3: #34d399;
+    --unit4: #f97316;
+    --unit5: #fb7185;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ─── HEADER ─── */
+  .hero {
+    background: linear-gradient(135deg, #0d1117 0%, #1a1040 50%, #0d1117 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 24px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 200px;
+    background: radial-gradient(ellipse, rgba(240,165,0,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .badge {
+    display: inline-block;
+    background: rgba(240,165,0,0.15);
+    border: 1px solid rgba(240,165,0,0.4);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-size: clamp(22px, 4vw, 34px);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero p { color: var(--muted); font-size: 13px; max-width: 600px; margin: 0 auto 20px; }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+  .stat-pill {
+    display: flex; flex-direction: column; align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 24px;
+  }
+  .stat-pill .num { font-size: 22px; font-weight: 800; color: var(--accent); }
+  .stat-pill .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+  /* ─── OVERVIEW GRID ─── */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 12px;
+    padding: 20px 20px 0;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .overview-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .overview-card h3 {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .rank-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .rank-item:last-child { border-bottom: none; }
+  .rank-num {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800;
+    flex-shrink: 0;
+  }
+  .rank-1 { background: rgba(240,165,0,0.2); color: var(--accent); }
+  .rank-2 { background: rgba(88,166,255,0.15); color: var(--accent4); }
+  .rank-3 { background: rgba(61,220,132,0.15); color: var(--accent3); }
+  .rank-4 { background: rgba(240,165,0,0.1); color: #d4a0ff; }
+  .rank-5 { background: rgba(224,92,58,0.15); color: var(--accent2); }
+  .rank-text { flex: 1; font-size: 13px; }
+  .pct { font-size: 12px; font-weight: 700; color: var(--accent); }
+
+  /* ─── TABS ─── */
+  .tabs-wrap {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+  }
+  .tabs {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 0;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { background: var(--surface); color: var(--text); }
+  .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #000; }
+  .tab-btn.u1.active { background: var(--unit1); border-color: var(--unit1); }
+  .tab-btn.u2.active { background: var(--unit2); border-color: var(--unit2); }
+  .tab-btn.u3.active { background: var(--unit3); border-color: var(--unit3); }
+  .tab-btn.u4.active { background: var(--unit4); border-color: var(--unit4); }
+  .tab-btn.u5.active { background: var(--unit5); border-color: var(--unit5); }
+
+  /* ─── CONTENT ─── */
+  .content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ─── UNIT HEADER ─── */
+  .unit-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 20px;
+  }
+  .unit-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .unit-header h2 { font-size: 20px; font-weight: 800; }
+  .unit-header p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .unit-tags { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+  .tag {
+    font-size: 11px; font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+  }
+  .tag-speed { background: rgba(61,220,132,0.15); color: var(--accent3); border: 1px solid rgba(61,220,132,0.3); }
+  .tag-hard { background: rgba(248,81,73,0.15); color: var(--high); border: 1px solid rgba(248,81,73,0.3); }
+  .tag-safe { background: rgba(88,166,255,0.15); color: var(--accent4); border: 1px solid rgba(88,166,255,0.3); }
+  .tag-roi { background: rgba(240,165,0,0.15); color: var(--accent); border: 1px solid rgba(240,165,0,0.3); }
+
+  /* ─── SECTION LABEL ─── */
+  .sec-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 24px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sec-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ─── TOPIC CARDS ─── */
+  .topics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
+  }
+  .topic-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .topic-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+  .topic-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .prob-high::before { background: linear-gradient(90deg, var(--high), var(--accent)); }
+  .prob-med::before { background: linear-gradient(90deg, var(--accent), #fff200); }
+  .prob-low::before { background: linear-gradient(90deg, var(--low), var(--accent4)); }
+
+  .topic-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+  .topic-name { font-size: 14px; font-weight: 700; line-height: 1.4; }
+  .prob-badge {
+    flex-shrink: 0;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 8px;
+  }
+  .pb-high { background: rgba(248,81,73,0.2); color: var(--high); border: 1px solid rgba(248,81,73,0.4); }
+  .pb-med { background: rgba(240,165,0,0.2); color: var(--accent); border: 1px solid rgba(240,165,0,0.4); }
+  .pb-low { background: rgba(61,220,132,0.2); color: var(--accent3); border: 1px solid rgba(61,220,132,0.4); }
+
+  .topic-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  .meta-item {
+    background: var(--surface2);
+    border-radius: 6px;
+    padding: 6px 8px;
+  }
+  .meta-key { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; }
+  .meta-val { font-size: 12px; font-weight: 600; color: var(--text); margin-top: 1px; }
+
+  .prob-bar-wrap { margin-bottom: 10px; }
+  .prob-bar-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .prob-bar {
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .prob-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s ease;
+  }
+
+  .reason-box {
+    background: var(--surface2);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ─── QUESTIONS ─── */
+  .q-section { margin-bottom: 20px; }
+  .q-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .q-header h4 { font-size: 13px; font-weight: 700; }
+  .q-mark-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: rgba(88,166,255,0.15);
+    color: var(--accent4);
+    border: 1px solid rgba(88,166,255,0.3);
+  }
+  .q-list { display: flex; flex-direction: column; gap: 8px; }
+  .q-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .q-num {
+    flex-shrink: 0;
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    background: var(--surface2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800;
+    color: var(--muted);
+  }
+  .q-text { font-size: 13px; line-height: 1.5; flex: 1; }
+  .q-flame { font-size: 14px; flex-shrink: 0; }
+
+  /* ─── HIGH / LOW PRIORITY LISTS ─── */
+  .priority-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  @media (max-width: 600px) { .priority-grid { grid-template-columns: 1fr; } }
+
+  .priority-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .priority-box h4 {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .hi-title { color: var(--high); }
+  .lo-title { color: var(--accent3); }
+  .prio-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .prio-item:last-child { border-bottom: none; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .dot-hi { background: var(--high); }
+  .dot-lo { background: var(--accent3); }
+  .dot-mid { background: var(--accent); }
+
+  /* ─── SUMMARY PANEL ─── */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .summary-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sum-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .sum-item:last-child { border-bottom: none; }
+  .sum-rank {
+    flex-shrink: 0;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--surface2);
+    color: var(--accent);
+  }
+
+  /* Effort vs Probability chart */
+  .effort-chart {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px 20px 20px;
+    overflow: hidden;
+  }
+  .chart-grid-h, .chart-grid-v {
+    position: absolute;
+    background: var(--border);
+  }
+  .chart-grid-h { left: 40px; right: 16px; height: 1px; }
+  .chart-grid-v { top: 32px; bottom: 20px; width: 1px; }
+  .chart-dot {
+    position: absolute;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.2s;
+    transform: translate(-50%, -50%);
+    border: 2px solid;
+  }
+  .chart-dot:hover { transform: translate(-50%, -50%) scale(1.3); }
+  .chart-axis-x {
+    position: absolute;
+    bottom: 2px; left: 40px; right: 16px;
+    text-align: center;
+    font-size: 10px; color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .chart-axis-y {
+    position: absolute;
+    left: 2px; top: 32px; bottom: 20px;
+    display: flex; align-items: center; justify-content: center;
+    writing-mode: vertical-rl;
+    font-size: 10px; color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transform: rotate(180deg);
+  }
+  .chart-legend {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 11px;
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+
+  /* ─── responsive ─── */
+  @media (max-width: 700px) {
+    .topics-grid { grid-template-columns: 1fr; }
+    .unit-header { flex-direction: column; align-items: flex-start; }
+    .hero-stats { gap: 16px; }
+    .overview-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="badge">Anna University · EC23501 · Regulation 2023</div>
+  <h1>Antennas & Wave <span>Propagation</span><br>Exam Prediction Guide</h1>
+  <p>Data-driven analysis of 6 question papers (End Sem Nov/Dec 2025 + Supplementary + Internal Assessments + R15 Papers) — ranked by repeat frequency, examiner patterns & mark distribution.</p>
+  <div class="hero-stats">
+    <div class="stat-pill"><span class="num">6</span><span class="lbl">QP Sources Analysed</span></div>
+    <div class="stat-pill"><span class="num">5</span><span class="lbl">Units Covered</span></div>
+    <div class="stat-pill"><span class="num">100</span><span class="lbl">Max Marks</span></div>
+    <div class="stat-pill"><span class="num">~18h</span><span class="lbl">Total Study Time</span></div>
+  </div>
+</div>
+
+<!-- OVERVIEW CARDS -->
+<div class="overview-grid">
+
+  <div class="overview-card">
+    <h3>🏆 Top 5 Highest Probability Topics</h3>
+    <div class="rank-item"><div class="rank-num rank-1">1</div><div class="rank-text">Half-wave Dipole — Far field, Rr, Derivation</div><div class="pct">95%</div></div>
+    <div class="rank-item"><div class="rank-num rank-2">2</div><div class="rank-text">Broadside / End-fire Array — Derivation + Numericals</div><div class="pct">92%</div></div>
+    <div class="rank-item"><div class="rank-num rank-3">3</div><div class="rank-text">MUF, Skip Distance, Critical Frequency</div><div class="pct">90%</div></div>
+    <div class="rank-item"><div class="rank-num rank-4">4</div><div class="rank-text">Horn Antenna — Design + Numericals</div><div class="pct">88%</div></div>
+    <div class="rank-item"><div class="rank-num rank-5">5</div><div class="rank-text">Helical Antenna — Modes + Numericals</div><div class="pct">85%</div></div>
+  </div>
+
+  <div class="overview-card">
+    <h3>⚡ 20% Topics → 80% Marks (Pareto)</h3>
+    <div class="rank-item"><div class="rank-num rank-1">U1</div><div class="rank-text">Half-wave dipole derivation + Antenna parameters numericals</div><div class="pct">13 M</div></div>
+    <div class="rank-item"><div class="rank-num rank-2">U2</div><div class="rank-text">Broadside/End-fire array + Dolph-Chebyshev design</div><div class="pct">13 M</div></div>
+    <div class="rank-item"><div class="rank-num rank-3">U3</div><div class="rank-text">Horn + Microstrip Patch design</div><div class="pct">13 M</div></div>
+    <div class="rank-item"><div class="rank-num rank-4">U4</div><div class="rank-text">Helical Antenna + LPDA design</div><div class="pct">13 M</div></div>
+    <div class="rank-item"><div class="rank-num rank-5">U5</div><div class="rank-text">Sky wave: MUF + Skip Distance + Critical Freq</div><div class="pct">13 M</div></div>
+  </div>
+
+  <div class="overview-card">
+    <h3>🏃 Fastest Units to Complete</h3>
+    <div class="rank-item"><div class="rank-num rank-1">1st</div><div class="rank-text">Unit V — Wave Propagation (mostly definitions + formulae)</div><div class="pct">3h</div></div>
+    <div class="rank-item"><div class="rank-num rank-2">2nd</div><div class="rank-text">Unit I — Fundamentals (4–5 key derivations)</div><div class="pct">3h</div></div>
+    <div class="rank-item"><div class="rank-num rank-3">3rd</div><div class="rank-text">Unit IV — Helical + LPDA (2 design templates)</div><div class="pct">4h</div></div>
+    <div class="rank-item"><div class="rank-num rank-4">4th</div><div class="rank-text">Unit II — Arrays (derivations + Dolph-Cheby)</div><div class="pct">4h</div></div>
+    <div class="rank-item"><div class="rank-num rank-5">5th</div><div class="rank-text">Unit III — Aperture (multiple antenna types)</div><div class="pct">4h</div></div>
+  </div>
+
+</div>
+
+<!-- TABS -->
+<div class="tabs-wrap">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('overview', this)">📊 Summary</button>
+    <button class="tab-btn u1" onclick="switchTab('u1', this)">Unit I · Fundamentals</button>
+    <button class="tab-btn u2" onclick="switchTab('u2', this)">Unit II · Arrays</button>
+    <button class="tab-btn u3" onclick="switchTab('u3', this)">Unit III · Aperture</button>
+    <button class="tab-btn u4" onclick="switchTab('u4', this)">Unit IV · Wideband</button>
+    <button class="tab-btn u5" onclick="switchTab('u5', this)">Unit V · Propagation</button>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ══════════════════ SUMMARY TAB ══════════════════ -->
+<div id="panel-overview" class="tab-panel active">
+
+  <div class="sec-label">Unit-Wise Prediction Summary</div>
+  <div class="summary-grid">
+
+    <div class="summary-card">
+      <h3 style="color:var(--unit1)">🔵 Unit I — Fundamentals of Radiation</h3>
+      <div class="sum-item"><span class="sum-rank">HOT</span> Half-wave dipole far-field derivation (appears in EVERY paper as 8–9M)</div>
+      <div class="sum-item"><span class="sum-rank">HOT</span> Radiation resistance of current element / Hertzian dipole</div>
+      <div class="sum-item"><span class="sum-rank">SAFE</span> Antenna efficiency, directivity, effective area — numericals guaranteed in Part A</div>
+      <div class="sum-item"><span class="sum-rank">MED</span> Friis transmission equation — appeared in Nov/Dec 2025 + assessment</div>
+    </div>
+
+    <div class="summary-card">
+      <h3 style="color:var(--unit2)">🔷 Unit II — Antenna Arrays</h3>
+      <div class="sum-item"><span class="sum-rank">HOT</span> Broadside array radiation pattern derivation (N-element) — every paper</div>
+      <div class="sum-item"><span class="sum-rank">HOT</span> Dolph-Chebyshev (Tschebyscheff) array design — 2 out of 3 recent papers</div>
+      <div class="sum-item"><span class="sum-rank">SAFE</span> End-fire array NNBW, HPBW, Directivity numericals</div>
+      <div class="sum-item"><span class="sum-rank">MED</span> Binomial array — excitation coefficients derivation</div>
+    </div>
+
+    <div class="summary-card">
+      <h3 style="color:var(--unit3)">🟢 Unit III — Aperture Antennas</h3>
+      <div class="sum-item"><span class="sum-rank">HOT</span> Horn antenna — principle, types, design equations + numericals (every paper)</div>
+      <div class="sum-item"><span class="sum-rank">HOT</span> Microstrip patch antenna — radiation mechanism, design, feeding techniques</div>
+      <div class="sum-item"><span class="sum-rank">MED</span> Parabolic reflector — aperture efficiency, gain, Fraunhofer distance</div>
+      <div class="sum-item"><span class="sum-rank">LOW</span> Lens antenna / Babinet's principle (short-answer level only)</div>
+    </div>
+
+    <div class="summary-card">
+      <h3 style="color:var(--unit4)">🟠 Unit IV — Wideband & Special Antennas</h3>
+      <div class="sum-item"><span class="sum-rank">HOT</span> Helical antenna — axial/normal modes, HPBW, directivity numericals</div>
+      <div class="sum-item"><span class="sum-rank">HOT</span> LPDA design procedure + numerical (scaling factor, spacing factor)</div>
+      <div class="sum-item"><span class="sum-rank">MED</span> Reconfigurable antennas — WiMAX/WiFi (appeared in Nov/Dec 2025 Part C)</div>
+      <div class="sum-item"><span class="sum-rank">LOW</span> Antenna measurements (gain, radiation pattern) — 1 short question likely</div>
+    </div>
+
+    <div class="summary-card">
+      <h3 style="color:var(--unit5)">🔴 Unit V — Wave Propagation</h3>
+      <div class="sum-item"><span class="sum-rank">HOT</span> Sky wave: MUF formula + skip distance numericals (EVERY paper)</div>
+      <div class="sum-item"><span class="sum-rank">HOT</span> Critical frequency — derivation from electron density (every paper)</div>
+      <div class="sum-item"><span class="sum-rank">SAFE</span> Ground wave propagation — theory + earth curvature effects</div>
+      <div class="sum-item"><span class="sum-rank">MED</span> Radio horizon / troposcatter / ionospheric reflection</div>
+    </div>
+
+    <div class="summary-card">
+      <h3>📐 Safest Scoring Topics (Best ROI)</h3>
+      <div class="sum-item"><span class="sum-rank">★★★</span> Antenna parameters numericals (Directivity, Gain, Ae, Rr) — always 4+ marks in Part A</div>
+      <div class="sum-item"><span class="sum-rank">★★★</span> NNBW / HPBW of arrays — plug-in formula, guaranteed Part A</div>
+      <div class="sum-item"><span class="sum-rank">★★★</span> MUF & skip distance — 2 formula applications, full 5M guaranteed</div>
+      <div class="sum-item"><span class="sum-rank">★★★</span> Critical frequency calculation — 1-step formula, 2M guaranteed</div>
+      <div class="sum-item"><span class="sum-rank">★★</span> Microstrip patch design equations — follow standard formula sheet</div>
+    </div>
+
+  </div>
+
+  <div class="sec-label" style="margin-top:28px;">Probability vs Effort Map</div>
+  <div style="max-width:600px;">
+    <div class="effort-chart">
+      <div class="chart-grid-h" style="bottom:20%; left:40px; right:16px;"></div>
+      <div class="chart-grid-h" style="bottom:40%; left:40px; right:16px;"></div>
+      <div class="chart-grid-h" style="bottom:60%; left:40px; right:16px;"></div>
+      <div class="chart-grid-h" style="bottom:80%; left:40px; right:16px;"></div>
+      <div class="chart-grid-v" style="left:25%; top:32px; bottom:20px;"></div>
+      <div class="chart-grid-v" style="left:50%; top:32px; bottom:20px;"></div>
+      <div class="chart-grid-v" style="left:75%; top:32px; bottom:20px;"></div>
+      <!-- Dots: x = effort (0=low → right), y = probability (0=low → bottom) -->
+      <!-- We invert y: top of chart = high prob -->
+      <!-- x: 10%=very low effort, 90%=very high effort -->
+      <!-- y from top: 8% = 95%, 12%=90%, 20%=85% ... -->
+      <div class="chart-dot" style="left:22%;top:8%;background:rgba(248,81,73,0.2);color:var(--high);border-color:var(--high)" title="Half-wave dipole derivation">HWD</div>
+      <div class="chart-dot" style="left:28%;top:12%;background:rgba(248,81,73,0.2);color:var(--high);border-color:var(--high)" title="MUF / Skip Distance">MUF</div>
+      <div class="chart-dot" style="left:18%;top:16%;background:rgba(240,165,0,0.2);color:var(--accent);border-color:var(--accent)" title="NNBW/HPBW Numericals">NNB</div>
+      <div class="chart-dot" style="left:55%;top:10%;background:rgba(248,81,73,0.2);color:var(--high);border-color:var(--high)" title="Broadside Array Derivation">BSA</div>
+      <div class="chart-dot" style="left:60%;top:14%;background:rgba(248,81,73,0.2);color:var(--high);border-color:var(--high)" title="Horn Antenna Design">HRN</div>
+      <div class="chart-dot" style="left:65%;top:18%;background:rgba(240,165,0,0.2);color:var(--accent);border-color:var(--accent)" title="Helical Antenna">HLX</div>
+      <div class="chart-dot" style="left:70%;top:22%;background:rgba(240,165,0,0.2);color:var(--accent);border-color:var(--accent)" title="Microstrip Patch Design">MSP</div>
+      <div class="chart-dot" style="left:80%;top:20%;background:rgba(240,165,0,0.2);color:var(--accent);border-color:var(--accent)" title="Dolph-Chebyshev Array">DCH</div>
+      <div class="chart-dot" style="left:75%;top:30%;background:rgba(88,166,255,0.2);color:var(--accent4);border-color:var(--accent4)" title="LPDA Design">LPD</div>
+      <div class="chart-dot" style="left:30%;top:30%;background:rgba(61,220,132,0.2);color:var(--accent3);border-color:var(--accent3)" title="Critical Frequency">CRF</div>
+      <div class="chart-dot" style="left:85%;top:40%;background:rgba(88,166,255,0.2);color:var(--accent4);border-color:var(--accent4)" title="Reconfigurable Antenna">RCA</div>
+      <div class="chart-axis-x">Study Effort Required →</div>
+      <div class="chart-axis-y">Probability →</div>
+    </div>
+    <div class="chart-legend" style="margin-top:10px;">
+      <div class="legend-item"><div class="legend-dot" style="background:var(--high)"></div>Must Do</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>High Priority</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent4)"></div>Medium</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--accent3)"></div>Low Effort</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════ UNIT I ══════════════════ -->
+<div id="panel-u1" class="tab-panel">
+  <div class="unit-header">
+    <div class="unit-icon" style="background:rgba(192,132,252,0.15);">📡</div>
+    <div>
+      <h2 style="color:var(--unit1)">Unit I — Fundamentals of Radiation</h2>
+      <p>Antenna parameters · Oscillating dipole · Half-wave dipole · Radiation resistance · Friis equation</p>
+      <div class="unit-tags">
+        <span class="tag tag-speed">⚡ Fast to Complete: 3h</span>
+        <span class="tag tag-safe">🛡 Guaranteed Part A marks</span>
+        <span class="tag tag-roi">💰 Highest ROI derivation unit</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-label">Most Important Topics</div>
+  <div class="topics-grid">
+
+    <div class="topic-card prob-high">
+      <div class="topic-top">
+        <div class="topic-name">Half-Wave Dipole — Far Field + Radiation Resistance</div>
+        <div class="prob-badge pb-high">95%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>95%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:95%;background:linear-gradient(90deg,var(--high),var(--accent))"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Medium</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">1.5 hrs</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Formula + Derivation</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">8–9 M</div></div>
+      </div>
+      <div class="reason-box">Appeared in EVERY paper analysed (Nov/Dec 2025 Q11a, Suppl Q11a, Assignment Q2a, Assessment). Both variants appear: oscillating dipole fields AND half-wave dipole with Rr = 73Ω proof.</div>
+    </div>
+
+    <div class="topic-card prob-high">
+      <div class="topic-top">
+        <div class="topic-name">Antenna Parameters — Gain, Directivity, Ae, Efficiency</div>
+        <div class="prob-badge pb-high">92%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>92%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:92%;background:linear-gradient(90deg,var(--high),var(--accent))"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Easy</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">45 min</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Formula-heavy</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">2M×3–4</div></div>
+      </div>
+      <div class="reason-box">Numericals on Rr, Ae, efficiency, directivity appear as 3–4 Part A questions in EVERY exam. Q2(Nov25), Q2(Suppl), Q3(Assess1). Very easy marks — memorise 5 formulae.</div>
+    </div>
+
+    <div class="topic-card prob-high">
+      <div class="topic-top">
+        <div class="topic-name">Radiation from Oscillating / Current Element — Rr Derivation</div>
+        <div class="prob-badge pb-high">85%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>85%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:85%;background:linear-gradient(90deg,var(--high),var(--accent))"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Medium</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">1 hr</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Derivation</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">8 M (OR)</div></div>
+      </div>
+      <div class="reason-box">Nov/Dec 2025 Q11(b): "Derive Rr and radiated power of current element." Alternates with half-wave dipole in OR questions. Both appear — prepare both but current element is the OR.</div>
+    </div>
+
+    <div class="topic-card prob-med">
+      <div class="topic-top">
+        <div class="topic-name">Friis Transmission Equation + Link Budget</div>
+        <div class="prob-badge pb-med">78%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>78%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:78%;background:linear-gradient(90deg,var(--accent),#fff200)"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Medium</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">45 min</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Problem-solving</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">4–5 M</div></div>
+      </div>
+      <div class="reason-box">Nov/Dec 2025 Part C Q16(iii): RFID Friis formula problem. Assess1 Q3(Derive Friis). Satellite link budget Q11(a)(ii) Nov25. Appears across multiple sections — prepare derivation + 2 numericals.</div>
+    </div>
+
+    <div class="topic-card prob-med">
+      <div class="topic-top">
+        <div class="topic-name">Radiation Intensity, Total Radiated Power Integral</div>
+        <div class="prob-badge pb-med">72%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>72%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:72%;background:linear-gradient(90deg,var(--accent),#fff200)"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Easy–Med</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">30 min</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Problem-solving</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">2–5 M</div></div>
+      </div>
+      <div class="reason-box">Q1 Nov/Dec 2025 Part A: U(θ,φ)=2cosθ total power. Q1 Assess1: power density problem. Recurring short numerical — practice the double integral setup.</div>
+    </div>
+
+  </div>
+
+  <div class="sec-label">Most Probable 16-Mark Questions (Part B)</div>
+  <div class="q-section">
+    <div class="q-list">
+      <div class="q-item"><div class="q-num">1</div><div class="q-text">Derive expressions for far-field components (Eθ, Hφ) of an oscillating electric dipole. Hence show that radiation resistance of a half-wave dipole is 73Ω using relevant field equations. Also find its directivity and HPBW.</div><div class="q-flame">🔥</div></div>
+      <div class="q-item"><div class="q-num">2</div><div class="q-text">Derive the expressions for radiated power and radiation resistance of a Hertzian dipole (current element). A satellite transmitter transmits 100W at 6GHz with EIRP = 50dBW. Receiver has gain 30dB at 40,000 km; noise temp 120K. Calculate received power and CNR.</div><div class="q-flame">🔥</div></div>
+      <div class="q-item"><div class="q-num">3</div><div class="q-text">Explain how fields are generated from an oscillating dipole and detach from it. Discuss the E-field lines radiating from λ/2 dipole. A lossless half-wave dipole (73Ω) connected to 50Ω line — find overall maximum gain. Derive the Friis transmission equation.</div><div class="q-flame">⚡</div></div>
+    </div>
+  </div>
+
+  <div class="sec-label">Most Probable 8-Mark / Part A Short Questions</div>
+  <div class="q-section">
+    <div class="q-list">
+      <div class="q-item"><div class="q-num">1</div><div class="q-text">Find directivity, efficiency and effective area: Rr = 80Ω, Rl = 10Ω, power gain = 10dB, f = 100MHz.</div><div class="q-flame">🔥</div></div>
+      <div class="q-item"><div class="q-num">2</div><div class="q-text">An antenna has field pattern E(θ) = cos²θ for 0° ≤ θ ≤ 90°. Find HPBW and FNBW. [Supplementary 2025]</div><div class="q-flame">🔥</div></div>
+      <div class="q-item"><div class="q-num">3</div><div class="q-text">Radiation intensity U(θ,Φ) = 2cosθ — find total radiated power. / Effective area of Hertzian dipole at 100MHz with D = 1.5.</div><div class="q-flame">⚡</div></div>
+    </div>
+  </div>
+
+  <div class="priority-grid">
+    <div class="priority-box">
+      <h4 class="hi-title">🔴 High Priority — Don't Skip</h4>
+      <div class="prio-item"><div class="dot dot-hi"></div>Half-wave dipole far-field + Rr = 73Ω derivation</div>
+      <div class="prio-item"><div class="dot dot-hi"></div>Antenna efficiency, gain, Ae formulae + numericals</div>
+      <div class="prio-item"><div class="dot dot-hi"></div>Radiated power + radiation resistance of current element</div>
+      <div class="prio-item"><div class="dot dot-mid"></div>Friis equation derivation + 2 numerical examples</div>
+    </div>
+    <div class="priority-box">
+      <h4 class="lo-title">🟢 Low Priority — Skip if Short on Time</h4>
+      <div class="prio-item"><div class="dot dot-lo"></div>Polarisation types (theory only — 2M max)</div>
+      <div class="prio-item"><div class="dot dot-lo"></div>Antenna noise temperature (appeared once, unlikely to repeat)</div>
+      <div class="prio-item"><div class="dot dot-lo"></div>Input impedance matching (VSWR calculations)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ UNIT II ══════════════════ -->
+<div id="panel-u2" class="tab-panel">
+  <div class="unit-header">
+    <div class="unit-icon" style="background:rgba(96,165,250,0.15);">📶</div>
+    <div>
+      <h2 style="color:var(--unit2)">Unit II — Antenna Arrays</h2>
+      <p>2-element · N-element linear · Broadside · End-fire · Binomial · Dolph-Chebyshev · Planar arrays</p>
+      <div class="unit-tags">
+        <span class="tag tag-hard">⚠ Hard numericals possible</span>
+        <span class="tag tag-roi">💰 13M guaranteed if derivation is memorised</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-label">Most Important Topics</div>
+  <div class="topics-grid">
+
+    <div class="topic-card prob-high">
+      <div class="topic-top">
+        <div class="topic-name">Broadside Array — N-element Radiation Pattern Derivation</div>
+        <div class="prob-badge pb-high">92%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>92%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:92%;background:linear-gradient(90deg,var(--high),var(--accent))"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Medium</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">1.5 hrs</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Derivation + Plot</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">8–9 M</div></div>
+      </div>
+      <div class="reason-box">Nov/Dec 2025 Q12(a): "Deduce radiation pattern of broadside array with N vertical dipoles — plot, identify major lobe, first null, HPBW, first minor lobe." Appears in every paper. Know NNBW = 2λ/Nd, D = 2N(d/λ).</div>
+    </div>
+
+    <div class="topic-card prob-high">
+      <div class="topic-top">
+        <div class="topic-name">Dolph-Chebyshev (Tschebyscheff) Array Design</div>
+        <div class="prob-badge pb-high">88%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>88%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:88%;background:linear-gradient(90deg,var(--high),var(--accent))"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Hard</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">2 hrs</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Problem-solving</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">9–14 M</div></div>
+      </div>
+      <div class="reason-box">Appeared in Nov/Dec 2025 Q12(b) NOT as OR but as main question! Suppl Q12(b), IA2 Q8 (Part C, 14M). HIGH frequency — design 6/8-element broadside Dolph-Chebyshev with −30dB SLL. Memorise excitation coefficients table for N=4,6,8.</div>
+    </div>
+
+    <div class="topic-card prob-high">
+      <div class="topic-top">
+        <div class="topic-name">End-fire Array — Phase shift, NNBW, HPBW, Directivity</div>
+        <div class="prob-badge pb-high">85%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>85%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:85%;background:linear-gradient(90deg,var(--high),var(--accent))"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Easy–Med</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">45 min</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Formula + Numerical</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">2M×2 + 5M</div></div>
+      </div>
+      <div class="reason-box">Q4(Nov25 Part A): 5GHz array, 11m — null beam width and directivity. Q4(Suppl): progressive phase shift for end-fire. Appears as both Part A and Part B sub-questions. Formulae must be memorised: ψ = −βd (end-fire).</div>
+    </div>
+
+    <div class="topic-card prob-med">
+      <div class="topic-top">
+        <div class="topic-name">Binomial Array — Design + Excitation Coefficients</div>
+        <div class="prob-badge pb-med">75%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>75%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:75%;background:linear-gradient(90deg,var(--accent),#fff200)"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Medium</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">1 hr</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Derivation + Problem</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">8–13 M</div></div>
+      </div>
+      <div class="reason-box">Nov/Dec 2025 Q12(b): "Binomial array design procedure + excitation coefficient derivation. 10-element λ/2 spacing — array factor, HPBW, max directivity." Alternates with Dolph-Chebyshev as OR option.</div>
+    </div>
+
+    <div class="topic-card prob-med">
+      <div class="topic-top">
+        <div class="topic-name">Pattern Multiplication + 2-element Array Patterns</div>
+        <div class="prob-badge pb-med">70%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>70%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:70%;background:linear-gradient(90deg,var(--accent),#fff200)"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Medium</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">1 hr</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Concept + Sketch</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">2+9 M</div></div>
+      </div>
+      <div class="reason-box">Q3(Nov25 Part A): 2 isotropic sources, 180° phase, λ/2 and λ spacing — sketch patterns. Suppl Q12(a): pattern multiplication for 8-element array. Know the principle + examples.</div>
+    </div>
+
+  </div>
+
+  <div class="sec-label">Most Probable 16-Mark Questions (Part B)</div>
+  <div class="q-section">
+    <div class="q-list">
+      <div class="q-item"><div class="q-num">1</div><div class="q-text">Deduce the radiation pattern expression of an N-element broadside array of vertical dipoles. Plot the pattern. Identify: angle of major lobe, first null, HPBW, and location of first minor lobe. Find minimum element spacing for 7dB directivity in a 10-element ULA for (a) broadside and (b) end-fire.</div><div class="q-flame">🔥</div></div>
+      <div class="q-item"><div class="q-num">2</div><div class="q-text">Explain Dolph-Chebyshev (Tschebyscheff) array design. Derive element weights. Design a 6-element uniformly spaced broadside linear array with −30dB SLL using element spacing d = λ/2, operating at f = 3GHz. Find array factor, HPBW, max directivity.</div><div class="q-flame">🔥</div></div>
+      <div class="q-item"><div class="q-num">3</div><div class="q-text">What is a Binomial array? Explain design procedure and derive excitation coefficients. Design a 10-element binomial array with d = λ/2 — draw amplitude pattern, find array factor, HPBW and maximum directivity.</div><div class="q-flame">⚡</div></div>
+    </div>
+  </div>
+
+  <div class="sec-label">Most Probable 8-Mark / Part A Questions</div>
+  <div class="q-section">
+    <div class="q-list">
+      <div class="q-item"><div class="q-num">1</div><div class="q-text">Explain pattern multiplication. Obtain radiation pattern of an array of 8 isotropic elements fed equal amplitude in phase, spaced λ/2. [Suppl 2025 Q12(a)]</div><div class="q-flame">🔥</div></div>
+      <div class="q-item"><div class="q-num">2</div><div class="q-text">5GHz, 60-element ULA at 0.5λ spacing: progressive phase shift for end-fire. Find array length. / HPBW of 10-element broadside array at d = λ/2.</div><div class="q-flame">🔥</div></div>
+    </div>
+  </div>
+
+  <div class="priority-grid">
+    <div class="priority-box">
+      <h4 class="hi-title">🔴 High Priority — Don't Skip</h4>
+      <div class="prio-item"><div class="dot dot-hi"></div>Broadside array derivation + NNBW/HPBW/Directivity formulae</div>
+      <div class="prio-item"><div class="dot dot-hi"></div>Dolph-Chebyshev design (excitation coefficients + array factor)</div>
+      <div class="prio-item"><div class="dot dot-mid"></div>End-fire array: δ = −βd, HPBW = 2√(2λ/L)</div>
+      <div class="prio-item"><div class="dot dot-mid"></div>Binomial array excitation (Pascal's triangle method)</div>
+    </div>
+    <div class="priority-box">
+      <h4 class="lo-title">🟢 Low Priority — Skip if Short on Time</h4>
+      <div class="prio-item"><div class="dot dot-lo"></div>Planar array antennas (theoretical — unlikely as main question)</div>
+      <div class="prio-item"><div class="dot dot-lo"></div>Hansen-Woodyard condition details (mention only)</div>
+      <div class="prio-item"><div class="dot dot-lo"></div>2-element array phase-shift patterns beyond λ/2 spacing</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ UNIT III ══════════════════ -->
+<div id="panel-u3" class="tab-panel">
+  <div class="unit-header">
+    <div class="unit-icon" style="background:rgba(52,211,153,0.15);">📻</div>
+    <div>
+      <h2 style="color:var(--unit3)">Unit III — Aperture Antennas</h2>
+      <p>Huygens' principle · Rectangular aperture · Horn antennas · Parabolic reflector · Lens · Microstrip patch</p>
+      <div class="unit-tags">
+        <span class="tag tag-hard">⚠ Multiple antenna types — breadth needed</span>
+        <span class="tag tag-safe">🛡 Design numericals are formulaic</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-label">Most Important Topics</div>
+  <div class="topics-grid">
+
+    <div class="topic-card prob-high">
+      <div class="topic-top">
+        <div class="topic-name">Horn Antenna — Principle, Types, Design Equations</div>
+        <div class="prob-badge pb-high">90%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>90%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:90%;background:linear-gradient(90deg,var(--high),var(--accent))"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Medium</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">1.5 hrs</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Theory + Numerical</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">8–13 M</div></div>
+      </div>
+      <div class="reason-box">Nov/Dec 2025 Q13(a): "Principle + types of horn antenna + design equations." IA2: E/H-plane horn numerical. Suppl Q16(ii): pyramidal horn design (L, W, flare angles). Every single paper has at least 1 horn antenna question. Both theory (sectoral/pyramidal/optimum) AND numericals needed.</div>
+    </div>
+
+    <div class="topic-card prob-high">
+      <div class="topic-top">
+        <div class="topic-name">Microstrip Patch Antenna — Radiation, Design, Feeding</div>
+        <div class="prob-badge pb-high">88%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>88%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:88%;background:linear-gradient(90deg,var(--high),var(--accent))"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Medium</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">1.5 hrs</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Design + Numerical</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">5–13 M</div></div>
+      </div>
+      <div class="reason-box">Nov/Dec 2025 Q13(b): MSP design at 5.8GHz on FR4 (εr=4.3, h=1.6mm). Suppl Q13(b): design at 5GHz on RT/duroid (εr=2.2). IA2 Q6(a): design at 3GHz. Appears in EVERY paper — master the standard design equations (W, L, εreff, Δl).</div>
+    </div>
+
+    <div class="topic-card prob-high">
+      <div class="topic-top">
+        <div class="topic-name">Parabolic Reflector — Design, Aperture Efficiency, Gain</div>
+        <div class="prob-badge pb-high">82%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>82%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:82%;background:linear-gradient(90deg,var(--high),var(--accent))"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Medium</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">1 hr</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Theory + Numerical</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">4–9 M</div></div>
+      </div>
+      <div class="reason-box">Q6(Nov25 Part A): parabolic reflector D=2.5m at 6GHz — beam width + gain. Suppl Q13(a): constructional details + feeding methods. Part C Q16(ii): Fraunhofer distance for 2-foot dish at 10GHz. Appears in every exam section.</div>
+    </div>
+
+    <div class="topic-card prob-med">
+      <div class="topic-top">
+        <div class="topic-name">Babinet's Principle + Rectangular Aperture Radiation</div>
+        <div class="prob-badge pb-med">68%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>68%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:68%;background:linear-gradient(90deg,var(--accent),#fff200)"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Easy</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">30 min</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Memory</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">2 M</div></div>
+      </div>
+      <div class="reason-box">IA2 Q1: "What is Babinet's principle?" Q5(Nov25 Part A): "Field equivalence principle + rectangular aperture radiation." Appears as Part A 2-mark definition. Easily learnable — guaranteed 2M.</div>
+    </div>
+
+    <div class="topic-card prob-low">
+      <div class="topic-top">
+        <div class="topic-name">Lens Antenna — Design and Principles</div>
+        <div class="prob-badge pb-low">55%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>55%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:55%;background:linear-gradient(90deg,var(--low),var(--accent4))"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Easy</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">30 min</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Memory</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">8 M (OR)</div></div>
+      </div>
+      <div class="reason-box">Nov/Dec 2025 Q13(b) and Suppl Q13(b) include lens as short note. Appears as part of "write short notes on: (a) Microstrip patch (b) Lens antenna." Easy 4M sub-question — study basic principle + types.</div>
+    </div>
+
+  </div>
+
+  <div class="sec-label">Most Probable 16-Mark Questions (Part B)</div>
+  <div class="q-section">
+    <div class="q-list">
+      <div class="q-item"><div class="q-num">1</div><div class="q-text">With neat diagram, explain the principle of operation and types of Horn antenna. Derive design equations for optimum horn. A horn antenna has physical aperture 100cm², gain 18dB, directivity 20dB at 1GHz — find effective aperture and aperture efficiency.</div><div class="q-flame">🔥</div></div>
+      <div class="q-item"><div class="q-num">2</div><div class="q-text">Explain radiation mechanism of rectangular microstrip patch antenna. Design an MSP antenna to operate at 5.8GHz on FR4 substrate with εr = 4.3, h = 1.6mm, loss tangent 0.025. List feeding techniques. (OR: design at 3GHz on εr = 2.2, h = 0.16cm substrate.)</div><div class="q-flame">🔥</div></div>
+      <div class="q-item"><div class="q-num">3</div><div class="q-text">Write short notes on: (a) Microstrip patch antenna — radiation mechanism and feeding, (b) Lens antenna — design, types, operation. Design a rectangular MSP at 5GHz using RT/duroid 5880 (εr=2.2, h=0.16cm).</div><div class="q-flame">⚡</div></div>
+    </div>
+  </div>
+
+  <div class="sec-label">Most Probable 8-Mark / Part A Questions</div>
+  <div class="q-section">
+    <div class="q-list">
+      <div class="q-item"><div class="q-num">1</div><div class="q-text">Describe constructional details, principles of operation, and feeding methods of parabolic dish antenna. Find power gain (dB) of paraboloid reflector with open mouth aperture 10λ. [Suppl Q13(a)]</div><div class="q-flame">🔥</div></div>
+      <div class="q-item"><div class="q-num">2</div><div class="q-text">An 8cm × 5cm rectangular aperture radiates at 10GHz. Directivity = 12dBi. Calculate aperture efficiency. / State Babinet's principle and field equivalence principle.</div><div class="q-flame">⚡</div></div>
+    </div>
+  </div>
+
+  <div class="priority-grid">
+    <div class="priority-box">
+      <h4 class="hi-title">🔴 High Priority — Don't Skip</h4>
+      <div class="prio-item"><div class="dot dot-hi"></div>Horn antenna: principle, E/H/pyramidal types, design eqs</div>
+      <div class="prio-item"><div class="dot dot-hi"></div>MSP design equations: W, L, εreff, Δl (memorise all)</div>
+      <div class="prio-item"><div class="dot dot-mid"></div>Parabolic reflector: aperture efficiency + feeding methods</div>
+      <div class="prio-item"><div class="dot dot-mid"></div>Babinet's principle (2M guaranteed)</div>
+    </div>
+    <div class="priority-box">
+      <h4 class="lo-title">🟢 Low Priority — Skip if Short on Time</h4>
+      <div class="prio-item"><div class="dot dot-lo"></div>Huygens' principle detailed derivation</div>
+      <div class="prio-item"><div class="dot dot-lo"></div>Lens antenna detailed design calculations</div>
+      <div class="prio-item"><div class="dot dot-lo"></div>Aperture blockage (mentioned once as Part A)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ UNIT IV ══════════════════ -->
+<div id="panel-u4" class="tab-panel">
+  <div class="unit-header">
+    <div class="unit-icon" style="background:rgba(249,115,22,0.15);">📡</div>
+    <div>
+      <h2 style="color:var(--unit4)">Unit IV — Wideband & Special Antennas + Measurements</h2>
+      <p>Rumsey's principle · LPDA · Helical antenna · Reconfigurable · Wearable · Automotive · Measurements</p>
+      <div class="unit-tags">
+        <span class="tag tag-roi">💰 Helical + LPDA = guaranteed Part B pair</span>
+        <span class="tag tag-safe">🛡 Reconfigurable = likely Part C</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-label">Most Important Topics</div>
+  <div class="topics-grid">
+
+    <div class="topic-card prob-high">
+      <div class="topic-top">
+        <div class="topic-name">Helical Antenna — Structure, Modes, HPBW, Directivity</div>
+        <div class="prob-badge pb-high">88%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>88%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:88%;background:linear-gradient(90deg,var(--high),var(--accent))"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Medium</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">1.5 hrs</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Theory + Numerical</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">8–13 M</div></div>
+      </div>
+      <div class="reason-box">Nov/Dec 2025 Q(iii)(a): "Structure + modes of helical antenna." Numerical: spacing=0.05m, D=0.2m, N=20, f=1500MHz — NNBW, HPBW, Directivity. Suppl Q14(a): working principle + 150–300MHz design. Every paper has a helix numerical — memorise the 4 key formulae.</div>
+    </div>
+
+    <div class="topic-card prob-high">
+      <div class="topic-top">
+        <div class="topic-name">LPDA — Design Procedure, Scaling & Spacing Factors</div>
+        <div class="prob-badge pb-high">82%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>82%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:82%;background:linear-gradient(90deg,var(--high),var(--accent))"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Medium</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">1.5 hrs</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Design + Numerical</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">9–13 M</div></div>
+      </div>
+      <div class="reason-box">Suppl Q14(a): "Working principle of log-periodic antenna + design equations." Q14(a)(ii): Design 150–300MHz LPDA, gain=8dB, τ=0.9, σ=0.15. IA2 Q7(b): Design 200MHz–1.6GHz LPDA, τ=0.88, σ=0.12. Appears every paper — know element count formula N = 1 + log(f₂/f₁)/log(1/τ).</div>
+    </div>
+
+    <div class="topic-card prob-med">
+      <div class="topic-top">
+        <div class="topic-name">Reconfigurable Antennas — WiMAX/WiFi Design</div>
+        <div class="prob-badge pb-med">78%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>78%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:78%;background:linear-gradient(90deg,var(--accent),#fff200)"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Easy–Med</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">45 min</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Concept + Design</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">7–14 M (Part C)</div></div>
+      </div>
+      <div class="reason-box">Nov/Dec 2025 Part C Q16(i): "Reconfigurable antenna for WiMAX (3.5GHz) and WiFi (2.4GHz)." IA2 Q3: "Elucidate reconfigurability." FIRST time it appeared in Part C — high probability of repeat or Part B inclusion. Study: frequency/pattern/polarisation reconfigurability + switching mechanisms.</div>
+    </div>
+
+    <div class="topic-card prob-med">
+      <div class="topic-top">
+        <div class="topic-name">Antenna Measurements — Gain, Pattern, Network Analyzer</div>
+        <div class="prob-badge pb-med">72%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>72%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:72%;background:linear-gradient(90deg,var(--accent),#fff200)"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Easy</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">45 min</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Memory</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">8–9 M</div></div>
+      </div>
+      <div class="reason-box">Nov/Dec 2025 Q14(b): "Microwave bench setup for antenna measurements — gain and polarisation." Q8(Nov25 Part A): horn gain measurement at 10GHz. Suppl Q14(b): "Experiment setup for radiation pattern of horn antenna + network analyzer operation." One measurement topic appears in every paper.</div>
+    </div>
+
+    <div class="topic-card prob-low">
+      <div class="topic-top">
+        <div class="topic-name">Rumsey's Principle + Frequency Independent Antennas</div>
+        <div class="prob-badge pb-low">60%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>60%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:60%;background:linear-gradient(90deg,var(--low),var(--accent4))"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Easy</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">20 min</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Memory</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">2 M</div></div>
+      </div>
+      <div class="reason-box">Q7(Nov25 Part A): "State Rumsey's principle" — 2 marks only. Appears as a definition question. Very easy 2 marks — memorise in 5 minutes: "antenna whose shape is specified only in angles is frequency independent."</div>
+    </div>
+
+  </div>
+
+  <div class="sec-label">Most Probable 16-Mark Questions (Part B)</div>
+  <div class="q-section">
+    <div class="q-list">
+      <div class="q-item"><div class="q-num">1</div><div class="q-text">Draw and explain the structure and operating principle of Helical antenna. Describe how it works in normal and axial modes. Numerical: spacing=0.05m, diameter=0.2m, N=20 turns, f=1500MHz — find NNBW, HPBW, and Directivity.</div><div class="q-flame">🔥</div></div>
+      <div class="q-item"><div class="q-num">2</div><div class="q-text">Explain working principle and design equations of Log-Periodic Dipole Antenna. Design an LPDA to cover 150MHz to 300MHz with desired gain 8dB. Assume τ = 0.9, σ = 0.15. Find number of elements and element lengths/spacings.</div><div class="q-flame">🔥</div></div>
+      <div class="q-item"><div class="q-num">3</div><div class="q-text">Show a microwave bench setup for antenna measurements. Describe how gain and polarisation are measured in a laboratory. A test antenna replaces calibrated standard (22dB) giving −10dB difference — calculate gain of AUT.</div><div class="q-flame">⚡</div></div>
+    </div>
+  </div>
+
+  <div class="priority-grid">
+    <div class="priority-box">
+      <h4 class="hi-title">🔴 High Priority — Don't Skip</h4>
+      <div class="prio-item"><div class="dot dot-hi"></div>Helical antenna: axial mode formulae (HPBW, D, Gain, NNBW)</div>
+      <div class="prio-item"><div class="dot dot-hi"></div>LPDA: design equations, τ, σ, element count formula</div>
+      <div class="prio-item"><div class="dot dot-mid"></div>Reconfigurable antennas: types + switching mechanisms</div>
+      <div class="prio-item"><div class="dot dot-mid"></div>Rumsey's principle (2M — 5 min study)</div>
+    </div>
+    <div class="priority-box">
+      <h4 class="lo-title">🟢 Low Priority — Skip if Short on Time</h4>
+      <div class="prio-item"><div class="dot dot-lo"></div>Wearable antenna detailed design (appeared once, mention level)</div>
+      <div class="prio-item"><div class="dot dot-lo"></div>Automotive antenna (2M comment question only)</div>
+      <div class="prio-item"><div class="dot dot-lo"></div>Test range details (far-field / compact range)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ UNIT V ══════════════════ -->
+<div id="panel-u5" class="tab-panel">
+  <div class="unit-header">
+    <div class="unit-icon" style="background:rgba(251,113,133,0.15);">🌐</div>
+    <div>
+      <h2 style="color:var(--unit5)">Unit V — Wave Propagation</h2>
+      <p>Ground wave · Tropospheric · Sky wave · Virtual height · Critical frequency · MUF · Skip distance</p>
+      <div class="unit-tags">
+        <span class="tag tag-speed">⚡ Fastest unit: mostly formulae + theory</span>
+        <span class="tag tag-safe">🛡 4 Part A marks almost guaranteed</span>
+        <span class="tag tag-roi">💰 Highest mark-per-hour ratio</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-label">Most Important Topics</div>
+  <div class="topics-grid">
+
+    <div class="topic-card prob-high">
+      <div class="topic-top">
+        <div class="topic-name">MUF + Skip Distance + Critical Frequency Numericals</div>
+        <div class="prob-badge pb-high">95%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>95%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:95%;background:linear-gradient(90deg,var(--high),var(--accent))"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Easy</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">45 min</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Formula-heavy</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">2M×2 + 5M</div></div>
+      </div>
+      <div class="reason-box">100% repeat rate. Q9+Q10(Nov25 Part A), Q9+Q10(Suppl Part A), Part B Q15 in both papers. Formulae: fc = 9√Nmax, MUF = fc/cosθi, Skip distance = 2h·tan(θi). GUARANTEED — these 3 formulae alone give you 6-8 marks.</div>
+    </div>
+
+    <div class="topic-card prob-high">
+      <div class="topic-top">
+        <div class="topic-name">Ionospheric Reflection + Critical Frequency Derivation</div>
+        <div class="prob-badge pb-high">88%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>88%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:88%;background:linear-gradient(90deg,var(--high),var(--accent))"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Medium</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">1 hr</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Theory + Derivation</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">8–9 M</div></div>
+      </div>
+      <div class="reason-box">Nov/Dec 2025 Q15(b): "Explain ionospheric reflection + deduce critical frequency expression + effects of earth's magnetic field on propagation." Suppl Q16(i): "Effects of earth's magnetic field on polarisation and absorption." This 8M question appears in every end-sem paper.</div>
+    </div>
+
+    <div class="topic-card prob-high">
+      <div class="topic-top">
+        <div class="topic-name">Ground Wave Propagation + Earth Curvature Effects</div>
+        <div class="prob-badge pb-high">82%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>82%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:82%;background:linear-gradient(90deg,var(--high),var(--accent))"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Easy–Med</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">45 min</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Theory</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">8–9 M</div></div>
+      </div>
+      <div class="reason-box">Nov/Dec 2025 Q15(a)(i): "Explain ground wave propagation and show it is affected by terrain and earth curvature." Suppl Q15(a)(i): "Briefly explain ground wave propagation and attenuation characteristics." Appears in both papers as 8M theory answer.</div>
+    </div>
+
+    <div class="topic-card prob-high">
+      <div class="topic-top">
+        <div class="topic-name">Radio Horizon — Definition, Formula, TV Antenna Numericals</div>
+        <div class="prob-badge pb-med">80%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>80%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:80%;background:linear-gradient(90deg,var(--accent),#fff200)"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Easy</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">30 min</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Formula + Numerical</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">5 M</div></div>
+      </div>
+      <div class="reason-box">Nov/Dec 2025 Q15(a)(ii): "TV antenna at 166m — radio horizon. Signal at 66km — receiver height?" Formula: d = √(2Rh). Easy 5M sub-question — memorise formula and apply. Appears in both papers as companion sub-question to ground wave theory.</div>
+    </div>
+
+    <div class="topic-card prob-med">
+      <div class="topic-top">
+        <div class="topic-name">Tropospheric / Duct Propagation + Fading</div>
+        <div class="prob-badge pb-med">68%</div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-bar-label"><span>Probability</span><span>68%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:68%;background:linear-gradient(90deg,var(--accent),#fff200)"></div></div>
+      </div>
+      <div class="topic-meta">
+        <div class="meta-item"><div class="meta-key">Toughness</div><div class="meta-val">Easy</div></div>
+        <div class="meta-item"><div class="meta-key">Study Time</div><div class="meta-val">30 min</div></div>
+        <div class="meta-item"><div class="meta-key">Type</div><div class="meta-val">Memory</div></div>
+        <div class="meta-item"><div class="meta-key">Marks</div><div class="meta-val">9 M</div></div>
+      </div>
+      <div class="reason-box">Suppl Q15(b): "Inversion layer in troposphere + duct propagation + fading reduction techniques." Appeared as main question in supplementary. Study formation of ducts + fading types (selective, flat) + mitigation (diversity, equalization).</div>
+    </div>
+
+  </div>
+
+  <div class="sec-label">Most Probable 16-Mark Questions (Part B)</div>
+  <div class="q-section">
+    <div class="q-list">
+      <div class="q-item"><div class="q-num">1</div><div class="q-text">Explain ionospheric reflection. Deduce an expression for critical frequency of an ionospheric region. What are the effects of earth's magnetic field on propagation of radio waves through the ionosphere? Calculate fc for F1 and E layers: Nmax = 2.3×10⁶ and 1.7×10⁶ electrons/cc.</div><div class="q-flame">🔥</div></div>
+      <div class="q-item"><div class="q-num">2</div><div class="q-text">Explain ground wave propagation and show it is affected by terrain and earth curvature. Define radio horizon — calculate its value. A TV antenna at h = 166m: find radio horizon. Signal must reach 66km — find required receiver antenna height.</div><div class="q-flame">🔥</div></div>
+      <div class="q-item"><div class="q-num">3</div><div class="q-text">Explain earth's magnetic field effect on propagation of radio waves in ionosphere. Evaluate effects on polarisation and absorption. Suggest reductions. / Explain duct propagation + inversion layer + fading reduction techniques.</div><div class="q-flame">⚡</div></div>
+    </div>
+  </div>
+
+  <div class="sec-label">Most Probable Part A Numericals</div>
+  <div class="q-section">
+    <div class="q-list">
+      <div class="q-item"><div class="q-num">1</div><div class="q-text">Skip distance for f = 4.6×10⁶ Hz with Nmax = 1×10¹¹ /cm³ at 110km. [Nov/Dec 2025 Q9]</div><div class="q-flame">🔥</div></div>
+      <div class="q-item"><div class="q-num">2</div><div class="q-text">MUF for two points 1400km apart, fc = 7MHz, ionospheric layer height = 300km. [Nov/Dec 2025 Q10]</div><div class="q-flame">🔥</div></div>
+      <div class="q-item"><div class="q-num">3</div><div class="q-text">Critical frequency for layer with Nmax = 2.5×10⁶ electrons/m³. / MUF for 510km separation, Nmax = 10¹² e/m³, height = 220km. [Suppl Q9+Q10]</div><div class="q-flame">🔥</div></div>
+    </div>
+  </div>
+
+  <div class="priority-grid">
+    <div class="priority-box">
+      <h4 class="hi-title">🔴 High Priority — Don't Skip</h4>
+      <div class="prio-item"><div class="dot dot-hi"></div>fc = 9√Nmax — memorise and practice 3 numericals</div>
+      <div class="prio-item"><div class="dot dot-hi"></div>MUF = fc/cosθi = fc·sec(θi) — apply with layer height</div>
+      <div class="prio-item"><div class="dot dot-hi"></div>Skip distance formula — compute from given fc and h</div>
+      <div class="prio-item"><div class="dot dot-hi"></div>Ground wave + radio horizon theory (8M essay)</div>
+      <div class="prio-item"><div class="dot dot-mid"></div>Ionospheric reflection + critical frequency derivation</div>
+    </div>
+    <div class="priority-box">
+      <h4 class="lo-title">🟢 Low Priority — Skip if Short on Time</h4>
+      <div class="prio-item"><div class="dot dot-lo"></div>Virtual height detailed theory (mention level only)</div>
+      <div class="prio-item"><div class="dot dot-lo"></div>Troposcatter propagation detailed analysis</div>
+      <div class="prio-item"><div class="dot dot-lo"></div>Modes of propagation (introductory listing — 2M max)</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<div style="text-align:center;padding:24px;color:var(--muted);font-size:12px;border-top:1px solid var(--border);margin-top:20px;">
+  Analysis based on EC23501 (Nov/Dec 2025 EndSem, Supplementary 2025, IA1, IA2, R15 Assessments). Data from 6 question paper sources. — Generated for exam preparation purposes only.
+</div>
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: document.querySelector('.tabs-wrap').offsetTop - 10, behavior: 'smooth' });
+}
+
+// Animate probability bars on tab switch
+function animateBars() {
+  document.querySelectorAll('.prob-fill').forEach(bar => {
+    const w = bar.style.width;
+    bar.style.width = '0%';
+    setTimeout(() => { bar.style.width = w; }, 100);
+  });
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => setTimeout(animateBars, 50));
+});
+animateBars();
+</script>
+</body>
+</html>
