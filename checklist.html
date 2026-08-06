@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EC23301 EMF — Study Checklist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #EAF0F6;
+  --paper-2: #DEE8F1;
+  --card: #F6F9FC;
+  --ink: #0B2A4A;
+  --ink-soft: #3A5878;
+  --grid: #C4D4E4;
+  --grid-strong: #9FB6CC;
+  --amber: #C97A2B;
+  --amber-soft: #F3DDBC;
+  --teal: #146B63;
+  --teal-soft: #CDE7E2;
+  --brick: #AE4232;
+  --brick-soft: #F1D4CD;
+  --green: #2E7D5B;
+  --green-soft: #D4E9DE;
+  --line: #B9CBDC;
+  --shadow: 0 2px 8px rgba(11,42,74,0.08);
+  --u1: #5B3C99; --u1-soft: #E4D9F5;
+  --u2: #146B63; --u2-soft: #CDE7E2;
+  --u3: #C97A2B; --u3-soft: #F3DDBC;
+  --u4: #2E7D5B; --u4-soft: #D4E9DE;
+  --u5: #AE4232; --u5-soft: #F1D4CD;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background:
+    linear-gradient(var(--grid) 1px, transparent 1px) 0 0 / 32px 32px,
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0 / 32px 32px,
+    var(--paper);
+  color: var(--ink);
+  font-family: 'IBM Plex Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+::selection { background: var(--amber-soft); }
+
+header {
+  max-width: 1100px; margin: 0 auto;
+  padding: 48px 24px 32px;
+  border-bottom: 2px solid var(--grid-strong);
+}
+.eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--teal); font-weight: 600;
+  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+}
+.eyebrow::before { content: ""; width: 22px; height: 1px; background: var(--teal); }
+h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700; font-size: clamp(26px, 3.8vw, 44px);
+  line-height: 1.06; margin: 0 0 10px; letter-spacing: -.01em;
+}
+h1 span { color: var(--amber); }
+.sub { font-size: 14.5px; color: var(--ink-soft); max-width: 600px; line-height: 1.6; margin: 0 0 28px; }
+
+.global-progress {
+  background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+  padding: 20px 24px; margin-bottom: 0;
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+}
+.gp-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  text-transform: uppercase; letter-spacing: .08em; color: var(--ink-soft);
+  flex-shrink: 0;
+}
+.gp-bar {
+  flex: 1; min-width: 160px; height: 12px; background: var(--paper-2);
+  border-radius: 6px; overflow: hidden;
+}
+.gp-fill {
+  height: 100%; border-radius: 6px; background: linear-gradient(90deg, var(--teal), var(--green));
+  width: 0%; transition: width .5s ease;
+}
+.gp-count {
+  font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 15px; color: var(--ink);
+  flex-shrink: 0; white-space: nowrap;
+}
+.reset-btn {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600;
+  padding: 6px 14px; border-radius: 20px;
+  border: 1px solid var(--brick); background: transparent; color: var(--brick);
+  cursor: pointer; letter-spacing: .04em; transition: all .15s;
+}
+.reset-btn:hover { background: var(--brick); color: white; }
+
+.tab-nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(234,240,246,0.95); backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--grid-strong);
+}
+.tab-nav-inner {
+  max-width: 1100px; margin: 0 auto; padding: 0 24px;
+  display: flex; gap: 2px; overflow-x: auto;
+}
+.tab-btn {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; font-weight: 600;
+  letter-spacing: .03em; padding: 14px 16px; background: none; border: none;
+  cursor: pointer; color: var(--ink-soft); white-space: nowrap;
+  border-bottom: 2px solid transparent; transition: color .15s, border-color .15s;
+  display: flex; align-items: center; gap: 8px;
+}
+.tab-btn:hover { color: var(--ink); }
+.tab-btn.active { color: var(--amber); border-bottom-color: var(--amber); }
+.tab-count {
+  font-size: 10px; padding: 1px 6px; border-radius: 10px;
+  background: var(--paper-2); color: var(--ink-soft); font-weight: 700;
+}
+.tab-btn.active .tab-count { background: var(--amber-soft); color: var(--amber); }
+
+.wrap { max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+.panel { display: none; padding-top: 36px; }
+.panel.active { display: block; animation: fade .3s ease; }
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+.unit-hero {
+  border-radius: 8px; padding: 22px 26px; margin-bottom: 28px;
+  display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;
+}
+.unit-hero.u1 { background: var(--u1-soft); border: 1px solid #c4aee8; }
+.unit-hero.u2 { background: var(--u2-soft); border: 1px solid #9dd0c8; }
+.unit-hero.u3 { background: var(--u3-soft); border: 1px solid #e8c99a; }
+.unit-hero.u4 { background: var(--u4-soft); border: 1px solid #9dcfb5; }
+.unit-hero.u5 { background: var(--u5-soft); border: 1px solid #dfa99f; }
+.unit-hero h2 {
+  font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 700; margin: 0 0 4px;
+}
+.unit-hero p { font-size: 13px; color: var(--ink-soft); margin: 0; max-width: 640px; line-height: 1.5; }
+.unit-prog-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; }
+.unit-prog-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .06em; }
+.unit-prog-ring {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: conic-gradient(var(--teal) calc(var(--pct, 0) * 1%), var(--paper-2) 0);
+  display: flex; align-items: center; justify-content: center; position: relative;
+}
+.unit-prog-ring::before {
+  content: ""; width: 50px; height: 50px; border-radius: 50%;
+  background: white; position: absolute;
+}
+.unit-prog-inner {
+  font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 13px;
+  color: var(--ink); z-index: 1; position: relative;
+}
+
+.section-block {
+  background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+  padding: 22px 24px; margin-bottom: 20px; box-shadow: var(--shadow);
+}
+.section-header {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 6px;
+  padding-bottom: 12px; border-bottom: 1px solid var(--grid);
+}
+.section-icon {
+  width: 34px; height: 34px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.section-icon.topics { background: var(--teal-soft); }
+.section-icon.problems { background: var(--amber-soft); }
+.section-icon.theory { background: var(--u1-soft); }
+.section-icon.shorts { background: var(--green-soft); }
+.section-title {
+  font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; margin: 0;
+}
+.section-sub { font-size: 11.5px; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; margin-top: 2px; }
+.section-prog {
+  margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 700;
+  color: var(--ink-soft); flex-shrink: 0;
+}
+
+.mini-bar { height: 5px; background: var(--paper-2); border-radius: 3px; overflow: hidden; margin-bottom: 16px; }
+.mini-fill { height: 100%; border-radius: 3px; background: var(--teal); transition: width .4s ease; }
+
+.checklist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+
+.check-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 14px; border-radius: 6px;
+  border: 1px solid var(--line); background: white;
+  cursor: pointer; transition: all .15s; user-select: none;
+}
+.check-item:hover { border-color: var(--amber); background: #fffdf8; }
+.check-item.done { background: var(--green-soft); border-color: #a9d3bd; }
+.check-item.done .item-text { text-decoration: line-through; color: var(--ink-soft); }
+
+.checkmark {
+  width: 20px; height: 20px; border-radius: 5px; flex-shrink: 0;
+  border: 2px solid var(--grid-strong); background: white;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s; margin-top: 1px;
+}
+.check-item.done .checkmark { background: var(--green); border-color: var(--green); }
+.checkmark svg { display: none; }
+.check-item.done .checkmark svg { display: block; }
+
+.item-body { flex: 1; min-width: 0; }
+.item-text { font-size: 13.5px; line-height: 1.5; font-weight: 500; color: var(--ink); }
+.item-meta { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; align-items: center; }
+
+.prob-chip {
+  font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 11px;
+  padding: 2px 8px; border-radius: 4px;
+}
+.prob-chip.high { background: var(--green-soft); color: var(--green); }
+.prob-chip.med  { background: var(--amber-soft); color: var(--amber); }
+.prob-chip.low  { background: var(--brick-soft); color: var(--brick); }
+
+.tag-pill {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; font-weight: 600;
+  padding: 2px 7px; border-radius: 3px; border: 1px solid var(--line); color: var(--ink-soft);
+}
+.tag-pill.hard   { border-color: var(--brick); color: var(--brick); }
+.tag-pill.medium { border-color: var(--amber); color: var(--amber); }
+.tag-pill.easy   { border-color: var(--green); color: var(--green); }
+
+.num-item { border-left: 3px solid var(--amber); border-radius: 0 6px 6px 0; }
+.num-item:hover { border-left-color: var(--brick); background: #fffdf8; }
+.num-item.done { border-left-color: var(--green); }
+.item-stmt { font-size: 13px; line-height: 1.6; color: var(--ink); font-family: 'IBM Plex Mono', monospace; }
+.item-stmt::before { content: "Nr "; color: var(--brick); font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
+.item-seen {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 10.5px;
+  color: var(--teal); background: var(--teal-soft); padding: 2px 8px;
+  border-radius: 3px;
+}
+
+.short-item { border-left: 3px solid var(--teal); border-radius: 0 6px 6px 0; }
+.short-item:hover { border-left-color: var(--teal); background: #f5fbfa; }
+.short-item.done { border-left-color: var(--green); }
+
+/* Overview */
+.ov-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
+.ov-card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+  padding: 20px; position: relative; overflow: hidden;
+  transition: box-shadow .15s;
+}
+.ov-card:hover { box-shadow: var(--shadow); }
+.ov-card::after {
+  content: ""; position: absolute; bottom: 0; left: 0; right: 0; height: 4px;
+}
+.ov-card.u1::after { background: var(--u1); }
+.ov-card.u2::after { background: var(--u2); }
+.ov-card.u3::after { background: var(--u3); }
+.ov-card.u4::after { background: var(--u4); }
+.ov-card.u5::after { background: var(--u5); }
+.ov-unit-name { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-soft); margin-bottom: 6px; }
+.ov-pct { font-family: 'Space Grotesk', sans-serif; font-size: 34px; font-weight: 700; color: var(--ink); line-height: 1; margin-bottom: 2px; }
+.ov-done { font-size: 12px; color: var(--ink-soft); }
+.ov-bar { height: 6px; background: var(--paper-2); border-radius: 3px; overflow: hidden; margin-top: 12px; }
+.ov-fill { height: 100%; border-radius: 3px; transition: width .5s ease; }
+.ov-card.u1 .ov-fill { background: var(--u1); }
+.ov-card.u2 .ov-fill { background: var(--u2); }
+.ov-card.u3 .ov-fill { background: var(--u3); }
+.ov-card.u4 .ov-fill { background: var(--u4); }
+.ov-card.u5 .ov-fill { background: var(--u5); }
+.ov-unit-title { font-size: 12px; color: var(--ink-soft); margin-top: 8px; line-height: 1.4; }
+
+.ov-table-wrap { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 24px; }
+.ov-table-label { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; text-transform: uppercase; letter-spacing: .09em; color: var(--ink-soft); margin-bottom: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.ov-table-label::after { content: ""; flex: 1; height: 1px; background: var(--grid-strong); }
+.must-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.must-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px; border-radius: 6px; background: white; border: 1px solid var(--line);
+  font-size: 13.5px; transition: border-color .15s;
+}
+.must-item:hover { border-color: var(--amber); }
+.must-rank {
+  font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 12px;
+  min-width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; flex-shrink: 0; color: white;
+}
+.must-rank.r1 { background: #b8960c; }
+.must-rank.r2 { background: #9ea4a8; }
+.must-rank.r3 { background: #b36a3b; }
+.must-rank.rn { background: var(--ink-soft); font-size: 11px; }
+
+footer {
+  max-width: 1100px; margin: 40px auto 0; padding: 20px 24px;
+  border-top: 1px solid var(--grid-strong);
+  font-size: 11.5px; color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace;
+}
+
+@media (max-width: 640px) {
+  .unit-hero { flex-direction: column; }
+  .global-progress { flex-direction: column; align-items: stretch; }
+  .gp-count { text-align: right; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Study Checklist</div>
+  <h1>EC23301 Electromagnetic Fields<br><span>Problems &amp; Topics Tracker</span></h1>
+  <p class="sub">Tick off topics and problems as you complete them. Progress is saved in your browser automatically.</p>
+  <div class="global-progress">
+    <div class="gp-label">Overall Progress</div>
+    <div class="gp-bar"><div class="gp-fill" id="gp-fill"></div></div>
+    <div class="gp-count" id="gp-count">0 / 0 done</div>
+    <button class="reset-btn" onclick="resetAll()">Reset All</button>
+  </div>
+</header>
+
+<nav class="tab-nav">
+  <div class="tab-nav-inner" id="tab-nav-inner"></div>
+</nav>
+
+<div class="wrap">
+  <div class="panel active" id="panel-overview"></div>
+  <div class="panel" id="panel-1"></div>
+  <div class="panel" id="panel-2"></div>
+  <div class="panel" id="panel-3"></div>
+  <div class="panel" id="panel-4"></div>
+  <div class="panel" id="panel-5"></div>
+</div>
+
+<footer>EC23301 / EC5302 · Anna University CEG · Based on 13-paper analysis 2020-2025 · Not an official source.</footer>
+
+<script>
+const UNITS = {
+"1": {
+  roman:"I", color:"u1",
+  name:"Vector Calculus & Introduction",
+  intro:"Every end-sem (5/5) pairs a Divergence Theorem verification against a Stokes Theorem question. Most structurally predictable unit in the exam.",
+  topics:[
+    {id:"1-t1",text:"Divergence Theorem — statement + verification (cylindrical/wedge volume)",prob:95,tough:"Medium",hours:2},
+    {id:"1-t2",text:"Stokes' Theorem — statement + verification (rectangular/triangular path)",prob:90,tough:"Medium",hours:2},
+    {id:"1-t3",text:"Gradient of a scalar field — V = e^(-z) sin2x cosh y variants (2-mark)",prob:78,tough:"Easy",hours:0.5},
+    {id:"1-t4",text:"Divergence / Curl of a given vector at a point (2-mark)",prob:72,tough:"Easy",hours:0.5},
+    {id:"1-t5",text:"Vector identities: div(curl A)=0, curl(grad V)=0, div(VA) proofs",prob:55,tough:"Medium",hours:1},
+    {id:"1-t6",text:"Circulation of F around a closed path (line integral)",prob:50,tough:"Medium",hours:1.5},
+    {id:"1-t7",text:"Coordinate systems: dl, ds, dv elements / conversions",prob:38,tough:"Easy",hours:1},
+  ],
+  numericals:[
+    {id:"1-n1",text:"Verify the Divergence Theorem for A = (10r^3/4)a_r (cylindrical) over r=1m to r=2m, z=0 to z=10m.",prob:80,seen:"Nov/Dec'21, Dec'24 wedge 0<p<2, 0<phi<45deg, 0<z<5"},
+    {id:"1-n2",text:"Verify Stokes' Theorem for H = 6xy ax - 3y^2 ay over the rectangular path 2<=x<=5, -1<=y<=1, z=0.",prob:75,seen:"Dec'24 & Nov/Dec'21 — word-for-word identical"},
+    {id:"1-n3",text:"Given F = x^2 ax - xz ay - y^2 az, calculate the circulation of F around the closed prism path shown.",prob:65,seen:"Nov/Dec'25, Arrear May'25 x2"},
+    {id:"1-n4",text:"If G(r) = 10e^(-2z)(rho a_rho + az), determine the flux of G out of the cylinder rho=1, 0<=z<=1; confirm using Divergence Theorem.",prob:65,seen:"Nov/Dec'25, Arrear May'25 x2"},
+    {id:"1-n5",text:"Line x=0, y=0, 0<z<10m carries current 2A along az. Calculate H at (5,15,0) and (5,-15,0).",prob:35,seen:"Dec'24 IA-II"},
+  ],
+  theory:[
+    {id:"1-q1",text:"State and derive the Divergence Theorem. Verify it for a given vector field over a cylindrical wedge / cuboid volume."},
+    {id:"1-q2",text:"State and derive Stokes' Theorem. Verify both sides for a given vector field over a rectangular or triangular path."},
+    {id:"1-q3",text:"Given a vector function with unknown constants, determine constants for the field to be irrotational, then verify the relevant theorem."},
+  ],
+  shorts:[
+    {id:"1-s1",text:"Find the gradient of a given scalar field at a specified point."},
+    {id:"1-s2",text:"Prove that the divergence of the curl of any vector field is zero: div(curl A) = 0."},
+    {id:"1-s3",text:"Given a vector field, find its divergence/curl at a stated point in cylindrical or spherical coordinates."},
+  ],
+},
+"2": {
+  roman:"II", color:"u2",
+  name:"Static Electric Field",
+  intro:"Gauss's Law applications and the coaxial-capacitor-via-Laplace's-equation problem dominate the high-mark slots.",
+  topics:[
+    {id:"2-t1",text:"Gauss's Law — D for line charge, sheet charge, charged sphere",prob:85,tough:"Medium",hours:2},
+    {id:"2-t2",text:"Force / field due to symmetric point-charge configurations",prob:75,tough:"Medium",hours:1.5},
+    {id:"2-t3",text:"Coaxial / spherical capacitor via Laplace's equation",prob:70,tough:"Hard",hours:2.5},
+    {id:"2-t4",text:"Boundary conditions between two dielectrics (numeric D1 to D2)",prob:60,tough:"Medium",hours:1},
+    {id:"2-t5",text:"Electric field between an electric dipole + flux-line explanation",prob:55,tough:"Medium",hours:1.5},
+    {id:"2-t6",text:"Poisson's & Laplace's equations — statement/derivation",prob:50,tough:"Easy",hours:1},
+    {id:"2-t7",text:"Layered dielectric capacitor: D, P, sigma_f, sigma_p, potential difference",prob:45,tough:"Medium",hours:1.5},
+    {id:"2-t8",text:"Point form of Ohm's law / equation of continuity",prob:40,tough:"Easy",hours:1},
+  ],
+  numericals:[
+    {id:"2-n1",text:"Coaxial cylindrical capacitor, a=2.0mm, b=10.0mm, L=0.10m, V0=100V. Using Laplace's equation find V(r), E_r(r), charge/length, C' and total C.",prob:70,seen:"Nov/Dec'25 AND Arrear May'25 — identical numbers, both sittings"},
+    {id:"2-n2",text:"Four point charges of 20 uC each at +-4m on x,y axes. Determine the force on a 200 uC charge at (0,0,3)m.",prob:55,seen:"Nov/Dec'25"},
+    {id:"2-n3",text:"Semi-infinite line charge (200 nC/m) from -inf to 0 along z-axis. Find E at P(0,0,2); force on 1uC charge placed there.",prob:50,seen:"Nov/Dec'25"},
+    {id:"2-n4",text:"Polystyrene-filled parallel-plate capacitor, eps_r=2.55, E=10 kV/m, gap=1.5mm. Find D, P, sigma_f, sigma_p, and V.",prob:45,seen:"EC5302 Dec'24-style end sem, Part-C compulsory"},
+    {id:"2-n5",text:"Conducting spherical shells a=10cm, b=30cm, V(a)=100V, V(b)=0, eps_r=2.5. Find V, E between shells, induced charge, capacitance.",prob:40,seen:"Nov/Dec'21"},
+    {id:"2-n6",text:"Sea water: sigma=4 S/m, eps_r=80, mu_r=1, f=100MHz. Calculate skin depth.",prob:35,seen:"Dec'24 IA-II"},
+  ],
+  theory:[
+    {id:"2-q1",text:"State Gauss's law. Using Gauss's law, determine the electric flux density D due to (i) infinite line charge (ii) infinite sheet of charge (iii) uniformly charged sphere."},
+    {id:"2-q2",text:"A coaxial cylindrical capacitor with inner radius a and outer radius b is held at potential V0. Using Laplace's equation find V(r), E(r), charge/length, and total capacitance."},
+    {id:"2-q3",text:"Determine the electric field / force at a point due to four (or three) equal point charges placed symmetrically on the axes."},
+  ],
+  shorts:[
+    {id:"2-s1",text:"Show that E = -grad V."},
+    {id:"2-s2",text:"Given D1 in region 1 (eps_r1), find D2 in region 2 (eps_r2) using dielectric boundary conditions."},
+    {id:"2-s3",text:"Find the capacitance of a parallel-plate / coaxial-cylinder capacitor from given dimensions."},
+  ],
+},
+"3": {
+  roman:"III", color:"u3",
+  name:"Static Magnetic Field",
+  intro:"The EM boundary-condition derivation and the parallel-current-carrying-conductor force problem appear in nearly every end-sem paper.",
+  topics:[
+    {id:"3-t1",text:"Electromagnetic boundary condition (conductor-free space, dielectric-dielectric)",prob:90,tough:"Hard",hours:2},
+    {id:"3-t2",text:"Force between two current-carrying conductors (rectangular loop parallel to infinite wire)",prob:85,tough:"Medium",hours:2},
+    {id:"3-t3",text:"H due to a circular or triangular current loop (Biot-Savart)",prob:70,tough:"Medium",hours:1.5},
+    {id:"3-t4",text:"Ampere's circuital law — infinite line, sheet, coaxial cable",prob:60,tough:"Medium",hours:1.5},
+    {id:"3-t5",text:"Self / mutual inductance derivation + energy stored in magnetic field",prob:55,tough:"Medium",hours:1.5},
+    {id:"3-t6",text:"Vector magnetic potential from Biot-Savart law",prob:50,tough:"Medium",hours:1},
+    {id:"3-t7",text:"Torque on a rectangular current loop / magnetic moment",prob:40,tough:"Medium",hours:1},
+  ],
+  numericals:[
+    {id:"3-n1",text:"Rectangular loop I2=5A parallel to infinite filament I1=10A, rho0=20cm, a=10cm, b=30cm. Find force between elements and force on the loop.",prob:80,seen:"Dec'24, Nov/Dec'25, Arrear May'25 x2, Nov/Dec'21 — most repeated numeric in exam"},
+    {id:"3-n2",text:"Conducting triangular loop carries 10A. Find H at (0,0,5) due to side 1 and side 3 of the loop.",prob:60,seen:"Nov/Dec'25, Arrear May'25 x2"},
+    {id:"3-n3",text:"Circular loop on x^2+y^2=9 (or 16), z=0 carries 10A along a_phi. Determine H at (0,0,4) and (0,0,-4) using Biot-Savart.",prob:55,seen:"Dec'24 IA-II, similar in Nov/Dec'22"},
+    {id:"3-n4",text:"20mH solenoid, N=100 turns. Find the ratio of cross-sectional area to length.",prob:45,seen:"Nov/Dec'25, Arrear May'25 x2"},
+    {id:"3-n5",text:"200-turn coil, r=5cm, B changes 0.3T to 0.7T over 0.2s, coil resistance 5 ohm. Calculate induced EMF and current.",prob:35,seen:"Nov/Dec'25"},
+  ],
+  theory:[
+    {id:"3-q1",text:"Derive the electromagnetic boundary condition at the interface between (i) a good conductor and free space (ii) two dielectric media."},
+    {id:"3-q2",text:"A rectangular loop carrying current I2 is placed parallel to an infinitely long filament carrying I1. Determine the force between the two elements and the force experienced by the loop."},
+    {id:"3-q3",text:"Derive the vector magnetic potential from Biot-Savart's law and use it to find H / flux for a given current distribution."},
+  ],
+  shorts:[
+    {id:"3-s1",text:"Find H at a point on the axis of a circular or triangular current loop."},
+    {id:"3-s2",text:"A solenoid inductor has length l, area A and N turns — find the ratio of cross-sectional area to length."},
+    {id:"3-s3",text:"State and derive Ampere's circuital law for an infinite line current."},
+  ],
+},
+"4": {
+  roman:"IV", color:"u4",
+  name:"Time-Varying Fields & Maxwell's Equations",
+  intro:"The full four-Maxwell's-equation derivation is the single most guaranteed 13-mark question — it appeared in every one of the 5 end-semester papers analyzed.",
+  topics:[
+    {id:"4-t1",text:"Derive all four Maxwell's equations from basic laws (point & integral form)",prob:95,tough:"Hard",hours:3},
+    {id:"4-t2",text:"Faraday's law & induced EMF (transformer / motional EMF numeric)",prob:75,tough:"Medium",hours:1.5},
+    {id:"4-t3",text:"Maxwell's equations in static / time-varying / phasor form (2-mark)",prob:65,tough:"Easy",hours:1},
+    {id:"4-t4",text:"Conduction current vs. displacement current",prob:62,tough:"Easy",hours:0.5},
+    {id:"4-t5",text:"EMF induced in an N-turn loop with time-varying B (circular loop numeric)",prob:50,tough:"Medium",hours:1.5},
+    {id:"4-t6",text:"Equation of continuity & how Maxwell modified Ampere's law",prob:45,tough:"Medium",hours:1},
+  ],
+  numericals:[
+    {id:"4-n1",text:"Flux through each turn of a 100-turn coil is (t^3 - 2t) mWb. Find the induced EMF at t=2 seconds.",prob:55,seen:"Nov/Dec'25, Arrear May'25 x2"},
+    {id:"4-n2",text:"E = 10 cos(10^8 t - 3y) ax V/m in a certain medium — identify the type of medium.",prob:45,seen:"Nov/Dec'25, Arrear May'25 x2"},
+    {id:"4-n3",text:"Circular N-turn loop, radius b, in field B = B0 cos(pi*r/2b) sin(wt) az. Find the EMF induced in the loop.",prob:35,seen:"Nov/Dec'25"},
+    {id:"4-n4",text:"Coil with 200 turns, radius 5cm, field changes 0.3T to 0.7T over 0.2s, R=5 ohm — find induced EMF and current magnitudes.",prob:35,seen:"Nov/Dec'25"},
+  ],
+  theory:[
+    {id:"4-q1",text:"Derive all four of Maxwell's equations from basic laws, in both point and integral form. Show how Ampere's law is modified using the continuity equation. [NON-NEGOTIABLE — appeared 5/5 end-sems]"},
+    {id:"4-q2",text:"Find the transformer EMF induced in a stationary closed path in a time-varying B field, then solve a coil/EMF numeric."},
+    {id:"4-q3",text:"Illustrate the integral and point form of Maxwell's equations for static fields, then find the EMF induced in a given circular loop."},
+  ],
+  shorts:[
+    {id:"4-s1",text:"Write Maxwell's equations in static, time-varying and phasor form (all three)."},
+    {id:"4-s2",text:"What is the difference between conduction current and displacement current?"},
+    {id:"4-s3",text:"Given flux Phi(t) through an N-turn coil, find the induced EMF at a specified time."},
+  ],
+},
+"5": {
+  roman:"V", color:"u5",
+  name:"Plane EM Waves in Isotropic Media",
+  intro:"Wave-equation derivation and uniform-plane-wave characteristics form a fixed OR-pair at Q15. Alpha/beta/skin-depth numerics are the most repeated pattern in the whole exam.",
+  topics:[
+    {id:"5-t1",text:"Wave equation derivation for E, H (time-harmonic fields, free space)",prob:85,tough:"Hard",hours:2},
+    {id:"5-t2",text:"Characteristics of uniform plane waves + normal incidence on a conductor",prob:80,tough:"Hard",hours:2},
+    {id:"5-t3",text:"Numeric: given E(x,t), find alpha, beta, wavelength, velocity, skin depth",prob:75,tough:"Medium",hours:2},
+    {id:"5-t4",text:"Poynting theorem — statement, derivation, average power numeric",prob:60,tough:"Medium",hours:1.5},
+    {id:"5-t5",text:"Intrinsic impedance / propagation constant for a general medium",prob:55,tough:"Medium",hours:1.5},
+    {id:"5-t6",text:"Skin depth / depth of penetration — define & calculate",prob:55,tough:"Easy",hours:1},
+    {id:"5-t7",text:"Reflection & transmission coefficients — definitions & relationship",prob:42,tough:"Medium",hours:1},
+  ],
+  numericals:[
+    {id:"5-n1",text:"E = 16 e^(-0.05x) sin(2x10^8 t - 2x) az V/m — find (a) propagation constant, (b) wavelength, (c) speed of the wave.",prob:65,seen:"Dec'24 IA-II, near-identical variants recur across multiple IA papers"},
+    {id:"5-n2",text:"In free space, H = 0.1 cos(2x10^8 t - kx) ay A/m. Calculate k and the time period T.",prob:55,seen:"Nov/Dec'25, Arrear May'25 x2"},
+    {id:"5-n3",text:"State intrinsic impedance of a medium; give its numerical value for free space.",prob:50,seen:"Nov/Dec'25, Arrear May'25 x2"},
+    {id:"5-n4",text:"Calculate the velocity of a plane wave in a lossless medium with eps_r=4, mu_r=1.2.",prob:45,seen:"Nov/Dec'25"},
+    {id:"5-n5",text:"E = 4 sin(2pi x10^7 t - 0.8x) az V/m in a nonmagnetic medium — find eps_r, eta, time-average power, and total power crossing a stated plane.",prob:40,seen:"Nov/Dec'21-style, recurs in EC5302 end sems"},
+  ],
+  theory:[
+    {id:"5-q1",text:"Derive the wave equation for E and H fields for free-space conditions from Maxwell's equations (time-harmonic form)."},
+    {id:"5-q2",text:"Explain the characteristics of a uniform plane wave and its behaviour when incident normally on a conductor interface."},
+    {id:"5-q3",text:"Given E(x,t) in a lossy medium, find eps_r / eta, direction of propagation, time-average power carried, and total power crossing a stated plane."},
+  ],
+  shorts:[
+    {id:"5-s1",text:"Define intrinsic impedance of a medium; state its value for free space."},
+    {id:"5-s2",text:"Define reflection and transmission coefficients and the relationship between them."},
+    {id:"5-s3",text:"Given E = A cos(wt - beta*x), find beta, wavelength, and skin depth for the stated medium."},
+  ],
+},
+};
+
+const MUSTDO = [
+  "Maxwell's equations — full derivation (Unit IV) — 95%",
+  "Divergence Theorem verification (Unit I) — 95%",
+  "EM boundary condition derivation (Unit III) — 90%",
+  "Stokes' Theorem verification (Unit I) — 90%",
+  "Wave equation derivation (Unit V) — 85%",
+  "Force between parallel current-carrying conductors (Unit III) — 85%",
+  "Gauss's law: D for line/sheet/sphere (Unit II) — 85%",
+  "Uniform plane wave / normal incidence characteristics (Unit V) — 80%",
+];
+
+const LS_KEY = "emf_checklist_v1";
+let state = {};
+try { state = JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e){}
+function save(){ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+
+function probClass(p){ return p>=75?"high":p>=50?"med":"low"; }
+function toughClass(t){ return t.toLowerCase(); }
+
+function chkSVG(){
+  return '<svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5L4.5 8.5L11 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+
+function allIds(){
+  let ids=[];
+  Object.values(UNITS).forEach(u=>[...u.topics,...u.numericals,...u.theory,...u.shorts].forEach(i=>ids.push(i.id)));
+  return ids;
+}
+
+function unitIds(uid){
+  const u=UNITS[uid];
+  return [...u.topics,...u.numericals,...u.theory,...u.shorts].map(i=>i.id);
+}
+
+function updateGlobalProgress(){
+  const ids=allIds();
+  const done=ids.filter(id=>state[id]).length;
+  const pct=ids.length?Math.round(done/ids.length*100):0;
+  document.getElementById("gp-fill").style.width=pct+"%";
+  document.getElementById("gp-count").textContent=done+" / "+ids.length+" done ("+pct+"%)";
+  updateOverviewCards();
+  updateTabCounts();
+}
+
+function updateUnitProgress(uid){
+  const ids=unitIds(uid);
+  const done=ids.filter(id=>state[id]).length;
+  const pct=ids.length?Math.round(done/ids.length*100):0;
+  const ring=document.querySelector("#panel-"+uid+" .unit-prog-ring");
+  const inner=document.querySelector("#panel-"+uid+" .unit-prog-inner");
+  if(ring) ring.style.setProperty("--pct",pct);
+  if(inner) inner.textContent=pct+"%";
+  ["topics","numericals","theory","shorts"].forEach(sec=>{
+    const bar=document.querySelector("#panel-"+uid+" .mini-fill[data-sec='"+sec+"']");
+    const prog=document.querySelector("#panel-"+uid+" .section-prog[data-sec='"+sec+"']");
+    const items=UNITS[uid][sec];
+    if(!items) return;
+    const sd=items.filter(i=>state[i.id]).length;
+    const sp=items.length?Math.round(sd/items.length*100):0;
+    if(bar) bar.style.width=sp+"%";
+    if(prog) prog.textContent=sd+"/"+items.length;
+  });
+}
+
+function updateOverviewCards(){
+  Object.keys(UNITS).forEach(uid=>{
+    const ids=unitIds(uid);
+    const done=ids.filter(id=>state[id]).length;
+    const pct=ids.length?Math.round(done/ids.length*100):0;
+    const fill=document.querySelector(".ov-fill[data-uid='"+uid+"']");
+    const pctEl=document.querySelector(".ov-pct[data-uid='"+uid+"']");
+    const doneEl=document.querySelector(".ov-done[data-uid='"+uid+"']");
+    if(fill) fill.style.width=pct+"%";
+    if(pctEl) pctEl.textContent=pct+"%";
+    if(doneEl) doneEl.textContent=done+" / "+ids.length+" items done";
+  });
+}
+
+function updateTabCounts(){
+  Object.keys(UNITS).forEach(uid=>{
+    const ids=unitIds(uid);
+    const done=ids.filter(id=>state[id]).length;
+    const el=document.querySelector(".tab-count[data-tab='"+uid+"']");
+    if(el) el.textContent=done+"/"+ids.length;
+  });
+}
+
+function resetAll(){
+  if(!confirm("Reset all checklist progress? This cannot be undone.")) return;
+  state={};
+  save();
+  document.querySelectorAll(".check-item.done").forEach(el=>el.classList.remove("done"));
+  updateGlobalProgress();
+  Object.keys(UNITS).forEach(uid=>updateUnitProgress(uid));
+}
+
+function makeCheckItem(item, extraClass){
+  const done=state[item.id]?" done":"";
+  const isNum=extraClass==="num-item";
+  const isShort=extraClass==="short-item";
+  let metaHtml="";
+  if(item.prob!==undefined||item.tough!==undefined||item.hours!==undefined||item.seen!==undefined){
+    metaHtml='<div class="item-meta">';
+    if(item.prob!==undefined) metaHtml+='<span class="prob-chip '+probClass(item.prob)+'">'+item.prob+'% likely</span>';
+    if(item.tough!==undefined) metaHtml+='<span class="tag-pill '+toughClass(item.tough)+'">'+item.tough+'</span>';
+    if(item.hours!==undefined) metaHtml+='<span class="tag-pill">'+item.hours+'h study</span>';
+    if(item.seen!==undefined) metaHtml+='<span class="item-seen">Seen in: '+item.seen+'</span>';
+    metaHtml+='</div>';
+  }
+  const textClass=isNum?"item-stmt":"item-text";
+  return '<li class="check-item'+done+' '+(extraClass||'')+'" data-id="'+item.id+'">'
+    +'<div class="checkmark">'+chkSVG()+'</div>'
+    +'<div class="item-body">'
+    +'<div class="'+textClass+'">'+item.text+'</div>'
+    +metaHtml
+    +'</div></li>';
+}
+
+function secBlock(uid, title, iconClass, emoji, secKey, itemClass){
+  const items=UNITS[uid][secKey];
+  const sd=items.filter(i=>state[i.id]).length;
+  const sp=items.length?Math.round(sd/items.length*100):0;
+  const rows=items.map(i=>makeCheckItem(i,itemClass)).join("");
+  return '<div class="section-block">'
+    +'<div class="section-header">'
+    +'<div class="section-icon '+iconClass+'">'+emoji+'</div>'
+    +'<div><div class="section-title">'+title+'</div>'
+    +'<div class="section-sub">'+items.length+' items — click to check off</div></div>'
+    +'<div class="section-prog" data-sec="'+secKey+'">'+sd+'/'+items.length+'</div>'
+    +'</div>'
+    +'<div class="mini-bar"><div class="mini-fill" data-sec="'+secKey+'" style="width:'+sp+'%"></div></div>'
+    +'<ul class="checklist">'+rows+'</ul>'
+    +'</div>';
+}
+
+function renderOverview(){
+  const el=document.getElementById("panel-overview");
+  const cards=Object.entries(UNITS).map(([uid,u])=>{
+    const ids=unitIds(uid);
+    return '<div class="ov-card '+u.color+'">'
+      +'<div class="ov-unit-name">Unit '+u.roman+'</div>'
+      +'<div class="ov-pct" data-uid="'+uid+'">0%</div>'
+      +'<div class="ov-done" data-uid="'+uid+'">0 / '+ids.length+' items done</div>'
+      +'<div class="ov-bar"><div class="ov-fill" data-uid="'+uid+'" style="width:0%"></div></div>'
+      +'<div class="ov-unit-title">'+u.name+'</div>'
+      +'</div>';
+  }).join("");
+  const mustItems=MUSTDO.map((t,i)=>{
+    const rc=i===0?"r1":i===1?"r2":i===2?"r3":"rn";
+    return '<li class="must-item"><div class="must-rank '+rc+'">'+(i+1)+'</div><div>'+t+'</div></li>';
+  }).join("");
+  el.innerHTML='<div class="ov-grid">'+cards+'</div>'
+    +'<div class="ov-table-wrap">'
+    +'<div class="ov-table-label">Top 8 Must-Do Topics — Highest Probability &amp; Biggest Marks</div>'
+    +'<ul class="must-list">'+mustItems+'</ul>'
+    +'</div>';
+}
+
+function renderUnit(uid){
+  const u=UNITS[uid];
+  const el=document.getElementById("panel-"+uid);
+  el.innerHTML='<div class="unit-hero '+u.color+'">'
+    +'<div><h2>Unit '+u.roman+' — '+u.name+'</h2><p>'+u.intro+'</p></div>'
+    +'<div class="unit-prog-wrap">'
+    +'<div class="unit-prog-label">Progress</div>'
+    +'<div class="unit-prog-ring" style="--pct:0; position:relative;">'
+    +'<div class="unit-prog-inner">0%</div></div>'
+    +'</div></div>'
+    +secBlock(uid,"Topics to Study","topics","&#128218;","topics","")
+    +secBlock(uid,"Numerical Problems to Solve","problems","&#128290;","numericals","num-item")
+    +secBlock(uid,"13 / 15-Mark Theory Questions","theory","&#128221;","theory","")
+    +secBlock(uid,"2 / 8-Mark Short Questions","shorts","&#9889;","shorts","short-item");
+
+  el.querySelectorAll(".check-item").forEach(item=>{
+    item.addEventListener("click",()=>{
+      const id=item.dataset.id;
+      state[id]=!state[id];
+      item.classList.toggle("done",!!state[id]);
+      save();
+      updateUnitProgress(uid);
+      updateGlobalProgress();
+    });
+  });
+  updateUnitProgress(uid);
+}
+
+/* TABS */
+const tabNav=document.getElementById("tab-nav-inner");
+const tabDefs=[{id:"overview",label:"Overview"}].concat(
+  Object.entries(UNITS).map(([uid,u])=>({id:uid,label:"Unit "+u.roman,uid}))
+);
+tabDefs.forEach((t,i)=>{
+  const btn=document.createElement("button");
+  btn.className="tab-btn"+(i===0?" active":"");
+  btn.dataset.id=t.id;
+  if(t.id!=="overview"){
+    const total=unitIds(t.id).length;
+    btn.innerHTML=t.label+' <span class="tab-count" data-tab="'+t.id+'">0/'+total+'</span>';
+  } else {
+    btn.textContent=t.label;
+  }
+  btn.onclick=()=>showPanel(t.id);
+  tabNav.appendChild(btn);
+});
+
+function showPanel(id){
+  document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+  document.getElementById("panel-"+id).classList.add("active");
+  tabNav.querySelectorAll(".tab-btn").forEach(b=>b.classList.toggle("active",b.dataset.id===id));
+}
+
+/* INIT */
+renderOverview();
+Object.keys(UNITS).forEach(uid=>renderUnit(uid));
+updateGlobalProgress();
+</script>
+</body>
+</html>
