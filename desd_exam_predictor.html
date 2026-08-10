@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>EC23C13 DESD Exam Predictor</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f0f11;color:#e8e6e1;min-height:100vh}
+.hero{background:#16213e;padding:2rem 1.5rem 1.5rem;border-bottom:1px solid #2a2a3e}
+.hero h1{font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:.3rem}
+.hero p{font-size:12px;color:#8b8fa8;margin-bottom:1rem}
+.meta-row{display:flex;flex-wrap:wrap;gap:.8rem}
+.mc{font-size:12px;color:#8b8fa8}.mc strong{color:#c8c5be}
+.sbar{background:#1a1a2e;border-bottom:1px solid #2a2a3e;padding:.8rem 1.5rem;display:flex;flex-wrap:wrap;gap:1.2rem}
+.sv{font-size:1.3rem;font-weight:700;color:#a5b4fc}.sl{font-size:10px;color:#6b6f84;text-transform:uppercase;letter-spacing:.06em}
+.nav{background:#141420;border-bottom:1px solid #252535;display:flex;overflow-x:auto;padding:0 1rem;gap:0}
+.nb{padding:.8rem 1rem;font-size:11px;font-weight:600;color:#6b6f84;border:none;background:none;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;letter-spacing:.04em;text-transform:uppercase}
+.nb.active{color:#a5b4fc;border-bottom-color:#6366f1}
+.nb:hover:not(.active){color:#c8c5be}
+.content{padding:1.2rem 1.5rem;width:100%;max-width:1400px;margin:0 auto}
+.panel{display:none}.panel.active{display:block}
+.slbl{font-size:10px;font-weight:700;color:#6366f1;letter-spacing:.1em;text-transform:uppercase;margin:1.2rem 0 .7rem;display:flex;align-items:center;gap:8px}
+.slbl::after{content:'';flex:1;height:1px;background:#252535}
+.tc{background:#1a1a2e;border:1px solid #252535;border-radius:10px;padding:.9rem 1.1rem;margin-bottom:.6rem;cursor:pointer;transition:border-color .2s}
+.tc:hover{border-color:#6366f1}.tc.exp{border-color:#6366f1;background:#1e1e35}
+.th{display:flex;align-items:center;gap:8px;margin-bottom:.4rem}
+.trk{width:20px;height:20px;border-radius:50%;background:#6366f1;color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tn{font-size:13px;font-weight:600;color:#e8e6e1;flex:1}
+.pb{font-size:11px;font-weight:700;padding:2px 9px;border-radius:12px}
+.ph{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25)}
+.pm{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2)}
+.bw{display:flex;align-items:center;gap:8px;margin-bottom:.5rem}
+.bt{flex:1;height:4px;background:#252535;border-radius:2px;overflow:hidden}
+.bf{height:100%;border-radius:2px;transition:width .8s ease}
+.bp{font-size:11px;font-weight:700;color:#a5b4fc;min-width:30px;text-align:right}
+.tm{display:flex;flex-wrap:wrap;gap:5px;margin-top:.3rem}
+.mt{font-size:10px;padding:2px 7px;border-radius:7px;font-weight:500}
+.e{background:rgba(52,211,153,.1);color:#34d399}
+.m{background:rgba(251,191,36,.1);color:#fbbf24}
+.h{background:rgba(239,68,68,.1);color:#f87171}
+.ti{background:rgba(99,102,241,.1);color:#a5b4fc}
+.tt{background:rgba(139,92,246,.1);color:#c4b5fd}
+.td{display:none;margin-top:.7rem;padding-top:.7rem;border-top:1px solid #252535}
+.tc.exp .td{display:block}
+.rt{font-size:12px;color:#8b8fa8;line-height:1.6;margin-bottom:.7rem}
+.qh{font-size:10px;color:#6366f1;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.4rem}
+.ql{list-style:none;display:flex;flex-direction:column;gap:.35rem}
+.qi{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:#c8c5be;line-height:1.5}
+.qm{font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px;white-space:nowrap;margin-top:1px;flex-shrink:0}
+.m16{background:rgba(239,68,68,.12);color:#f87171}
+.m8{background:rgba(251,191,36,.1);color:#fbbf24}
+.m2{background:rgba(156,163,175,.1);color:#9ca3af}
+.oc{background:#1a1a2e;border:1px solid #252535;border-radius:10px;padding:.8rem;text-align:center}
+.ov{font-size:1.2rem;font-weight:800;margin-bottom:.2rem}
+.ol{font-size:10px;color:#6b6f84;text-transform:uppercase;letter-spacing:.05em}
+.og{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.6rem;margin-bottom:.9rem}
+.hb{background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:1rem;margin-bottom:.8rem}
+.hb h4{font-size:11px;color:#6366f1;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.5rem}
+.hb p{font-size:12px;color:#8b8fa8;line-height:1.6}
+.sk{background:rgba(156,163,175,.05);border:1px solid #252535;border-radius:9px;padding:.9rem;margin-top:.9rem}
+.sk h4{font-size:10px;font-weight:700;color:#6b6f84;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.5rem}
+.skl{display:flex;flex-wrap:wrap;gap:.3rem}
+.skc{font-size:11px;padding:2px 9px;border-radius:15px;background:#1a1a2e;color:#6b6f84;border:1px solid #252535;text-decoration:line-through;opacity:.6}
+.row{display:flex;align-items:center;gap:10px;padding:.55rem .8rem;background:#1a1a2e;border:1px solid #252535;border-radius:9px;margin-bottom:.45rem;cursor:pointer;transition:border-color .2s}
+.row:hover{border-color:#6366f1}
+.rn{font-size:11px;font-weight:800;color:#6366f1;min-width:18px}
+.rname{flex:1;font-size:12px;color:#e8e6e1;font-weight:500}
+.ep{font-size:10px;padding:2px 7px;border-radius:7px;font-weight:600}
+.ef{background:rgba(52,211,153,.1);color:#34d399}
+.em{background:rgba(251,191,36,.1);color:#fbbf24}
+.eh{background:rgba(239,68,68,.1);color:#f87171}
+.prow{display:flex;align-items:center;gap:10px;padding:.5rem 0;border-bottom:1px solid #252535}
+.prow:last-child{border:none}
+.pn{font-size:1.2rem;font-weight:800;color:#6366f1;min-width:28px}
+.pi{flex:1}.pi strong{font-size:12px;color:#e8e6e1;display:block}.pi span{font-size:10px;color:#6b6f84}
+.pp{font-size:12px;font-weight:700;color:#34d399}
+.pbox{background:#1a1a2e;border:1px solid #2a2a4e;border-radius:10px;padding:1.1rem;margin-bottom:.9rem}
+.pbox h3{font-size:12px;font-weight:700;color:#a5b4fc;margin-bottom:.9rem}
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.7rem;margin-bottom:.9rem}
+.sc{background:#1a1a2e;border:1px solid #252535;border-radius:9px;padding:.9rem}
+.sc h4{font-size:10px;font-weight:700;color:#a5b4fc;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.5rem}
+.sc ul{list-style:none;display:flex;flex-direction:column;gap:.25rem}
+.sc ul li{font-size:11px;color:#8b8fa8;display:flex;align-items:flex-start;gap:4px;line-height:1.4}
+.sc ul li::before{content:'›';color:#6366f1;flex-shrink:0}
+.rlist{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1.2rem}
+.ritem{display:flex;align-items:center;gap:9px;padding:.55rem .8rem;background:#1a1a2e;border:1px solid #252535;border-radius:8px}
+.rpct{font-size:11px;font-weight:800;min-width:34px}
+.rname2{font-size:12px;color:#e8e6e1;flex:1}
+.runit{font-size:10px;color:#6b6f84}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);color:#a5b4fc;font-size:10px;font-weight:700;padding:3px 10px;border-radius:15px;margin-bottom:.8rem;letter-spacing:.07em;text-transform:uppercase">📊 Exam Intelligence</div>
+  <h1>EC23C13 · Digital Electronics &amp; System Design</h1>
+  <p>Anna University · III Sem ECE · Reg 2023 · Analysis: Nov/Dec 2024 + May/Jun 2025 + Nov/Dec 2025</p>
+  <div class="meta-row">
+    <div class="mc"><strong>3 papers</strong> analysed</div>
+    <div class="mc"><strong>100 marks</strong> per paper</div>
+    <div class="mc"><strong>5 units</strong> covered</div>
+    <div class="mc">Pareto: 20% topics → 80% marks</div>
+  </div>
+</div>
+
+<div class="sbar">
+  <div><div class="sv">92%</div><div class="sl">Highest prob (K-Map)</div></div>
+  <div><div class="sv">U3</div><div class="sl">Highest weight</div></div>
+  <div><div class="sv">U1+U5</div><div class="sl">Fastest to prep</div></div>
+  <div><div class="sv">U4</div><div class="sl">Hardest unit</div></div>
+  <div><div class="sv">8</div><div class="sl">Must-do topics</div></div>
+  <div><div class="sv">~35h</div><div class="sl">Smart prep total</div></div>
+</div>
+
+<div class="nav">
+  <button class="nb active" onclick="show('ov')">Overview</button>
+  <button class="nb" onclick="show('u1')">Unit I</button>
+  <button class="nb" onclick="show('u2')">Unit II</button>
+  <button class="nb" onclick="show('u3')">Unit III</button>
+  <button class="nb" onclick="show('u4')">Unit IV</button>
+  <button class="nb" onclick="show('u5')">Unit V</button>
+  <button class="nb" onclick="show('st')">Strategy</button>
+</div>
+
+<div class="content">
+
+<!-- OVERVIEW -->
+<div class="panel active" id="p-ov">
+  <div class="slbl">Unit-by-unit snapshot</div>
+  <div class="row" onclick="show('u1')"><div class="rn">I</div><div class="rname">Boolean Algebra, K-Map &amp; Minimisation</div><span class="ep ef">6h</span><span class="pb ph">88%</span></div>
+  <div class="row" onclick="show('u2')"><div class="rn">II</div><div class="rname">Combinational Circuit Design</div><span class="ep em">8h</span><span class="pb ph">85%</span></div>
+  <div class="row" onclick="show('u3')"><div class="rn">III</div><div class="rname">Synchronous Sequential Circuits</div><span class="ep eh">10h</span><span class="pb ph">90%</span></div>
+  <div class="row" onclick="show('u4')"><div class="rn">IV</div><div class="rname">Asynchronous Sequential Circuits</div><span class="ep eh">9h</span><span class="pb pm">82%</span></div>
+  <div class="row" onclick="show('u5')"><div class="rn">V</div><div class="rname">MOS Logic &amp; PLDs</div><span class="ep em">6h</span><span class="pb pm">78%</span></div>
+
+  <div class="slbl">Pareto — top 8 topics for 80%+ marks</div>
+  <div class="pbox">
+    <h3>🎯 These 8 topics appear in every paper and carry the bulk of marks</h3>
+    <div class="prow"><div class="pn">1</div><div class="pi"><strong>K-Map Simplification (SOP + POS)</strong><span>Every paper · Part B 13m · Universal gate impl.</span></div><div class="pp">92%</div></div>
+    <div class="prow"><div class="pn">2</div><div class="pi"><strong>Synchronous Counter Design (JK/T FF)</strong><span>Full 13m every paper · State diagram → equations → circuit</span></div><div class="pp">90%</div></div>
+    <div class="prow"><div class="pn">3</div><div class="pi"><strong>Quine-McCluskey / Tabulation Method</strong><span>Every end-sem paper · 8–13m guaranteed</span></div><div class="pp">88%</div></div>
+    <div class="prow"><div class="pn">4</div><div class="pi"><strong>CMOS Gates (INV, NAND, NOR) + transistor table</strong><span>13m every paper · Easiest 13m in the whole paper</span></div><div class="pp">88%</div></div>
+    <div class="prow"><div class="pn">5</div><div class="pi"><strong>Primitive Flow Table (Async — word problem)</strong><span>13m every paper · Paired with race-free assignment</span></div><div class="pp">88%</div></div>
+    <div class="prow"><div class="pn">6</div><div class="pi"><strong>BCD to Excess-3 Code Converter</strong><span>All 3 papers · 7–13m · With decoder variant</span></div><div class="pp">87%</div></div>
+    <div class="prow"><div class="pn">7</div><div class="pi"><strong>Sequence Detector (Mealy/Moore, overlapping)</strong><span>Part B or Part C · 13–15m · JK or T flip-flops</span></div><div class="pp">85%</div></div>
+    <div class="prow"><div class="pn">8</div><div class="pi"><strong>PAL / PLA Implementation</strong><span>13m every paper · Same functions repeat across papers!</span></div><div class="pp">80%</div></div>
+  </div>
+</div>
+
+<!-- UNIT I -->
+<div class="panel" id="p-u1">
+  <div class="og">
+    <div class="oc"><div class="ov" style="color:#a5b4fc">~26%</div><div class="ol">Paper weight</div></div>
+    <div class="oc"><div class="ov" style="color:#34d399">6h</div><div class="ol">Prep time</div></div>
+    <div class="oc"><div class="ov" style="color:#fbbf24">High</div><div class="ol">ROI</div></div>
+    <div class="oc"><div class="ov" style="color:#fbbf24">Medium</div><div class="ol">Difficulty</div></div>
+  </div>
+  <div class="hb"><h4>Unit I Verdict</h4><p>Fastest unit with highest marks-per-hour. K-Map and Quine-McCluskey are guaranteed in every paper. Always pair K-Map answers with universal gate (NAND/NOR) implementation. 2's complement is a safe Part A pick.</p></div>
+  <div class="slbl">Topics — click to expand</div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">1</div><div class="tn">K-Map Simplification (4-variable SOP + POS)</div><span class="pb ph">92%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:92%;background:#34d399"></div></div><div class="bp">92%</div></div>
+    <div class="tm"><span class="mt m">Medium</span><span class="mt ti">2.5h</span><span class="mt tt">Problem-solving</span></div>
+    <div class="td">
+      <div class="rt">Appeared in ALL 3 end-sem papers + 2 internals. Always Part B 13m, often paired with universal gate implementation. Nov/Dec 2025: SOP+POS with NOR gates. Nov/Dec 2024: K-Map + NAND/NOR. Assessment 1: SOP+POS with NOR. THE safest scoring question.</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m16">13m</span>Simplify f(w,x,y,z) using K-Map — obtain minimal SOP and POS, implement using NOR/NAND gates.</li>
+        <li><span class="qm m16">13m</span>Analyse given logic circuit — truth table → K-Map simplification → implement SOP and POS with minimum gates.</li>
+        <li><span class="qm m2">2m</span>Simplify Boolean expression Z=A'C(A'BD)'+A'BC'D'+AB'C using Boolean laws.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">2</div><div class="tn">Quine-McCluskey (Tabulation) Method</div><span class="pb ph">88%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:88%;background:#34d399"></div></div><div class="bp">88%</div></div>
+    <div class="tm"><span class="mt m">Medium</span><span class="mt ti">2h</span><span class="mt tt">Formula-heavy</span></div>
+    <div class="td">
+      <div class="rt">Present in Nov/Dec 2025 (Part A + Part B 13m), May/Jun 2025 (13m), Nov/Dec 2024 (13m). Nearly always the alternate to K-Map in Part B. Function typically has 8–10 minterms with don't-care. Must know: grouping by 1s count, prime implicant table, essential PIs.</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m16">13m</span>Find minimal SOP for F(w,x,y,z) = Σm(1,3,4,5,9,10,11)+Σd(6,8) using Quine-McCluskey.</li>
+        <li><span class="qm m16">13m</span>Simplify F = Σm(0,2,3,6,7,8,10,12,13) using tabulation method.</li>
+        <li><span class="qm m16">13m</span>6-variable: F=Σm(0,1,56,57,58,59)+Σd(62,63) — long table, mechanical process.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">3</div><div class="tn">Boolean Simplification + Universal Gates</div><span class="pb ph">80%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:80%;background:#34d399"></div></div><div class="bp">80%</div></div>
+    <div class="tm"><span class="mt e">Easy</span><span class="mt ti">1h</span><span class="mt tt">Concept-heavy</span></div>
+    <div class="td">
+      <div class="rt">Boolean law simplification in Part A (Nov/Dec 2025, Nov/Dec 2024). Part C (15m) in Nov/Dec 2025: obtain expression from circuit and realize using NAND only. High probability for at least one question in every paper.</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m16">7m</span>Obtain expression from given circuit and realize using NAND gates (universal gate realization).</li>
+        <li><span class="qm m2">2m</span>Simplify xy + xy' + x'y using Boolean laws to minimum literals.</li>
+        <li><span class="qm m2">2m</span>Obtain canonical POS expression for Y(A,B,C) = (A+B')(B+C)(A+C').</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">4</div><div class="tn">2's Complement Arithmetic &amp; Base Conversion</div><span class="pb pm">72%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:72%;background:#fbbf24"></div></div><div class="bp">72%</div></div>
+    <div class="tm"><span class="mt e">Easy</span><span class="mt ti">0.5h</span><span class="mt tt">Formula-heavy</span></div>
+    <div class="td">
+      <div class="rt">Part A question in Nov/Dec 2025 (2's complement subtraction). Base conversion (octal to hex, find base x) in Nov/Dec 2024. Consistent easy 2-mark territory.</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m2">2m</span>Perform 11011100₂ - 10011011₂ using 2's complement.</li>
+        <li><span class="qm m2">2m</span>If (54)ₓ = (49)₁₀, find x.</li>
+        <li><span class="qm m2">2m</span>Find hexadecimal value of (745)₈.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sk"><h4>Low priority — skip if time limited</h4><div class="skl"><span class="skc">Gray code basics</span><span class="skc">1's complement</span><span class="skc">BCD arithmetic theory</span></div></div>
+</div>
+
+<!-- UNIT II -->
+<div class="panel" id="p-u2">
+  <div class="og">
+    <div class="oc"><div class="ov" style="color:#a5b4fc">~22%</div><div class="ol">Paper weight</div></div>
+    <div class="oc"><div class="ov" style="color:#34d399">8h</div><div class="ol">Prep time</div></div>
+    <div class="oc"><div class="ov" style="color:#fbbf24">High</div><div class="ol">ROI</div></div>
+    <div class="oc"><div class="ov" style="color:#fbbf24">Medium</div><div class="ol">Difficulty</div></div>
+  </div>
+  <div class="hb"><h4>Unit II Verdict</h4><p>BCD→XS-3 is the most repeated combinational question across all papers. CLA adder and magnitude comparator are always in Part B. MUX-based function implementation is a near-certain Part A. The squaring circuit (Part C, Nov/Dec 2025) tests design fundamentals at the highest BL level.</p></div>
+  <div class="slbl">Topics — click to expand</div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">1</div><div class="tn">BCD to Excess-3 Code Converter</div><span class="pb ph">87%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:87%;background:#34d399"></div></div><div class="bp">87%</div></div>
+    <div class="tm"><span class="mt m">Medium</span><span class="mt ti">2h</span><span class="mt tt">Problem-solving</span></div>
+    <div class="td">
+      <div class="rt">Nov/Dec 2025 (7m), Nov/Dec 2024 (9m — using 4-to-10 decoder with active-low outputs), May/Jun 2025 (13m). Most consistent Unit II question. Know both K-Map design and decoder-based implementation.</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m16">13m</span>Design combinational circuit for BCD to Excess-3. Truth table → K-Map → logic gates.</li>
+        <li><span class="qm m8">9m</span>Realize BCD to XS-3 using a 4-to-10 decoder with active-low outputs and minimum additional gates.</li>
+        <li><span class="qm m8">7m</span>Design BCD to Excess-3 using K-Map and minimum gates.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">2</div><div class="tn">Carry Look-Ahead Adder (4-bit)</div><span class="pb ph">83%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:83%;background:#34d399"></div></div><div class="bp">83%</div></div>
+    <div class="tm"><span class="mt m">Medium</span><span class="mt ti">2h</span><span class="mt tt">Formula-heavy</span></div>
+    <div class="td">
+      <div class="rt">Nov/Dec 2025 (8m), Nov/Dec 2024 (13m — ripple vs CLA comparison), May/Jun 2025 paired with ripple carry. Always asked with carry propagation analysis. Know: generate/propagate terms, C₁–C₄ expressions, speed comparison.</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m16">13m</span>Illustrate 4-bit CLA adder with expressions and circuit. Compare propagation delay with ripple carry adder.</li>
+        <li><span class="qm m8">8m</span>Write expressions for 4-bit CLA adder and draw the logic circuit.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">3</div><div class="tn">Magnitude Comparator (2-bit and 4-bit)</div><span class="pb ph">80%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:80%;background:#34d399"></div></div><div class="bp">80%</div></div>
+    <div class="tm"><span class="mt m">Medium</span><span class="mt ti">1.5h</span><span class="mt tt">Problem-solving</span></div>
+    <div class="td">
+      <div class="rt">Nov/Dec 2025 (5m), May/Jun 2025 (13m — 2-bit design), Nov/Dec 2024 (2m — output expressions). Multiple formats. Know 4-bit expressions (A>B, A&lt;B, A=B) and full 2-bit design with K-Map.</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m16">13m</span>Design a 2-bit magnitude comparator using logic gates.</li>
+        <li><span class="qm m8">5m</span>Write necessary expressions for a 4-bit magnitude comparator.</li>
+        <li><span class="qm m2">2m</span>Write output expressions for 4-bit comparator.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">4</div><div class="tn">MUX Implementation + Full Adder using MUX</div><span class="pb ph">82%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:82%;background:#34d399"></div></div><div class="bp">82%</div></div>
+    <div class="tm"><span class="mt e">Easy-Medium</span><span class="mt ti">1.5h</span><span class="mt tt">Problem-solving</span></div>
+    <div class="td">
+      <div class="rt">MUX function implementation in Part A (Nov/Dec 2025, Nov/Dec 2024). Full adder using 4:1 MUX in Nov/Dec 2024 Part B. 8:1 from 4:1 also tested. Very consistent across all papers.</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m2">2m</span>Implement f(x,y,z) = (0,2,6,7) using 4:1 MUX.</li>
+        <li><span class="qm m2">2m</span>Implement 8:1 MUX using 4:1 MUX and 2:1 MUX.</li>
+        <li><span class="qm m8">4m</span>Design full adder using 4:1 multiplexers with logic gates.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">5</div><div class="tn">3-bit Squaring Circuit (Part C — BL6)</div><span class="pb pm">65%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:65%;background:#fbbf24"></div></div><div class="bp">65%</div></div>
+    <div class="tm"><span class="mt h">Hard</span><span class="mt ti">2h</span><span class="mt tt">Problem-solving</span></div>
+    <div class="td">
+      <div class="rt">Part C (8m) in Nov/Dec 2025 — first appearance in this slot. Truth table for inputs 0–7 (outputs 0–49), K-Map per output bit, full circuit. Moderate repeat probability given it's a new BL6 question type.</div>
+      <div class="qh">Most probable question</div>
+      <ul class="ql">
+        <li><span class="qm m8">8m</span>Design a combinational circuit that accepts a 3-bit number and generates binary output equal to the square of the input.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sk"><h4>Low priority — skip if time limited</h4><div class="skl"><span class="skc">Priority encoder internals</span><span class="skc">Demultiplexer design</span><span class="skc">BCD adder theory</span></div></div>
+</div>
+
+<!-- UNIT III -->
+<div class="panel" id="p-u3">
+  <div class="og">
+    <div class="oc"><div class="ov" style="color:#a5b4fc">~28%</div><div class="ol">Paper weight</div></div>
+    <div class="oc"><div class="ov" style="color:#f87171">10h</div><div class="ol">Prep time</div></div>
+    <div class="oc"><div class="ov" style="color:#34d399">Very High</div><div class="ol">ROI</div></div>
+    <div class="oc"><div class="ov" style="color:#fbbf24">Medium-Hard</div><div class="ol">Difficulty</div></div>
+  </div>
+  <div class="hb"><h4>Unit III Verdict — Highest Marks Unit</h4><p>Contributes the most marks across all papers. Counter design with JK/T FF is virtually guaranteed at 13m. Sequence detector is always in Part B or Part C. State minimisation pairs with almost every synchronous design question. Flip-flop excitation tables underpin every question here — know them cold.</p></div>
+  <div class="slbl">Topics — click to expand</div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">1</div><div class="tn">Synchronous Counter Design (JK / T flip-flops)</div><span class="pb ph">90%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:90%;background:#34d399"></div></div><div class="bp">90%</div></div>
+    <div class="tm"><span class="mt h">Hard</span><span class="mt ti">3h</span><span class="mt tt">Problem-solving</span></div>
+    <div class="td">
+      <div class="rt">Nov/Dec 2025 (13m — down counter T FF, sequence 14,11,10,8,7,6,5,3,1), Internal Assessment (JK counter 1,3,6,7 repeating), Nov/Dec 2024 (13m — 3-bit up/down with JK). Full design flow: state table → excitation table → K-Map → equations → circuit is mandatory.</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m16">13m</span>Design synchronous counter for 1,3,6,7,1,3,6,7... using JK flip-flops.</li>
+        <li><span class="qm m16">13m</span>Design synchronous down counter with T FF for sequence 14,11,10,8,7,6,5,3,1 (unused states → nearest valid count).</li>
+        <li><span class="qm m16">13m</span>Design 3-bit synchronous up/down counter using JK FF with U/D control input.</li>
+        <li><span class="qm m16">13m</span>Design Modulo-10 asynchronous up-counter using JK FF.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">2</div><div class="tn">Sequence Detector (Mealy/Moore, overlapping)</div><span class="pb ph">85%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:85%;background:#34d399"></div></div><div class="bp">85%</div></div>
+    <div class="tm"><span class="mt h">Hard</span><span class="mt ti">3h</span><span class="mt tt">Concept + Problem-solving</span></div>
+    <div class="td">
+      <div class="rt">Part C (15m) in Nov/Dec 2025 — detect '010' using T FF with overlapping. State diagram with 5 states in Nov/Dec 2025 Part B (13m). Sequence '10110' in Assessment 2 (13m). Must know: Mealy vs Moore, state assignment, K-Map for FF inputs, circuit design. Overlapping sequences are harder and more likely.</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m16">15m</span>Design synchronous Mealy circuit to detect '010' using T FF (overlapping allowed). State diagram → table → equations → circuit.</li>
+        <li><span class="qm m16">13m</span>Design synchronous sequence detector for '10110' using JK FF. Assign binary states, derive equations, draw circuit. Identify Mealy/Moore.</li>
+        <li><span class="qm m16">13m</span>Given state diagram (5 states A–E) — assign binary values, derive state table, design using JK FF. Identify Moore/Mealy.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">3</div><div class="tn">State Minimisation (Implication Table)</div><span class="pb ph">80%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:80%;background:#34d399"></div></div><div class="bp">80%</div></div>
+    <div class="tm"><span class="mt m">Medium</span><span class="mt ti">2h</span><span class="mt tt">Concept-heavy</span></div>
+    <div class="td">
+      <div class="rt">Nov/Dec 2024 (6m — 7-state table A–G, verify with input 10110011). Internal Assessment 2 (12.5m — reduce + assign). Nov/Dec 2025 has a state diagram with 5 states given. Reliable pairing question alongside counter/detector design.</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m8">6m</span>Reduce given state table (7 states) using implication chart. Verify output sequences for input 10110011.</li>
+        <li><span class="qm m16">13m</span>Reduce state table, assign binary values, draw reduced state diagram, design using JK FF.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">4</div><div class="tn">Sequential Circuit Analysis (equations → state table)</div><span class="pb pm">75%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:75%;background:#fbbf24"></div></div><div class="bp">75%</div></div>
+    <div class="tm"><span class="mt m">Medium</span><span class="mt ti">1.5h</span><span class="mt tt">Problem-solving</span></div>
+    <div class="td">
+      <div class="rt">Nov/Dec 2024 (7m): A(t+1)=x'y+xA, B(t+1)=xA+x'B, Z=B. Nov/Dec 2025: given JA, KA, JB, KB, z equations — logic diagram + state table + state diagram + identify Moore/Mealy. Standard analysis procedure.</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m8">7m</span>JA=x, KA=xB', JB=KB=x+A', z=A+B — draw logic diagram, state table, state diagram. Identify machine type.</li>
+        <li><span class="qm m8">7m</span>Given D FF: A(t+1)=x'y+xA, B(t+1)=xA+x'B, Z=B — obtain logic diagram and state diagram.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">5</div><div class="tn">Universal Shift Register + FF Conversions</div><span class="pb pm">68%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:68%;background:#fbbf24"></div></div><div class="bp">68%</div></div>
+    <div class="tm"><span class="mt m">Medium</span><span class="mt ti">1h</span><span class="mt tt">Memory + Concept</span></div>
+    <div class="td">
+      <div class="rt">Universal shift register (5m) in Nov/Dec 2025. T FF from D FF in Nov/Dec 2024 Part A. JK FF complement characteristic equation in Nov/Dec 2025 Part A. Know all 4 USR modes and excitation tables for all FF types.</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m8">5m</span>Explain universal shift register with its 4 modes in detail.</li>
+        <li><span class="qm m2">2m</span>Construct a T flip-flop from a D flip-flop.</li>
+        <li><span class="qm m2">2m</span>Show Q'(t+1) = J'Q + KQ' for complement output of JK FF.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sk"><h4>Low priority — skip if time limited</h4><div class="skl"><span class="skc">Ring counter detailed design</span><span class="skc">Ripple counter analysis</span><span class="skc">Master-slave FF internals</span></div></div>
+</div>
+
+<!-- UNIT IV -->
+<div class="panel" id="p-u4">
+  <div class="og">
+    <div class="oc"><div class="ov" style="color:#a5b4fc">~24%</div><div class="ol">Paper weight</div></div>
+    <div class="oc"><div class="ov" style="color:#f87171">9h</div><div class="ol">Prep time</div></div>
+    <div class="oc"><div class="ov" style="color:#fbbf24">Medium</div><div class="ol">ROI</div></div>
+    <div class="oc"><div class="ov" style="color:#f87171">Hard</div><div class="ol">Difficulty</div></div>
+  </div>
+  <div class="hb"><h4>Unit IV Verdict — Hardest Unit, But Predictable</h4><p>Two question types dominate EVERY paper: (1) Primitive Flow Table from a word problem, and (2) Race-free state assignment for a given flow table with logic circuit. Learn these two procedures thoroughly. Hazard identification (static-1 vs static-0) appears in Part A and B consistently. The examiner recycles the same flow tables across papers.</p></div>
+  <div class="slbl">Topics — click to expand</div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">1</div><div class="tn">Primitive Flow Table Design (word problem)</div><span class="pb ph">88%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:88%;background:#34d399"></div></div><div class="bp">88%</div></div>
+    <div class="tm"><span class="mt h">Hard</span><span class="mt ti">3h</span><span class="mt tt">Concept + Problem-solving</span></div>
+    <div class="td">
+      <div class="rt">Nov/Dec 2025 (13m), May/Jun 2025 (13m), Nov/Dec 2024 (13m), Internal Assessment 2 (12.5m). Most consistent Unit IV question. Word problem describes input/output conditions — draw primitive flow table then reduce using implication table. GUARANTEED Part B question every paper.</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m16">13m</span>Two inputs X,Y; output Z. Initially Z=0. Z→1 when XY=11 only if X=1 before Y. Z stays 1 until X→0. Draw primitive flow table, reduce using implication table.</li>
+        <li><span class="qm m16">13m</span>Inputs X1,X2; outputs Z1,Z2. When X1X2=00: Z1Z2=11. When X1=1 and X2 changes 0→1: Z1Z2=01. When X2=1 and X1 changes 0→1: Z1Z2=10. Construct primitive flow table.</li>
+        <li><span class="qm m16">13m</span>Logic system X,Y inputs, Z output. Initially 0. Z=1 when XY=11 but only if X=1 before Y; Z stays 1 till X→0. Draw primitive and reduced flow table.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">2</div><div class="tn">Race-Free State Assignment + Logic Circuit</div><span class="pb ph">85%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:85%;background:#34d399"></div></div><div class="bp">85%</div></div>
+    <div class="tm"><span class="mt h">Hard</span><span class="mt ti">3h</span><span class="mt tt">Problem-solving</span></div>
+    <div class="td">
+      <div class="rt">Nov/Dec 2025 (13m — 4-state flow table a,b,c,d), May/Jun 2025 (13m — 3-state table), Internal Assessment 2 (12.5m — same 3-state table). Procedure: identify critical races → assign binary codes → derive transition table → excitation/output equations → logic circuit. Same flow tables appear across papers!</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m16">13m</span>Critical race-free assignment for 4-state flow table (states a,b,c,d; X1X2 inputs). Design async sequential circuit with NAND latches.</li>
+        <li><span class="qm m16">13m</span>3-state flow table (a=00, b=11, c=01) — assign 4th state to avoid critical races, derive transition table, draw logic diagram.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">3</div><div class="tn">Hazard Analysis (Static-1 / Static-0 / Essential)</div><span class="pb ph">82%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:82%;background:#34d399"></div></div><div class="bp">82%</div></div>
+    <div class="tm"><span class="mt m">Medium</span><span class="mt ti">2h</span><span class="mt tt">Concept + Problem-solving</span></div>
+    <div class="td">
+      <div class="rt">Nov/Dec 2025 (2m — identify hazard in Y=A+B'C), Nov/Dec 2024 (13m — F=AB'+BC, identify static hazard, POS expression, eliminate), Internal Assessment 2 (2m — hazard-free circuit F=Σm(2,3,5,6,7,8,9,12,13,15)), Assessment 1 (2m — same Y=A+B'C). Very high Part A frequency.</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m2">2m</span>Identify the type of hazard in Y = A + B'C and eliminate it.</li>
+        <li><span class="qm m16">13m</span>Draw logic diagram for F = AB' + BC. Identify static hazard type. Write POS expression and remove hazards.</li>
+        <li><span class="qm m2">2m</span>Define essential hazard and how it is eliminated?</li>
+        <li><span class="qm m2">2m</span>List steps in obtaining race-free circuits.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">4</div><div class="tn">Async Circuit Analysis (Y equations → flow table)</div><span class="pb pm">70%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:70%;background:#fbbf24"></div></div><div class="bp">70%</div></div>
+    <div class="tm"><span class="mt m">Medium</span><span class="mt ti">1h</span><span class="mt tt">Problem-solving</span></div>
+    <div class="td">
+      <div class="rt">Nov/Dec 2024 (5m): Y=x1x2'+(x1+x2')y, Z=y — draw logic diagram and obtain flow table with output. Nov/Dec 2025 Part B has same style. Know how to go from Y excitation equation → logic diagram → stable/unstable state identification in flow table.</div>
+      <div class="qh">Most probable question</div>
+      <ul class="ql">
+        <li><span class="qm m8">5m</span>Async sequential circuit: Y=x1x2'+(x1+x2')y, Z=y. Draw logic diagram and obtain flow table with output.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sk"><h4>Low priority — skip if time limited</h4><div class="skl"><span class="skc">Dead-lock condition theory</span><span class="skc">Cycle/oscillation analysis</span><span class="skc">Dynamic hazard derivation</span></div></div>
+</div>
+
+<!-- UNIT V -->
+<div class="panel" id="p-u5">
+  <div class="og">
+    <div class="oc"><div class="ov" style="color:#a5b4fc">~20%</div><div class="ol">Paper weight</div></div>
+    <div class="oc"><div class="ov" style="color:#34d399">6h</div><div class="ol">Prep time</div></div>
+    <div class="oc"><div class="ov" style="color:#34d399">High</div><div class="ol">ROI</div></div>
+    <div class="oc"><div class="ov" style="color:#fbbf24">Medium</div><div class="ol">Difficulty</div></div>
+  </div>
+  <div class="hb"><h4>Unit V Verdict — Easiest 13-Mark Question In The Entire Paper</h4><p>CMOS circuits are mostly drawing + transistor ON/OFF table. It's the best marks-per-effort question in the paper. PAL and PLA appear with equal frequency. The examiner reused the EXACT same PAL functions (f1, f2, f3) across Nov/Dec 2024 and Nov/Dec 2025. Noise margin is a repeat Part A question every paper.</p></div>
+  <div class="slbl">Topics — click to expand</div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">1</div><div class="tn">CMOS Gates — INV, 2i-NAND, 2i-NOR, 3i-NAND, 3i-NOR</div><span class="pb ph">88%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:88%;background:#34d399"></div></div><div class="bp">88%</div></div>
+    <div class="tm"><span class="mt e">Easy</span><span class="mt ti">2h</span><span class="mt tt">Memory-heavy</span></div>
+    <div class="td">
+      <div class="rt">Nov/Dec 2025 (13m — CMOS INV + 2i-NAND + NOR with circuits). Nov/Dec 2024 (13m — 4-input CMOS NAND and NOR with transistor ON/OFF table). May/Jun 2025 (6+7m — 3-input NOR and NAND). Internal Assessment 2 (2m — 2-input CMOS NOR). Assessment 1 (2m — CMOS inverter). Present in EVERY paper. THE safest 13m scoring question in the entire paper.</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m16">13m</span>Explain CMOS inverter, 2-input CMOS NAND and NOR gates with neat circuits and transistor ON/OFF status table.</li>
+        <li><span class="qm m16">13m</span>Draw 3-input CMOS NOR and NAND logic. Explain operation with ON/OFF status under all input combinations.</li>
+        <li><span class="qm m2">2m</span>Draw CMOS inverter circuit.</li>
+        <li><span class="qm m2">2m</span>What is noise margin? How is it determined?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">2</div><div class="tn">PAL Implementation (Programming Table)</div><span class="pb ph">80%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:80%;background:#34d399"></div></div><div class="bp">80%</div></div>
+    <div class="tm"><span class="mt m">Medium</span><span class="mt ti">2h</span><span class="mt tt">Problem-solving</span></div>
+    <div class="td">
+      <div class="rt">Nov/Dec 2025 (13m) and Nov/Dec 2024 (13m) asked the EXACT SAME functions: f1=Σm(0,3,4,5,6), f2=Σm(1,3,5,6,7), f3=Σm(0,4,5). May/Jun 2025 (15m): F1=ABC+A'BC+A'B'C+ABC', F2=(ABC+A'B'C'+A'BC')', F3=A'B'C'+A'BC'. Very high repeat probability.</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m16">13m</span>Implement using PAL: f1(a,b,c)=Σm(0,3,4,5,6), f2(a,b,c)=Σm(1,3,5,6,7), f3(a,b,c)=Σm(0,4,5). Draw programming table.</li>
+        <li><span class="qm m2">2m</span>Compare PROM, PLA and PAL.</li>
+        <li><span class="qm m2">2m</span>Outline the advantage of PLA over ROM implementation.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tc" onclick="tog(this)">
+    <div class="th"><div class="trk">3</div><div class="tn">PLA Design (Programming Table)</div><span class="pb pm">72%</span></div>
+    <div class="bw"><div class="bt"><div class="bf" style="width:72%;background:#fbbf24"></div></div><div class="bp">72%</div></div>
+    <div class="tm"><span class="mt m">Medium</span><span class="mt ti">1.5h</span><span class="mt tt">Problem-solving</span></div>
+    <div class="td">
+      <div class="rt">Nov/Dec 2024 (13m) and May/Jun 2025 have the same X, Y, Z functions: X=AB'D+A'C'+BC+C'D', Y=(A'C'+AC+C'D')', Z=CD+A'C'+AB'D. High repeat pattern for these exact equations.</div>
+      <div class="qh">Most probable questions</div>
+      <ul class="ql">
+        <li><span class="qm m16">13m</span>Design PLA circuit for X=AB'D+A'C'+BC+C'D', Y=(A'C'+AC+C'D')', Z=CD+A'C'+AB'D. Draw PLA table.</li>
+        <li><span class="qm m8">6m</span>Design PLA for X=AB'D+A'C'+BC+C'D' and Z=CD+A'C'+AB'D.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="sk"><h4>Low priority — skip if time limited</h4><div class="skl"><span class="skc">CPLD internal architecture</span><span class="skc">PROM design</span><span class="skc">Fan-in/Fan-out calculations</span></div></div>
+</div>
+
+<!-- STRATEGY -->
+<div class="panel" id="p-st">
+  <div class="slbl">Full probability ranking — all units</div>
+  <div class="rlist">
+    <div class="ritem"><span class="rpct" style="color:#34d399">92%</span><span class="rname2">K-Map Simplification (4-variable SOP + POS)</span><span class="runit">U1 · Part B 13m</span></div>
+    <div class="ritem"><span class="rpct" style="color:#34d399">90%</span><span class="rname2">Synchronous Counter Design (JK/T FF)</span><span class="runit">U3 · Part B 13m</span></div>
+    <div class="ritem"><span class="rpct" style="color:#34d399">88%</span><span class="rname2">Quine-McCluskey (Tabulation) Method</span><span class="runit">U1 · Part B 13m</span></div>
+    <div class="ritem"><span class="rpct" style="color:#34d399">88%</span><span class="rname2">CMOS Gates (INV, NAND, NOR) + transistor table</span><span class="runit">U5 · Part B 13m</span></div>
+    <div class="ritem"><span class="rpct" style="color:#34d399">88%</span><span class="rname2">Primitive Flow Table (word problem)</span><span class="runit">U4 · Part B 13m</span></div>
+    <div class="ritem"><span class="rpct" style="color:#34d399">87%</span><span class="rname2">BCD to Excess-3 Converter</span><span class="runit">U2 · Part B 7–13m</span></div>
+    <div class="ritem"><span class="rpct" style="color:#34d399">85%</span><span class="rname2">Sequence Detector Design (Mealy/Moore)</span><span class="runit">U3 · Part B/C 13–15m</span></div>
+    <div class="ritem"><span class="rpct" style="color:#34d399">85%</span><span class="rname2">Race-Free State Assignment + Logic Circuit</span><span class="runit">U4 · Part B 13m</span></div>
+    <div class="ritem"><span class="rpct" style="color:#fbbf24">83%</span><span class="rname2">Carry Look-Ahead Adder (4-bit)</span><span class="runit">U2 · Part B 8–13m</span></div>
+    <div class="ritem"><span class="rpct" style="color:#fbbf24">82%</span><span class="rname2">Hazard Analysis + Elimination (Static/Essential)</span><span class="runit">U4 · Part A+B</span></div>
+    <div class="ritem"><span class="rpct" style="color:#fbbf24">82%</span><span class="rname2">MUX Implementation (4:1 function / 8:1 from 4:1)</span><span class="runit">U2 · Part A 2m</span></div>
+    <div class="ritem"><span class="rpct" style="color:#fbbf24">80%</span><span class="rname2">State Minimisation (Implication Table)</span><span class="runit">U3 · Part B 6–13m</span></div>
+    <div class="ritem"><span class="rpct" style="color:#fbbf24">80%</span><span class="rname2">Magnitude Comparator (2-bit design)</span><span class="runit">U2 · Part B 5–13m</span></div>
+    <div class="ritem"><span class="rpct" style="color:#fbbf24">80%</span><span class="rname2">Boolean Simplification + Universal Gate Realization</span><span class="runit">U1 · Part A+C</span></div>
+    <div class="ritem"><span class="rpct" style="color:#fbbf24">80%</span><span class="rname2">PAL Implementation (programming table)</span><span class="runit">U5 · Part B 13m</span></div>
+  </div>
+
+  <div class="slbl">Recommended prep order (12 days)</div>
+  <div class="rlist">
+    <div class="ritem"><span style="font-size:11px;font-weight:800;color:#34d399;min-width:60px">Day 1–2</span><span class="rname2">Unit I — K-Map (SOP+POS) + Quine-McCluskey + Boolean + Universal gates</span></div>
+    <div class="ritem"><span style="font-size:11px;font-weight:800;color:#34d399;min-width:60px">Day 3</span><span class="rname2">Unit V — CMOS circuits (INV, NAND, NOR all variants) + PAL + PLA tables</span></div>
+    <div class="ritem"><span style="font-size:11px;font-weight:800;color:#fbbf24;min-width:60px">Day 4–5</span><span class="rname2">Unit II — BCD→XS-3 + CLA adder + Magnitude comparator + MUX</span></div>
+    <div class="ritem"><span style="font-size:11px;font-weight:800;color:#fbbf24;min-width:60px">Day 6–8</span><span class="rname2">Unit III — Counter design + Sequence detector + State minimisation + Analysis</span></div>
+    <div class="ritem"><span style="font-size:11px;font-weight:800;color:#f87171;min-width:60px">Day 9–11</span><span class="rname2">Unit IV — Primitive flow table + Race-free assignment + Hazard analysis</span></div>
+    <div class="ritem"><span style="font-size:11px;font-weight:800;color:#a5b4fc;min-width:60px">Day 12</span><span class="rname2">Revision — All Part A 2-mark questions + one past paper timed practice</span></div>
+  </div>
+
+  <div class="slbl">Topic categories</div>
+  <div class="sg">
+    <div class="sc"><h4>🎯 Safest scoring</h4><ul><li>CMOS circuits (draw + table) — 13m</li><li>K-Map 4-variable — 13m</li><li>PAL programming table — 13m</li><li>2's complement — 2m</li><li>Noise margin — 2m</li><li>PROM/PLA/PAL compare — 2m</li></ul></div>
+    <div class="sc"><h4>⚠️ Hardest topics</h4><ul><li>Primitive flow table (word problem)</li><li>Race-free state assignment</li><li>Sequence detector (overlapping)</li><li>Down counter (irregular sequence)</li><li>6-variable Quine-McCluskey</li><li>Squaring circuit design</li></ul></div>
+    <div class="sc"><h4>📈 Best prob-to-effort</h4><ul><li>CMOS → 88% prob, Easy</li><li>K-Map → 92% prob, Medium</li><li>PAL/PLA → 80%, Medium</li><li>BCD→XS-3 → 87%, Medium</li><li>Boolean simplification → 80%, Easy</li></ul></div>
+    <div class="sc"><h4>⚡ Fastest units</h4><ul><li>Unit I — 6h total</li><li>Unit V — 6h total</li><li>Both together = ~30% of exam marks for 12h of prep</li></ul></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const tabs=['ov','u1','u2','u3','u4','u5','st'];
+function show(id){
+  tabs.forEach(t=>{
+    document.getElementById('p-'+t).classList.remove('active');
+  });
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p-'+id).classList.add('active');
+  document.querySelectorAll('.nb')[tabs.indexOf(id)].classList.add('active');
+  window.scrollTo(0,document.querySelector('.nav').offsetTop-8);
+}
+function tog(card){
+  const was=card.classList.contains('exp');
+  card.closest('.panel').querySelectorAll('.tc').forEach(c=>c.classList.remove('exp'));
+  if(!was)card.classList.add('exp');
+}
+document.querySelectorAll('.bf').forEach(b=>{
+  const w=b.style.width;b.style.width='0';
+  setTimeout(()=>{b.style.width=w;},300);
+});
+</script>
+</body>
+</html>
