@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABC Exam Pattern Analysis</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/tabler-icons.min.css">
+<style>
+  :root {
+    --bg: #f5f4ef;
+    --surface: #ffffff;
+    --surface-1: #f8f7f3;
+    --border: rgba(11,11,11,0.10);
+    --border-strong: rgba(11,11,11,0.18);
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #898781;
+    --accent: #2a78d6;
+    --accent-bg: #e6f1fb;
+    --accent-text: #185fa5;
+    --success: #0ca30c;
+    --success-bg: #eaf3de;
+    --success-text: #3b6d11;
+    --warning: #fab219;
+    --warning-bg: #faeeda;
+    --warning-text: #854f0b;
+    --danger: #e34948;
+    --danger-bg: #fcebeb;
+    --danger-text: #a32d2d;
+    --purple-bg: #eeedfe;
+    --purple-text: #3c3489;
+    --teal-bg: #e1f5ee;
+    --teal-text: #0f6e56;
+    --radius: 8px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141413;
+      --surface: #1e1e1c;
+      --surface-1: #242422;
+      --border: rgba(255,255,255,0.10);
+      --border-strong: rgba(255,255,255,0.18);
+      --text-primary: #f0ede8;
+      --text-secondary: #c3c2b7;
+      --text-muted: #898781;
+      --accent: #3987e5;
+      --accent-bg: #0c447c22;
+      --accent-text: #85b7eb;
+      --success-bg: #17340422;
+      --success-text: #97c459;
+      --warning-bg: #41240222;
+      --warning-text: #ef9f27;
+      --danger-bg: #50131322;
+      --danger-text: #f09595;
+      --purple-bg: #26215c22;
+      --purple-text: #afa9ec;
+      --teal-bg: #04342c22;
+      --teal-text: #5dcaa5;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .header {
+    background: var(--surface);
+    border-bottom: 0.5px solid var(--border-strong);
+    padding: 1.5rem 2rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header h1 {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .header p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+  }
+  .tab-bar {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    padding: 6px 14px;
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .tab-btn:hover { background: var(--surface-1); color: var(--text-primary); }
+  .tab-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 1.5rem 0 0.75rem;
+  }
+  .card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    gap: 8px;
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    flex: 1;
+  }
+  .badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: var(--radius);
+    white-space: nowrap;
+  }
+  .badge-accent { background: var(--accent-bg); color: var(--accent-text); }
+  .badge-success { background: var(--success-bg); color: var(--success-text); }
+  .badge-warning { background: var(--warning-bg); color: var(--warning-text); }
+  .badge-danger { background: var(--danger-bg); color: var(--danger-text); }
+  .badge-purple { background: var(--purple-bg); color: var(--purple-text); }
+  .badge-teal { background: var(--teal-bg); color: var(--teal-text); }
+
+  .prob-bar-wrap {
+    margin: 8px 0 4px;
+  }
+  .prob-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .prob-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border);
+    overflow: hidden;
+  }
+  .prob-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: var(--accent);
+    transition: width 0.6s ease;
+  }
+  .prob-bar-fill.high { background: var(--danger); }
+  .prob-bar-fill.med { background: var(--warning); }
+  .prob-bar-fill.low { background: var(--success); }
+
+  .meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .meta-item i { font-size: 13px; color: var(--text-muted); }
+
+  .question-list {
+    list-style: none;
+    margin-top: 0.5rem;
+  }
+  .question-list li {
+    display: flex;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 13px;
+    color: var(--text-primary);
+  }
+  .question-list li:last-child { border-bottom: none; }
+  .q-num {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    min-width: 20px;
+    padding-top: 2px;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+  }
+  .stat-card {
+    background: var(--surface-1);
+    border-radius: var(--radius);
+    padding: 1rem;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .stat-icon.accent { background: var(--accent-bg); color: var(--accent-text); }
+  .stat-icon.success { background: var(--success-bg); color: var(--success-text); }
+  .stat-icon.warning { background: var(--warning-bg); color: var(--warning-text); }
+  .stat-icon.danger { background: var(--danger-bg); color: var(--danger-text); }
+  .stat-label { font-size: 12px; color: var(--text-muted); margin-bottom: 2px; }
+  .stat-value { font-size: 20px; font-weight: 500; color: var(--text-primary); }
+
+  .unit-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 0.5px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .unit-chip:hover { background: var(--accent-bg); color: var(--accent-text); border-color: var(--accent); }
+
+  .priority-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .priority-table th {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 0.5px solid var(--border-strong);
+    background: var(--surface-1);
+  }
+  .priority-table td {
+    padding: 8px 12px;
+    border-bottom: 0.5px solid var(--border);
+    vertical-align: top;
+  }
+  .priority-table tr:last-child td { border-bottom: none; }
+  .priority-table tr:hover td { background: var(--surface-1); }
+
+  .rank-num {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text-muted);
+    min-width: 32px;
+  }
+  .rank-num.top { color: var(--danger); }
+
+  .tip-card {
+    background: var(--accent-bg);
+    border: 0.5px solid var(--border-accent, var(--accent));
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 13px;
+    color: var(--accent-text);
+  }
+  .tip-card strong {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 2px;
+    font-size: 13px;
+  }
+
+  .skip-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--surface-1);
+    border-radius: var(--radius);
+    margin-bottom: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .skip-item i { color: var(--text-muted); font-size: 14px; }
+
+  .evidence-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--surface-1);
+    color: var(--text-muted);
+    border: 0.5px solid var(--border);
+    margin: 2px;
+  }
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    margin: 1rem 0;
+  }
+  .divider {
+    height: 0.5px;
+    background: var(--border-strong);
+    margin: 1.5rem 0;
+  }
+  .highlight-box {
+    background: var(--warning-bg);
+    border: 0.5px solid var(--warning-text);
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 13px;
+  }
+  .highlight-box-title {
+    font-weight: 500;
+    color: var(--warning-text);
+    margin-bottom: 4px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1><i class="ti ti-analyze" aria-hidden="true" style="font-size:18px;vertical-align:-2px;margin-right:6px;"></i>EC23403 — Analog and Baseband Communication: Exam Pattern Analysis</h1>
+  <p>Based on 8 papers (2022–2025) · Anna University · Regulation 2019 &amp; 2023 · 100 Marks</p>
+  <div class="tab-bar" role="tablist">
+    <button class="tab-btn active" onclick="showTab('overview')" role="tab">Overview</button>
+    <button class="tab-btn" onclick="showTab('unit1')" role="tab">Unit I — AM</button>
+    <button class="tab-btn" onclick="showTab('unit2')" role="tab">Unit II — FM/PM</button>
+    <button class="tab-btn" onclick="showTab('unit3')" role="tab">Unit III — Pulse Mod</button>
+    <button class="tab-btn" onclick="showTab('unit4')" role="tab">Unit IV — Info Theory</button>
+    <button class="tab-btn" onclick="showTab('unit5')" role="tab">Unit V — Baseband</button>
+    <button class="tab-btn" onclick="showTab('strategy')" role="tab">Strategy</button>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- OVERVIEW TAB -->
+<div id="tab-overview" class="tab-panel active">
+  <h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;">Exam overview and statistics</h2>
+
+  <p class="section-title">Exam at a glance</p>
+  <div class="grid-2">
+    <div class="stat-card">
+      <div class="stat-icon accent"><i class="ti ti-files" aria-hidden="true"></i></div>
+      <div>
+        <div class="stat-label">Papers analyzed</div>
+        <div class="stat-value">8</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon success"><i class="ti ti-calendar" aria-hidden="true"></i></div>
+      <div>
+        <div class="stat-label">Year range</div>
+        <div class="stat-value">2022–2025</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon warning"><i class="ti ti-chart-bar" aria-hidden="true"></i></div>
+      <div>
+        <div class="stat-label">Max marks</div>
+        <div class="stat-value">100</div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon danger"><i class="ti ti-target" aria-hidden="true"></i></div>
+      <div>
+        <div class="stat-label">High-prob topics identified</div>
+        <div class="stat-value">23</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-title">Unit weightage (marks distribution)</p>
+  <div class="card">
+    <div class="chart-wrap">
+      <canvas id="weightChart" role="img" aria-label="Bar chart showing unit-wise marks distribution across papers">Unit I: 22%, Unit II: 22%, Unit III: 20%, Unit IV: 18%, Unit V: 18%</canvas>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;font-size:12px;color:var(--text-secondary);">
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#2a78d6;display:inline-block;"></span>Unit I — AM (22%)</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#1baf7a;display:inline-block;"></span>Unit II — FM/PM (22%)</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#eda100;display:inline-block;"></span>Unit III — Pulse (20%)</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#4a3aa7;display:inline-block;"></span>Unit IV — Info Theory (18%)</span>
+      <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:2px;background:#e34948;display:inline-block;"></span>Unit V — Baseband (18%)</span>
+    </div>
+  </div>
+
+  <p class="section-title">Top 20% topics that score 80% marks</p>
+  <div class="highlight-box">
+    <div class="highlight-box-title"><i class="ti ti-star" aria-hidden="true" style="font-size:14px;vertical-align:-2px;margin-right:4px;"></i> Master these 6 topics to score ~80 marks</div>
+    <div style="font-size:13px;color:var(--text-secondary);">FM wideband derivation + spectrum · AM signal analysis + spectrum · PCM system + SNR derivation · Huffman/Shannon-Fano coding · Noise in cascaded amplifiers (Friis) · NRZ/Manchester PSD derivation</div>
+  </div>
+
+  <p class="section-title">Probability heatmap by topic</p>
+  <table class="priority-table">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Topic</th>
+        <th>Unit</th>
+        <th>Probability</th>
+        <th>Difficulty</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="rank-num top">1</span></td>
+        <td>FM wideband signal — derivation, spectrum, Bessel function</td>
+        <td><span class="badge badge-success">II</span></td>
+        <td><span class="badge badge-danger">92%</span></td>
+        <td><span class="badge badge-warning">Hard</span></td>
+      </tr>
+      <tr>
+        <td><span class="rank-num top">2</span></td>
+        <td>AM signal analysis — power, spectrum, envelope detector</td>
+        <td><span class="badge badge-accent">I</span></td>
+        <td><span class="badge badge-danger">90%</span></td>
+        <td><span class="badge badge-success">Medium</span></td>
+      </tr>
+      <tr>
+        <td><span class="rank-num top">3</span></td>
+        <td>PCM system — block diagram, SNR derivation</td>
+        <td><span class="badge badge-warning">III</span></td>
+        <td><span class="badge badge-danger">88%</span></td>
+        <td><span class="badge badge-success">Medium</span></td>
+      </tr>
+      <tr>
+        <td><span class="rank-num top">4</span></td>
+        <td>Huffman/Shannon-Fano source coding + efficiency</td>
+        <td><span class="badge badge-purple">IV</span></td>
+        <td><span class="badge badge-danger">85%</span></td>
+        <td><span class="badge badge-success">Medium</span></td>
+      </tr>
+      <tr>
+        <td><span class="rank-num top">5</span></td>
+        <td>Noise in cascaded systems — Friis formula</td>
+        <td><span class="badge badge-accent">I</span></td>
+        <td><span class="badge badge-danger">85%</span></td>
+        <td><span class="badge badge-success">Medium</span></td>
+      </tr>
+      <tr>
+        <td><span class="rank-num top">6</span></td>
+        <td>NRZ/Manchester line codes — PSD derivation</td>
+        <td><span class="badge badge-teal">V</span></td>
+        <td><span class="badge badge-danger">83%</span></td>
+        <td><span class="badge badge-warning">Hard</span></td>
+      </tr>
+      <tr>
+        <td><span class="rank-num">7</span></td>
+        <td>DSBSC coherent demodulation — Costas loop / spectrum</td>
+        <td><span class="badge badge-accent">I</span></td>
+        <td><span class="badge badge-warning">80%</span></td>
+        <td><span class="badge badge-success">Medium</span></td>
+      </tr>
+      <tr>
+        <td><span class="rank-num">8</span></td>
+        <td>PLL-based FM demodulation</td>
+        <td><span class="badge badge-success">II</span></td>
+        <td><span class="badge badge-warning">78%</span></td>
+        <td><span class="badge badge-success">Medium</span></td>
+      </tr>
+      <tr>
+        <td><span class="rank-num">9</span></td>
+        <td>Delta modulation — types of noise, ADM</td>
+        <td><span class="badge badge-warning">III</span></td>
+        <td><span class="badge badge-warning">75%</span></td>
+        <td><span class="badge badge-success">Easy</span></td>
+      </tr>
+      <tr>
+        <td><span class="rank-num">10</span></td>
+        <td>BSC channel capacity + mutual information</td>
+        <td><span class="badge badge-purple">IV</span></td>
+        <td><span class="badge badge-warning">75%</span></td>
+        <td><span class="badge badge-warning">Hard</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- UNIT 1 TAB -->
+<div id="tab-unit1" class="tab-panel">
+  <p class="section-title">Most important topics</p>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">AM signal analysis — power, spectrum, sidebands</span>
+      <span class="badge badge-danger">90%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>90%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill high" style="width:90%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 3–4 hours</span>
+      <span class="meta-item"><i class="ti ti-function"></i> Problem-solving + Formula-heavy</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Medium difficulty</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      Appears as 13-mark question in every End Sem (2022, 2024, 2025). Always involves extracting carrier/message from given s(t), drawing spectrum, computing power. Compulsory pattern.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 6/8 papers</span>
+      <span class="evidence-tag"><i class="ti ti-star"></i> Part B compulsory</span>
+      <span class="evidence-tag"><i class="ti ti-calculator"></i> Numerical</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">DSBSC generation and coherent demodulation</span>
+      <span class="badge badge-danger">80%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>80%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill high" style="width:80%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 2–3 hours</span>
+      <span class="meta-item"><i class="ti ti-bulb"></i> Concept + Derivation</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Medium difficulty</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      SSB derivation using Hilbert transform + Costas loop demodulation — asked in 5/8 papers. SSB spectrum + time expression is a standard 8-mark pattern.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 5/8 papers</span>
+      <span class="evidence-tag"><i class="ti ti-graph"></i> Spectrum drawing</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Noise in cascaded systems — Friis formula</span>
+      <span class="badge badge-danger">85%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>85%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill high" style="width:85%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 2 hours</span>
+      <span class="meta-item"><i class="ti ti-calculator"></i> Formula-heavy + Numerical</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Medium difficulty</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      Three-amplifier cascade noise figure calculation appears in EVERY exam — AssI, AssII, EndSem 2022, EndSem 2024, EndSem 2025. Different configurations (A-B-C vs B-A-C) but same concept. Safe 8-mark topic.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 7/8 papers</span>
+      <span class="evidence-tag"><i class="ti ti-shield-check"></i> Safest scorer</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">VSB modulation — selection for TV signals</span>
+      <span class="badge badge-warning">65%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>65%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill med" style="width:65%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 1 hour</span>
+      <span class="meta-item"><i class="ti ti-books"></i> Memory + Concept</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Easy</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      Appears as 2-mark Part A in 4/8 papers. Justification for VSB over SSB for video — standard answer. Quick marks.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 4/8 papers</span>
+      <span class="evidence-tag"><i class="ti ti-feather"></i> Part A only</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <p class="section-title">Most probable 16-mark questions</p>
+  <div class="card">
+    <ul class="question-list">
+      <li><span class="q-num">1.</span>Consider the AM signal s(t) = A[1 + k_a m(t)]cos(2πf_c t). Identify carrier and message signals. Derive the spectrum and plot it. Design an envelope detector for demodulation. (Based on 2024, 2025 pattern)</li>
+      <li><span class="q-num">2.</span>Derive the time-domain and frequency-domain expression for SSB-USB in terms of m(t) and its Hilbert transform. If m(t) = 2cos(300πt) and c(t) = 50cos(8000πt), write the SSB-USB expression and draw the spectrum. Explain Costas loop demodulation. (2024 exact pattern)</li>
+      <li><span class="q-num">3.</span>Three amplifiers A, B, C with gain and noise figures are connected in cascade. Determine overall noise figure and equivalent noise temperature for order B-A-C and compare with A-B-C. (2025 End Sem exact)</li>
+    </ul>
+  </div>
+
+  <p class="section-title">Most probable 8-mark questions</p>
+  <div class="card">
+    <ul class="question-list">
+      <li><span class="q-num">1.</span>Explain the generation of AM signal using switching modulator (square law or ring modulator). Draw the spectrum and compute power efficiency.</li>
+      <li><span class="q-num">2.</span>Discuss demodulation of DSB-SC signals using coherent receiver. Draw spectrum of input and output when phase difference is 0° and 45°.</li>
+    </ul>
+  </div>
+
+  <p class="section-title">Low priority topics (safe to skip)</p>
+  <div class="skip-item"><i class="ti ti-minus-circle" aria-hidden="true"></i>Hilbert transform properties — pure theory; only appears as 2-mark Part A</div>
+  <div class="skip-item"><i class="ti ti-minus-circle" aria-hidden="true"></i>Detailed noise performance derivation for AM (qualitative treatment only per syllabus)</div>
+</div>
+
+<!-- UNIT 2 TAB -->
+<div id="tab-unit2" class="tab-panel">
+  <p class="section-title">Most important topics</p>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Wideband FM — derivation, spectrum (Bessel), bandwidth</span>
+      <span class="badge badge-danger">92%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>92%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill high" style="width:92%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 4–5 hours</span>
+      <span class="meta-item"><i class="ti ti-math"></i> Derivation + Problem-solving</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Hard</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      Present in every single paper (6/6 End Sem + Assess). Numerical problems with Bessel function table are compulsory in Part C in most years. Carson's rule bandwidth, modulation index calculation — must prepare.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 8/8 papers</span>
+      <span class="evidence-tag"><i class="ti ti-star"></i> Part B + Part C</span>
+      <span class="evidence-tag"><i class="ti ti-calculator"></i> Numerical + Bessel table</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">PLL-based FM demodulation</span>
+      <span class="badge badge-danger">78%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>78%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill high" style="width:78%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 3 hours</span>
+      <span class="meta-item"><i class="ti ti-bulb"></i> Concept + Block diagram</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Medium</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      Block diagram of PLL + mathematical treatment appears in EndSem 2024 (13 marks), AssI 2024. Discriminator-based demodulation is the alternative question. One will always appear.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 5/8 papers</span>
+      <span class="evidence-tag"><i class="ti ti-layout"></i> Block diagram must</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Superheterodyne receiver — image frequency, IF</span>
+      <span class="badge badge-warning">72%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>72%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill med" style="width:72%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 2 hours</span>
+      <span class="meta-item"><i class="ti ti-calculator"></i> Formula + Concept</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Easy–Medium</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      Image frequency calculation is a 2-mark staple in Part A (4/8 papers). "Explain superheterodyne receiver" is an 8-mark question in AssI 2022. Both aspects should be prepared.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 5/8 papers</span>
+      <span class="evidence-tag"><i class="ti ti-calculator"></i> Numerical + Theory</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Narrow band FM vs wideband FM — phasor diagram</span>
+      <span class="badge badge-warning">65%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>65%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill med" style="width:65%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 1.5 hours</span>
+      <span class="meta-item"><i class="ti ti-books"></i> Memory + Concept</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Easy</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      Phasor diagram justification for NBFM bandwidth = AM bandwidth — appears in 3 papers as Part B question. Good 6-mark scoring topic.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 3/8 papers</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <p class="section-title">Most probable 16-mark questions</p>
+  <div class="card">
+    <ul class="question-list">
+      <li><span class="q-num">1.</span>Write the time-domain expression and obtain the Fourier series of FM wave modulated by a single sinusoid. A FM signal is generated using c(t) = 60cos(220×10⁶πt) and m(t) = 15cos(6×10³πt) with kf = 1kHz/V. Plot the spectrum using Bessel function table. (2024 pattern)</li>
+      <li><span class="q-num">2.</span>Draw the block diagram of a PLL and explain FM demodulation using PLL with suitable mathematical treatment. (2024 exact — 13 marks)</li>
+      <li><span class="q-num">3.</span>Derive the analytical expression for spectrum of single-tone FM signal. Draw the magnitude spectrum with β=6, fc=2 MHz, fm=10 kHz. Compute transmission bandwidth using 1% reference. Use Bessel function table. (2022 Part C pattern)</li>
+    </ul>
+  </div>
+
+  <p class="section-title">Most probable 8-mark questions</p>
+  <div class="card">
+    <ul class="question-list">
+      <li><span class="q-num">1.</span>Using phasor diagram, justify that NBFM requires bandwidth equal to AM while maintaining constant envelope. Explain working of superheterodyne receiver with neat block diagram.</li>
+      <li><span class="q-num">2.</span>Explain FM discriminator-based demodulation. How does balanced slope detector work?</li>
+    </ul>
+  </div>
+
+  <p class="section-title">Low priority topics (safe to skip)</p>
+  <div class="skip-item"><i class="ti ti-minus-circle" aria-hidden="true"></i>Balanced slope detector detailed circuit — rarely asked as full question</div>
+  <div class="skip-item"><i class="ti ti-minus-circle" aria-hidden="true"></i>FM noise performance derivation — syllabus says qualitative only</div>
+</div>
+
+<!-- UNIT 3 TAB -->
+<div id="tab-unit3" class="tab-panel">
+  <p class="section-title">Most important topics</p>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">PCM system — block diagram, SNR, quantization noise</span>
+      <span class="badge badge-danger">88%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>88%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill high" style="width:88%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 4 hours</span>
+      <span class="meta-item"><i class="ti ti-math"></i> Derivation + Block diagram</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Medium–Hard</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      Appears in every exam — AssII 2022 (PCM bit rate problem), EndSem 2022 (mean squared error derivation), EndSem 2024, EndSem 2025 (SNR for 256-level quantizer). Both block diagram AND SNR expression are required.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 7/8 papers</span>
+      <span class="evidence-tag"><i class="ti ti-star"></i> Both theory + numerical</span>
+      <span class="evidence-tag"><i class="ti ti-shield-check"></i> High-value scorer</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Delta modulation — granular noise, slope overload, ADM</span>
+      <span class="badge badge-danger">75%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>75%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill high" style="width:75%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 2.5 hours</span>
+      <span class="meta-item"><i class="ti ti-bulb"></i> Concept-heavy</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Easy–Medium</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      Delta modulation working, types of noise, and ADM improvement — Part A question in 5/8 papers, Part B in 3 papers. EndSem 2025 has it as 13-mark question (describe DM, noise types, improvement scheme).
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 5/8 papers</span>
+      <span class="evidence-tag"><i class="ti ti-books"></i> Memory-heavy</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">DPCM — encoder, decoder, bit rate reduction derivation</span>
+      <span class="badge badge-warning">72%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>72%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill med" style="width:72%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 3 hours</span>
+      <span class="meta-item"><i class="ti ti-math"></i> Derivation + Concept</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Medium</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      DPCM encoder/decoder block diagram + bit rate reduction derivation compared to PCM — appears in EndSem 2022, 2024, AssII 2022. Usually an OR option to PCM question.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 4/8 papers</span>
+      <span class="evidence-tag"><i class="ti ti-git-branch"></i> Usually OR with PCM</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Quantization — SNR formula, 8-bit vs n-bit numericals</span>
+      <span class="badge badge-warning">70%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>70%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill med" style="width:70%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 1.5 hours</span>
+      <span class="meta-item"><i class="ti ti-calculator"></i> Formula + Quick numerical</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Easy</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      "PCM with 8-bit quantizer, find output SNR" — quick 2-mark Part A in 4 papers. Also appears as part of longer PCM questions. SNR_o = 1.76 + 6.02n dB formula is essential.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 4/8 papers</span>
+      <span class="evidence-tag"><i class="ti ti-zap"></i> Quick marks</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <p class="section-title">Most probable 16-mark questions</p>
+  <div class="card">
+    <ul class="question-list">
+      <li><span class="q-num">1.</span>With neat schematic diagram, illustrate the PCM communication system. Derive the expression for output SNR of the uniform quantizer. (2025 exact — 13 marks)</li>
+      <li><span class="q-num">2.</span>Describe the working concept of Delta Modulator. Illustrate the types of noise that occur and suggest a scheme to overcome them (ADM). (2025 exact — 13 marks)</li>
+      <li><span class="q-num">3.</span>An analog signal of bandwidth 6 kHz is sampled at twice the Nyquist rate, each sample quantized using 256-level quantizer. Determine information rate and SNR required for error-free AWGN transmission. (2025 Part C — 7 marks)</li>
+    </ul>
+  </div>
+
+  <p class="section-title">Most probable 8-mark questions</p>
+  <div class="card">
+    <ul class="question-list">
+      <li><span class="q-num">1.</span>Compare forward and backward estimation of adaptive quantization (ADPCM). Explain companding laws (μ-law and A-law) for speech signals.</li>
+      <li><span class="q-num">2.</span>In a PCM system, a sampler operates at 8000 samples/sec and encoder converts each to 12-bit word. If input is sinusoidal signal with amplitude 1V, calculate SNR and bit rate.</li>
+    </ul>
+  </div>
+
+  <p class="section-title">Low priority topics</p>
+  <div class="skip-item"><i class="ti ti-minus-circle" aria-hidden="true"></i>Companding laws detailed circuit implementation — rarely full question</div>
+  <div class="skip-item"><i class="ti ti-minus-circle" aria-hidden="true"></i>Non-uniform quantization detailed derivation — only appears qualitatively</div>
+</div>
+
+<!-- UNIT 4 TAB -->
+<div id="tab-unit4" class="tab-panel">
+  <p class="section-title">Most important topics</p>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Huffman coding — code words, efficiency calculation</span>
+      <span class="badge badge-danger">85%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>85%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill high" style="width:85%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 3 hours</span>
+      <span class="meta-item"><i class="ti ti-calculator"></i> Problem-solving</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Medium</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      Standard DMS with 6 symbols (A,B,C,D,E,F) and given probabilities — appears in EndSem 2024 (Huffman) and EndSem 2025 (Shannon-Fano). Alternate between the two coding algorithms each year. Both must be prepared.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 5/8 papers</span>
+      <span class="evidence-tag"><i class="ti ti-switch"></i> Alternates with Shannon-Fano</span>
+      <span class="evidence-tag"><i class="ti ti-shield-check"></i> 13-mark full question</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Shannon-Fano coding — code words, efficiency</span>
+      <span class="badge badge-danger">85%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>85%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill high" style="width:85%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 2 hours</span>
+      <span class="meta-item"><i class="ti ti-calculator"></i> Problem-solving</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Medium</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      Appeared in EndSem 2025 as 13-mark question. Since Huffman appeared in 2024, Shannon-Fano has high probability for next exam. Same numerical format — 6 symbols, compute efficiency.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-arrow-up"></i> High upcoming probability</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">BSC — channel capacity, channel matrix, mutual information</span>
+      <span class="badge badge-warning">75%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>75%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill high" style="width:75%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 3 hours</span>
+      <span class="meta-item"><i class="ti ti-math"></i> Derivation + Numerical</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Hard</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      Binary channel with transition matrix, joint probabilities, channel capacity — appears in EndSem 2024 (13 marks), AssI 2022. BSC capacity derivation with α=0.5, p=0.3 type problems are standard.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 4/8 papers</span>
+      <span class="evidence-tag"><i class="ti ti-calculator"></i> Numerical heavy</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Entropy — properties, calculation for discrete source</span>
+      <span class="badge badge-warning">70%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>70%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill med" style="width:70%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 1.5 hours</span>
+      <span class="meta-item"><i class="ti ti-books"></i> Formula + Concept</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Easy–Medium</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      "State any two properties of entropy" and "determine entropy of binary source with equal probability" — Part A fixtures in 4/8 papers. Quick 2-mark scorers.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 4/8 papers</span>
+      <span class="evidence-tag"><i class="ti ti-zap"></i> Easy Part A</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Binary Erasure Channel — transition matrix</span>
+      <span class="badge badge-warning">65%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>65%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill med" style="width:65%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 1 hour</span>
+      <span class="meta-item"><i class="ti ti-books"></i> Memory-heavy</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Easy</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      "Obtain channel transition matrix of Binary Erasure Channel" — appeared as Part A question in EndSem 2025. Quick 2-mark topic.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-zap"></i> 2-mark Part A</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <p class="section-title">Most probable 16-mark questions</p>
+  <div class="card">
+    <ul class="question-list">
+      <li><span class="q-num">1.</span>A DMS emits symbols {A,B,C,D,E,F} with probabilities {0.15, 0.2, 0.15, 0.25, 0.05, 0.2}. Apply Huffman coding algorithm and generate the dictionary of code words. Determine the coding efficiency. (2024 exact)</li>
+      <li><span class="q-num">2.</span>Consider a DMS emits symbols {A,B,C,D,E,F} with probabilities {0.1, 0.25, 0.15, 0.2, 0.1, 0.2}. Using Shannon-Fano coding algorithm, generate code words. Determine coding efficiency. (2025 exact)</li>
+      <li><span class="q-num">3.</span>Consider the binary channel given with P(x1)=P(x2)=0.5. Find: (a) channel transition matrix (b) probabilities P(y1) and P(y2) (c) joint probabilities P(x2,y1) and P(x1,y2). (2025 exact — 13 marks)</li>
+    </ul>
+  </div>
+
+  <p class="section-title">Most probable 8-mark questions</p>
+  <div class="card">
+    <ul class="question-list">
+      <li><span class="q-num">1.</span>Describe the binary symmetric channel. Derive its channel capacity. Determine capacity if α=0.5 and p=0.3.</li>
+      <li><span class="q-num">2.</span>State Shannon-Hartley theorem. A video clip is captured for 0.5 sec with 30 fps, each frame 10⁵ pixels with 512 equiprobable levels. Determine total symbols, average information per symbol, and data rate.</li>
+    </ul>
+  </div>
+
+  <p class="section-title">Low priority topics</p>
+  <div class="skip-item"><i class="ti ti-minus-circle" aria-hidden="true"></i>Lossless and deterministic channel analysis — appears only as 2-mark</div>
+  <div class="skip-item"><i class="ti ti-minus-circle" aria-hidden="true"></i>Source coding theorem proof — theory only, low marks</div>
+</div>
+
+<!-- UNIT 5 TAB -->
+<div id="tab-unit5" class="tab-panel">
+  <p class="section-title">Most important topics</p>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">NRZ/NRZ-Bipolar PSD derivation — bandwidth comparison</span>
+      <span class="badge badge-danger">83%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>83%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill high" style="width:83%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 4 hours</span>
+      <span class="meta-item"><i class="ti ti-math"></i> Derivation-heavy</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Hard</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      PSD derivation of NRZ polar/bipolar scheme with numerical bandwidth calculation — appears in EndSem 2025 (10 marks), EndSem 2024 (10+3 marks). If NRZ was in last paper, RZ comparison may appear this time.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 5/8 papers</span>
+      <span class="evidence-tag"><i class="ti ti-star"></i> High marks per question</span>
+      <span class="evidence-tag"><i class="ti ti-calculator"></i> Numerical required</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Raised cosine pulse shaping — bandwidth, roll-off factor</span>
+      <span class="badge badge-danger">78%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>78%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill high" style="width:78%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 2.5 hours</span>
+      <span class="meta-item"><i class="ti ti-calculator"></i> Formula-heavy + Numerical</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Medium</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      "Determine channel bandwidth required for 10 kbps with raised cosine pulse, roll-off 0.5" — Part A in EndSem 2025. Similar numericals appear in 4/8 papers. Nyquist ISI criterion must be understood.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 4/8 papers</span>
+      <span class="evidence-tag"><i class="ti ti-calculator"></i> Quick numerical</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Duobinary / modified duobinary encoding — precoder</span>
+      <span class="badge badge-warning">72%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>72%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill med" style="width:72%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 3 hours</span>
+      <span class="meta-item"><i class="ti ti-bulb"></i> Concept + Numerical encoding</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Medium–Hard</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      "Construct duobinary encoder output for binary stream {101101001} with precoder" — appears in EndSem 2025 (9 marks), EndSem 2024 (4 marks). Error propagation proof and block diagram are separate sub-questions.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 4/8 papers</span>
+      <span class="evidence-tag"><i class="ti ti-trending-up"></i> Increasing trend</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">NRZ polar + Manchester waveform drawing</span>
+      <span class="badge badge-warning">70%</span>
+    </div>
+    <div class="prob-bar-wrap">
+      <div class="prob-bar-label"><span>Probability</span><span>70%</span></div>
+      <div class="prob-bar"><div class="prob-bar-fill med" style="width:70%"></div></div>
+    </div>
+    <div class="meta-row">
+      <span class="meta-item"><i class="ti ti-clock"></i> 1.5 hours</span>
+      <span class="meta-item"><i class="ti ti-pencil"></i> Drawing + Memory</span>
+      <span class="meta-item"><i class="ti ti-flame"></i> Easy</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-secondary);">
+      Draw waveform of binary sequence using NRZ polar and Manchester coding + comment on bandwidth — appeared in EndSem 2024 Part C (6 marks). Easy scoring if prepared.
+    </div>
+    <div style="margin-top:6px;">
+      <span class="evidence-tag"><i class="ti ti-repeat"></i> 3/8 papers</span>
+      <span class="evidence-tag"><i class="ti ti-zap"></i> Easy marks</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <p class="section-title">Most probable 16-mark questions</p>
+  <div class="card">
+    <ul class="question-list">
+      <li><span class="q-num">1.</span>Derive the power spectral density of NRZ polar coding scheme. If data is transmitted at 5 kbps, determine bandwidth required. Also find minimum bandwidth required for 1200 bps baseband transmission with raised cosine pulse (roll-off 0.7). (2025 exact)</li>
+      <li><span class="q-num">2.</span>Explain duobinary signaling with precoder. Consider binary data stream {001101001} applied to duobinary encoder with precoder. Construct encoder output and decoded output. Prove error is not propagated. (2025 exact)</li>
+      <li><span class="q-num">3.</span>Derive PSD of NRZ bipolar coding transmitted at 10 kbps. Compare bandwidth with RZ bipolar scheme. Draw the waveforms for sequence {1 1 0 0 1 0 1} using NRZ-polar and Manchester coding. Comment on bandwidth requirements. (2024 pattern)</li>
+    </ul>
+  </div>
+
+  <p class="section-title">Most probable 8-mark questions</p>
+  <div class="card">
+    <ul class="question-list">
+      <li><span class="q-num">1.</span>List the preferred characteristics of line codes. State what ISI is and explain Nyquist criterion for zero ISI. Determine channel bandwidth for 10 kbps at roll-off 0.5.</li>
+      <li><span class="q-num">2.</span>Explain the features of line codes used in digital communication systems. Differentiate duo binary and modified duo binary encoder.</li>
+    </ul>
+  </div>
+
+  <p class="section-title">Low priority topics</p>
+  <div class="skip-item"><i class="ti ti-minus-circle" aria-hidden="true"></i>B8ZS and HDB3 substitution codes — very rarely tested as full question</div>
+  <div class="skip-item"><i class="ti ti-minus-circle" aria-hidden="true"></i>Eye pattern detailed analysis — only theory, 2-mark level</div>
+</div>
+
+<!-- STRATEGY TAB -->
+<div id="tab-strategy" class="tab-panel">
+  <p class="section-title">Fastest units to complete</p>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Unit IV — Information Theory</span>
+        <span class="badge badge-success">Fastest</span>
+      </div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-top:6px;">
+        3–4 hours to cover Huffman + Shannon-Fano numericals. Fixed algorithm, predictable problem format. High ROI.
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Unit III — Pulse Modulation</span>
+        <span class="badge badge-accent">4–5 hrs</span>
+      </div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-top:6px;">
+        PCM block diagram + SNR formula + Delta modulation covers 80% of exam content. Formulaic and consistent.
+      </div>
+    </div>
+  </div>
+
+  <p class="section-title">Hardest topics (high effort, can skip if pressed)</p>
+  <div class="card">
+    <ul class="question-list">
+      <li><span class="q-num"><i class="ti ti-alert-triangle" style="color:var(--warning-text);font-size:14px;" aria-hidden="true"></i></span>FM wideband spectrum derivation using Bessel function — Time: 5 hrs, but 13 marks guaranteed</li>
+      <li><span class="q-num"><i class="ti ti-alert-triangle" style="color:var(--warning-text);font-size:14px;" aria-hidden="true"></i></span>NRZ/PSD derivation — Time: 4 hrs, complex math but 10 marks</li>
+      <li><span class="q-num"><i class="ti ti-alert-triangle" style="color:var(--warning-text);font-size:14px;" aria-hidden="true"></i></span>BSC capacity derivation — Time: 3 hrs, moderate difficulty, 13 marks</li>
+    </ul>
+  </div>
+
+  <p class="section-title">Safest scoring topics (easy + high probability)</p>
+  <div class="card">
+    <ul class="question-list">
+      <li><span class="q-num"><i class="ti ti-shield-check" style="color:var(--success-text);font-size:14px;" aria-hidden="true"></i></span>Noise in cascaded systems (Friis formula) — 8 marks, medium difficulty, 85% probability</li>
+      <li><span class="q-num"><i class="ti ti-shield-check" style="color:var(--success-text);font-size:14px;" aria-hidden="true"></i></span>Huffman coding — 13 marks, fixed algorithm, 85% probability</li>
+      <li><span class="q-num"><i class="ti ti-shield-check" style="color:var(--success-text);font-size:14px;" aria-hidden="true"></i></span>Delta modulation theory — 8–13 marks, memory-based, 75% probability</li>
+      <li><span class="q-num"><i class="ti ti-shield-check" style="color:var(--success-text);font-size:14px;" aria-hidden="true"></i></span>Duobinary encoding numerical — 6–9 marks, fixed procedure, 72% probability</li>
+      <li><span class="q-num"><i class="ti ti-shield-check" style="color:var(--success-text);font-size:14px;" aria-hidden="true"></i></span>VSB justification (Part A, 2 marks) — 2 mins prep, 65% probability</li>
+    </ul>
+  </div>
+
+  <p class="section-title">Highest probability-to-effort ratio topics</p>
+  <div class="tip-card">
+    <strong><i class="ti ti-trophy" aria-hidden="true" style="font-size:13px;vertical-align:-1px;margin-right:4px;"></i>Maximum ROI topics — prepare these first</strong>
+    1. Cascaded noise figure (Friis) — 2 hrs prep → 8 marks, appears every paper<br>
+    2. Huffman + Shannon-Fano coding — 3 hrs prep → 13 marks, alternates every year<br>
+    3. PCM block diagram + SNR formula — 2 hrs prep → 6–8 marks in every exam<br>
+    4. Carson's rule numericals — 1 hr prep → 2–3 marks in Part A repeatedly<br>
+    5. Raised cosine bandwidth numericals — 1 hr prep → 2–3 marks every exam
+  </div>
+
+  <p class="section-title">Recommended study order (time-constrained)</p>
+  <div class="card">
+    <table class="priority-table">
+      <thead>
+        <tr>
+          <th>Order</th>
+          <th>Topic</th>
+          <th>Hours</th>
+          <th>Expected marks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="rank-num top">1</span></td>
+          <td>FM wideband spectrum + Bessel numericals (Unit II)</td>
+          <td>5 hrs</td>
+          <td>13–16 marks</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num top">2</span></td>
+          <td>AM signal analysis + envelope detector (Unit I)</td>
+          <td>4 hrs</td>
+          <td>13 marks</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num top">3</span></td>
+          <td>Huffman + Shannon-Fano coding (Unit IV)</td>
+          <td>3 hrs</td>
+          <td>13 marks</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num top">4</span></td>
+          <td>PCM block diagram + SNR + quantization (Unit III)</td>
+          <td>4 hrs</td>
+          <td>13 marks</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num top">5</span></td>
+          <td>Cascaded noise figure — Friis formula (Unit I)</td>
+          <td>2 hrs</td>
+          <td>8 marks</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num">6</span></td>
+          <td>NRZ PSD derivation + bandwidth numericals (Unit V)</td>
+          <td>4 hrs</td>
+          <td>10–13 marks</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num">7</span></td>
+          <td>PLL FM demodulation (Unit II)</td>
+          <td>3 hrs</td>
+          <td>8–13 marks</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num">8</span></td>
+          <td>Delta modulation + ADM (Unit III)</td>
+          <td>2.5 hrs</td>
+          <td>8–13 marks</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num">9</span></td>
+          <td>BSC channel capacity (Unit IV)</td>
+          <td>3 hrs</td>
+          <td>13 marks</td>
+        </tr>
+        <tr>
+          <td><span class="rank-num">10</span></td>
+          <td>Duobinary encoder numerical (Unit V)</td>
+          <td>3 hrs</td>
+          <td>9–13 marks</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="section-title">Part C (15 marks) compulsory question prediction</p>
+  <div class="highlight-box">
+    <div class="highlight-box-title"><i class="ti ti-target" aria-hidden="true" style="font-size:14px;vertical-align:-2px;margin-right:4px;"></i> Part C prediction (Q.No. 16 is compulsory)</div>
+    <div style="font-size:13px;color:var(--text-secondary);margin-top:4px;">
+      <strong style="color:var(--text-primary);">Pattern:</strong> Part C is a combined multi-part problem testing 2–3 units together.<br><br>
+      <strong style="color:var(--text-primary);">2022 pattern:</strong> FM spectrum (8 marks) + FM-to-FM conversion scheme (7 marks)<br>
+      <strong style="color:var(--text-primary);">2024 pattern:</strong> Video source entropy + NRZ/Manchester waveform + Shannon channel bandwidth<br>
+      <strong style="color:var(--text-primary);">2025 pattern:</strong> Cascade amplifier noise figure (8 marks) + PCM quantizer SNR (7 marks)<br><br>
+      <strong style="color:var(--text-primary);">Most probable 2025–26 Part C:</strong> FM wideband spectrum numerical (Bessel) + PCM/source coding combined problem, OR noise figure cascade + Shannon capacity problem. Prepare FM + PCM numericals as priority for Part C.
+    </div>
+  </div>
+
+  <p class="section-title">Part A (2-mark) most probable questions</p>
+  <div class="card">
+    <ul class="question-list">
+      <li><span class="q-num">1.</span>Compare AM, DSBSC and SSB in terms of power/bandwidth. (Appears 4/8 papers)</li>
+      <li><span class="q-num">2.</span>Apply Carson's rule to find FM bandwidth given modulation index and message bandwidth. (Appears 5/8 papers)</li>
+      <li><span class="q-num">3.</span>A PCM system designed with n-bit quantizer, find output SNR. (Appears 4/8 papers)</li>
+      <li><span class="q-num">4.</span>State any two properties of entropy. (Appears 3/8 papers)</li>
+      <li><span class="q-num">5.</span>Determine channel bandwidth for 10 kbps with raised cosine pulse, roll-off 0.5. (Appears 3/8 papers)</li>
+      <li><span class="q-num">6.</span>What is ISI? How does Nyquist criterion eliminate it? (Appears 3/8 papers)</li>
+      <li><span class="q-num">7.</span>Find image frequency of AM superheterodyne receiver given RF and IF. (Appears 4/8 papers)</li>
+      <li><span class="q-num">8.</span>State difference between duo binary and modified duo binary encoder. (Appears 3/8 papers)</li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+const ctx = document.getElementById('weightChart').getContext('2d');
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['Unit I — AM', 'Unit II — FM/PM', 'Unit III — Pulse', 'Unit IV — Info', 'Unit V — Baseband'],
+    datasets: [
+      {
+        label: 'Avg marks asked (EndSem)',
+        data: [22, 22, 20, 18, 18],
+        backgroundColor: ['#2a78d6','#1baf7a','#eda100','#4a3aa7','#e34948'],
+        borderRadius: 4,
+        borderSkipped: false
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ' ' + ctx.parsed.y + ' marks (' + ctx.parsed.y + '%)'
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 30,
+        ticks: {
+          color: '#898781',
+          font: { size: 11 },
+          callback: v => v + '%'
+        },
+        grid: { color: 'rgba(137,135,129,0.15)' }
+      },
+      x: {
+        ticks: { color: '#898781', font: { size: 11 }, maxRotation: 20 },
+        grid: { display: false }
+      }
+    }
+  }
+});
+
+document.querySelectorAll('.prob-bar-fill').forEach(el => {
+  const w = el.style.width;
+  el.style.width = '0';
+  requestAnimationFrame(() => {
+    setTimeout(() => { el.style.width = w; }, 200);
+  });
+});
+</script>
+</body>
+</html>
