@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analog Circuits Design — APR/MAY 2026 Prediction</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f9fafb;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #111827;
+}
+
+.app {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 16px 12px;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+  border-radius: 16px;
+  padding: 20px 22px;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.header-label {
+  font-size: 11px;
+  color: #a5b4fc;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.header h1 {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.header p {
+  margin: 6px 0 0;
+  color: #c7d2fe;
+  font-size: 13px;
+}
+
+.paper-tags {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.paper-tag {
+  background: #ffffff22;
+  border: 1px solid #ffffff33;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* Navigation */
+.nav {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.nav button {
+  padding: 7px 14px;
+  border-radius: 9px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 12px;
+  background: white;
+  color: #374151;
+  box-shadow: 0 1px 4px #0002;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.nav button:hover {
+  transform: translateY(-1px);
+}
+
+/* Unit */
+.unit-panel {
+  border-radius: 14px;
+  padding: 18px;
+  margin-bottom: 24px;
+  border: 2px solid;
+}
+
+.unit-title {
+  margin-bottom: 14px;
+}
+
+.unit-badge {
+  color: white;
+  border-radius: 8px;
+  padding: 3px 10px;
+  font-weight: 700;
+  font-size: 12px;
+  margin-right: 8px;
+  display: inline-block;
+}
+
+.unit-name {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.unit-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.unit-tabs button {
+  padding: 5px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  background: white;
+  color: #374151;
+  box-shadow: 0 1px 3px #0001;
+  transition: all 0.2s;
+}
+
+/* Topic Card */
+.topic-card {
+  border: 1.5px solid;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 1px 4px #0001;
+}
+
+.topic-header {
+  padding: 12px 14px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.topic-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.topic-title {
+  font-weight: 600;
+  font-size: 14px;
+  flex: 1;
+  line-height: 1.4;
+}
+
+.arrow {
+  font-size: 18px;
+  color: #9ca3af;
+}
+
+.prob-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.prob-track {
+  flex: 1;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.prob-fill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width 0.6s ease;
+}
+
+.prob-value {
+  font-weight: 700;
+  font-size: 13px;
+  min-width: 36px;
+  text-align: right;
+}
+
+.meta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.badge {
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.easy {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.medium {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.hard {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.time-badge {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.type-badge {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.topic-reason {
+  padding: 10px 14px 14px;
+  border-top: 1px solid;
+  background: #fafafa;
+  font-size: 13px;
+  color: #374151;
+  line-height: 1.6;
+  display: none;
+}
+
+.topic-card.open .topic-reason {
+  display: block;
+}
+
+/* Questions */
+.question-intro {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+.question {
+  background: white;
+  border: 1.5px solid;
+  border-left: 4px solid;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #1f2937;
+}
+
+.question-number {
+  font-weight: 700;
+}
+
+/* Priority */
+.priority-section {
+  margin-bottom: 12px;
+}
+
+.priority-title {
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.priority-item {
+  border-radius: 7px;
+  padding: 7px 12px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.high-priority .priority-title {
+  color: #065f46;
+}
+
+.high-priority .priority-item {
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  color: #14532d;
+}
+
+.low-priority .priority-title {
+  color: #991b1b;
+}
+
+.low-priority .priority-item {
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #7f1d1d;
+}
+
+/* Summary */
+.summary-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 16px;
+}
+
+.summary-box {
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.summary-heading {
+  font-weight: 800;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* Top 20 */
+.top20 {
+  background: linear-gradient(135deg, #1e1b4b, #312e81);
+  color: white;
+  padding: 18px;
+}
+
+.top20 .summary-heading {
+  color: #c7d2fe;
+}
+
+.top20-item {
+  background: #ffffff14;
+  border-radius: 7px;
+  padding: 6px 12px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.top20-number {
+  color: #818cf8;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* Safest */
+.safest {
+  background: #f0fdf4;
+  border: 2px solid #86efac;
+}
+
+.safest .summary-heading {
+  color: #14532d;
+}
+
+.scoring-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.scoring-item {
+  background: white;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 12px;
+}
+
+.unit-mini {
+  color: white;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 10px;
+  font-weight: 700;
+  margin-right: 5px;
+}
+
+.marks {
+  color: #6b7280;
+  margin-left: 5px;
+}
+
+/* Fastest */
+.fastest {
+  background: #fff7ed;
+  border: 2px solid #fed7aa;
+}
+
+.fastest .summary-heading {
+  color: #7c2d12;
+}
+
+.fastest-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  background: white;
+  border-radius: 8px;
+  padding: 7px 12px;
+  border: 1px solid #fed7aa;
+}
+
+.rank {
+  background: #ea580c;
+  color: white;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-weight: 700;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.fastest-reason {
+  flex: 1;
+}
+
+.fastest-reason strong {
+  font-size: 13px;
+}
+
+.fastest-reason span {
+  color: #6b7280;
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+.study-time {
+  background: #fef3c7;
+  color: #92400e;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* Hardest */
+.hardest {
+  background: #fff1f2;
+  border: 2px solid #fecdd3;
+}
+
+.hardest .summary-heading {
+  color: #881337;
+}
+
+.hardest-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  background: white;
+  border-radius: 8px;
+  padding: 7px 12px;
+  border: 1px solid #fecdd3;
+  font-size: 12px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .app {
+    padding: 10px 8px;
+  }
+
+  .header {
+    padding: 18px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+  }
+
+  .scoring-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fastest-item {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .study-time {
+    margin-left: 34px;
+  }
+
+  .unit-name {
+    display: inline;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-label">
+      EC23C02 • ANNA UNIVERSITY • APR/MAY 2026 PREDICTION
+    </div>
+
+    <h1>Analog Circuits Design</h1>
+
+    <p>
+      Based on 8 papers analyzed: 3 ESE + Internal Assessments + Older Pattern Papers
+    </p>
+
+    <div class="paper-tags">
+      <span class="paper-tag">NOV/DEC 2025</span>
+      <span class="paper-tag">APR/MAY 2025</span>
+      <span class="paper-tag">NOV/DEC 2024</span>
+      <span class="paper-tag">Internal Retest</span>
+      <span class="paper-tag">R15 &amp; R19 Assessments</span>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="nav" id="mainNav"></nav>
+
+  <!-- Content -->
+  <main id="content"></main>
+
+</div>
+
+<script>
+
+/* =========================================================
+   DATA
+========================================================= */
+
+const units = [
+{
+id:1,
+name:"Biasing of Discrete BJT & MOSFET",
+color:"#4f46e5",
+bg:"#eef2ff",
+topics:[
+{
+name:"Voltage Divider Bias — Thevenin Analysis (NPN)",
+prob:88,
+toughness:"Medium",
+time:"3 hrs",
+type:"Problem-solving-heavy",
+reason:"Appeared in NOV/DEC 2025 Q11a (RTH, VTH, IBQ, ICQ, VCEQ + β-change repeat), NOV/DEC 2024 Part A Q1, and multiple assessments. Core design foundation; always tested."
+},
+{
+name:"Self-Bias Circuit Design with Temperature Stability",
+prob:85,
+toughness:"Hard",
+time:"4 hrs",
+type:"Problem-solving-heavy",
+reason:"APR/MAY 2025 Q11b (2N3565, 25–65°C, ΔIc/Ic≤15%), Internal Retest Q10, R15 assessment. Always appears in APR papers. L6 Creating-level; highest complexity in Unit I."
+},
+{
+name:"PNP Transistor Biasing / Design",
+prob:80,
+toughness:"Medium",
+time:"2.5 hrs",
+type:"Problem-solving-heavy",
+reason:"APR/MAY 2025 Q11a (PNP bias-stable design with VECO, ICO specs), NOV/DEC 2025 Q11b, Internal Retest Q3/Q4. Alternates with NPN voltage divider across papers."
+},
+{
+name:"Stability Factor S — Derivation + Numerical",
+prob:75,
+toughness:"Medium",
+time:"2 hrs",
+type:"Formula-heavy",
+reason:"Internal Retest 8a/8b (derive S for different circuits), NOV/DEC 2025 Part A Q2. Fundamental stability analysis always examined."
+},
+{
+name:"DC Load Line + Q-Point Plotting",
+prob:95,
+toughness:"Easy",
+time:"1.5 hrs",
+type:"Problem-solving-heavy",
+reason:"100% frequency — appears in every single paper. Part A staple (2 marks) and Part B sub-part. Non-negotiable preparation."
+},
+{
+name:"MOSFET DC Bias Analysis (VD, VGS, region of operation)",
+prob:70,
+toughness:"Medium",
+time:"2 hrs",
+type:"Formula-heavy",
+reason:"NOV/DEC 2024 Part A Q5 (VTN=0.6V, μnCox(W/L)=400, find VD), NOV/DEC 2025 Part A Q1, APR/MAY 2025 Part A Q6. Consistent Part A occupant."
+}
+],
+q16:[
+"Design the self-bias circuit for a Si transistor to meet specifications over 25°C to 65°C: VCC=20V, ΔIc/Ic≤15%, VBE(25°C)=650±50mV, β spread 150–600 at Ic=1mA. Find R1, R2, RC, RE. [Expected: 13 marks, CO1, L6]",
+"For a PNP bias-stable circuit with V⁺=+9V, V⁻=−9V, design for VECO=7V, ICO=0.5mA, VRE≈1V, β=80. Find R1, R2, RC, RE and verify bias stability. [Expected: 13 marks, CO1, L4]",
+"For a voltage divider biased NPN circuit with VCC=3.3V, RE=500Ω, RC=4kΩ, R1=85kΩ, R2=35kΩ, β=150: (a) Find RTH, VTH (b) Find IBQ, ICQ, VCEQ (c) Repeat if β=75 and compare stability. [Expected: 13 marks, CO1, L4]"
+],
+q8:[
+"Derive the stability factor S for the self-bias (voltage divider) circuit. Find S if R1=60kΩ, R2=15kΩ, RE=1kΩ, β=100.",
+"For an emitter-bias circuit with RL=2.5kΩ, RE=0.5kΩ, β=99, IBQ=0.04mA, VCC=24V: Find Q-point coordinates. Determine RB if mid-point bias is provided. Find stability factor S."
+],
+highPri:[
+"Self-bias design with temperature specs — highest difficulty, hardest to improvise",
+"DC load line & Q-point — guaranteed 2 marks in Part A minimum",
+"Voltage divider NPN (Thevenin method) — complete numerical analysis"
+],
+lowPri:[
+"Fixed bias circuit alone (only asked as sub-part of larger numericals now)",
+"Collector feedback bias (not seen in recent ESE papers)"
+]
+},
+
+{
+id:2,
+name:"Discrete BJT Amplifiers",
+color:"#059669",
+bg:"#ecfdf5",
+topics:[
+{
+name:"Emitter Follower (Common Collector) — Derivation + Numerical",
+prob:95,
+toughness:"Medium",
+time:"3 hrs",
+type:"Formula-heavy",
+reason:"Appeared as Q12a in EVERY ESE paper: APR/MAY 2025, NOV/DEC 2024, NOV/DEC 2025. Also in R15 Mid Test and R19 Assessment. Most reliable prediction in entire paper."
+},
+{
+name:"Darlington Amplifier — Derivation (AVS, AIS, RIN, RO)",
+prob:82,
+toughness:"Medium",
+time:"2.5 hrs",
+type:"Formula-heavy",
+reason:"Q12b in NOV/DEC 2024 and NOV/DEC 2025. Also in R15 Mid Test (derive with equivalent circuit). Steady Part B occupant alternating with multistage amplifiers."
+},
+{
+name:"Common Emitter Small Signal Analysis (Av, Ai, Ri, Ro)",
+prob:72,
+toughness:"Medium",
+time:"2.5 hrs",
+type:"Problem-solving-heavy",
+reason:"R19 Assessment Q9a (h-parameter full CE analysis), R15 Mid Test Q2, NOV/DEC 2024 internal references, APR/MAY 2025 Q12b (multistage with CE). Core amplifier — might come as alternate."
+},
+{
+name:"CMRR of BJT Differential Amplifier (Derivation)",
+prob:90,
+toughness:"Hard",
+time:"3 hrs",
+type:"Concept-heavy + Formula-heavy",
+reason:"Appears as Part A (2 marks) in EVERY ESE paper. APR/MAY 2025 Q15a (full differential pair derivation). NOV/DEC 2025 Part C Q16. Definition always in Part A."
+},
+{
+name:"Multistage / Cascode BJT — Small Signal with Ris",
+prob:60,
+toughness:"Hard",
+time:"3 hrs",
+type:"Problem-solving-heavy",
+reason:"APR/MAY 2025 Q12b (multistage, overall current gain β, Ris derivation). R19 Assessment Q8a (output resistance of multistage). Less frequent than Emitter Follower."
+},
+{
+name:"AC Loadline + Voltage Swing Limitations",
+prob:65,
+toughness:"Medium",
+time:"2 hrs",
+type:"Problem-solving-heavy",
+reason:"APR/MAY 2025 Part A Q3 (max Vpp for CE with VCEQ=5V), Internal Retest Q2, R19 Assessment Q4/Q10i. Important Part A question concept."
+}
+],
+q16:[
+"i) Derive the small signal voltage gain, input resistance and output resistance of the emitter-follower circuit (Fig. shown). ii) Calculate Ri and Ro. Assume Rs=0, β=100, VBE(on)=0.7V, VA=80V. [13 marks, CO2, L3]",
+"i) Draw the small signal equivalent circuit for the Darlington amplifier and derive AVS, AIS, RIN and RO. ii) Assume β1=β2=100, VA=∞ and calculate numerical values for a given circuit. [13 marks, CO2, L4]",
+"i) Draw the small signal equivalent circuit for the multistage BJT amplifier (Fig.). Derive the expression for the overall small signal current gain β and input resistance Ris. ii) With β=100, VA=∞, determine Ris and Ro. [13 marks, CO2, L3]"
+],
+q8:[
+"Derive expressions for voltage gain Av, current gain Ai, input resistance Ri, and output resistance Ro of a Common Collector (Emitter Follower) configuration using AC analysis.",
+"Find CMRR if differential gain = 300 and common mode gain = 0.2. Also, define CMRR and state how to improve it."
+],
+highPri:[
+"Emitter Follower (Q12a) — CERTAIN, prepare both derivation and numerical",
+"CMRR definition + calculation — Part A in EVERY paper",
+"Darlington derivation — appeared in last 2 consecutive ESE papers"
+],
+lowPri:[
+"Common Base amplifier standalone derivation (only in Part A as 2-mark question)",
+"Cascaded CE full analysis (rare standalone; may come as sub-part)"
+]
+},
+
+{
+id:3,
+name:"Discrete MOSFET Amplifiers",
+color:"#d97706",
+bg:"#fffbeb",
+topics:[
+{
+name:"Source Follower (Common Drain) — Derivation + Numerical",
+prob:80,
+toughness:"Medium",
+time:"3 hrs",
+type:"Formula-heavy",
+reason:"Q13a in NOV/DEC 2024 and NOV/DEC 2025. Also R19 Assessment Q6b, R15 Mid Test. Consistently paired with Common Gate in the 13a slot. APR papers shift to CS design."
+},
+{
+name:"Common Gate Amplifier — Derivation + Numerical",
+prob:78,
+toughness:"Medium",
+time:"3 hrs",
+type:"Formula-heavy",
+reason:"Q13b in NOV/DEC 2024 and NOV/DEC 2025 consistently. R15 Mid Test Q3. NOV papers reliably set Source Follower + Common Gate as the 13a/13b pair."
+},
+{
+name:"Common Source Amplifier Design (R1, R2, RD design + voltage gain)",
+prob:82,
+toughness:"Hard",
+time:"3.5 hrs",
+type:"Problem-solving-heavy",
+reason:"APR/MAY 2025 Q13a (design R1, R2, RD for IDQ=2mA, VDD=12V, VTN=1V, W/L=25), R15 Mid Test (design CS without feedback, IDQ=0.5mA), R19 assessment Q7. APR papers heavily favor this."
+},
+{
+name:"Cascode MOSFET Amplifier Design",
+prob:70,
+toughness:"Hard",
+time:"3 hrs",
+type:"Problem-solving-heavy",
+reason:"APR/MAY 2025 Q13b (cascode circuit, IDQ=5mA, VDSQ=3.5V, find RD and small signal gain). R15 Unit 4 Assessment. Complex design; APR paper tendency."
+},
+{
+name:"MOSFET Differential Amplifier (CMRR, differential gain, common-mode gain)",
+prob:93,
+toughness:"Hard",
+time:"4 hrs",
+type:"Formula-heavy + Problem-solving-heavy",
+reason:"Part C Q16 in EVERY END SEMESTER EXAM. APR/MAY 2025 Part C (design + CMRR), NOV/DEC 2025 Part C, R15 Unit 5 Assessment (full CMRR calculation with Kn, Kp, λ). The most reliable 15-mark question."
+},
+{
+name:"MOSFET VD / Operating Region / Drain Current Calculation",
+prob:85,
+toughness:"Easy",
+time:"1 hr",
+type:"Formula-heavy",
+reason:"NOV/DEC 2024 Part A Q5, NOV/DEC 2025 Part A Q5, APR/MAY 2025 Part A Q6. Guaranteed 2-mark Part A question in every paper."
+}
+],
+q16:[
+"Design the bias resistors (R1, R2) and drain resistor RD for the common-source NMOS amplifier such that IDQ=2mA and Q-point is in the middle of saturation region. VDD=12V, R1||R2=100kΩ, VTN=1V, k'n=80μA/V², W/L=25, λ=0.015V⁻¹. Determine the resulting small-signal voltage gain. [13 marks, CO3, L4]",
+"i) Derive the expressions for voltage gain, input and output impedance of the Source Follower. ii) Calculate for VDD=12V, R1=162kΩ, R2=463kΩ, RS=0.75kΩ, VTN=1.5V, Kn=4mA/V², λ=0.01V⁻¹. [13 marks, CO3, L4]",
+"i) Derive expressions for voltage gain, input and output impedance of Common Gate amplifier. ii) Consider V⁺=5V, V⁻=−5V, RS=4kΩ, RD=2kΩ, RL=4kΩ, RG=50kΩ, Kp=1mA/V², VTP=−0.8V, λ=0. Draw small-signal circuit and find Av and Ri. [13 marks, CO3, L4]"
+],
+q8:[
+"For the MOSFET NMOS amplifier shown, VTN=0.6V, μnCox(W/L)=400μA/V², λ=0. Determine VD. Then calculate gm and find small-signal voltage gain.",
+"Derive an expression for the voltage gain of a CG amplifier is built using MOSFET whose gm=5mA/V and ro=100kΩ and RD=5kΩ. Calculate the mid-band gain."
+],
+highPri:[
+"MOSFET differential amplifier (Part C) — appears in 100% of end semester exams",
+"Common Source design — dominant in APR papers; very likely for APR/MAY 2026",
+"Source Follower + Common Gate pair — strong NOV paper pattern"
+],
+lowPri:[
+"Voltage swing limitations for MOSFET CS (conceptually asked, not full derivation)",
+"PMOS standalone analysis (only seen in older assessments, minor probability)"
+]
+},
+
+{
+id:4,
+name:"Frequency Analysis of BJT & MOSFET Amplifiers",
+color:"#dc2626",
+bg:"#fef2f2",
+topics:[
+{
+name:"Short Circuit Current Gain, fα, fβ, fT — Derivation",
+prob:92,
+toughness:"Hard",
+time:"3.5 hrs",
+type:"Formula-heavy",
+reason:"Q14a in APR/MAY 2025, Q14b in NOV/DEC 2024 and NOV/DEC 2025. R15 Unit 4 Assessment. 5 occurrences across all papers. THE most consistent Unit IV question."
+},
+{
+name:"Low Frequency Response of CE/BJT Amplifier (CC, CE, Cs poles)",
+prob:88,
+toughness:"Hard",
+time:"3 hrs",
+type:"Problem-solving-heavy",
+reason:"Q14a in NOV/DEC 2024 and NOV/DEC 2025 (both: evaluate total low-frequency response with complete numerical). R15 Unit 4 Assessment Q5 (cutoff due to C5). Very consistent."
+},
+{
+name:"High Frequency Analysis of CS MOSFET (Miller Capacitance, fH)",
+prob:72,
+toughness:"Hard",
+time:"3 hrs",
+type:"Formula-heavy",
+reason:"APR/MAY 2025 Q14b (draw HF equivalent circuit, derive voltage gain as function of frequency, Miller capacitance, upper corner frequency). R15 Unit 4 Assessment Q2 (Common Gate HF)."
+},
+{
+name:"Miller Effect Definition + Miller Capacitance Calculation",
+prob:95,
+toughness:"Easy",
+time:"30 min",
+type:"Memory-heavy",
+reason:"Part A in EVERY ESE paper (NOV/DEC 2025 Q8, APR/MAY 2025 Q7, NOV/DEC 2024 Q8). Guaranteed 2-mark question; never skip this definition."
+},
+{
+name:"fβ and Cπ Calculation from given parameters",
+prob:90,
+toughness:"Easy",
+time:"1 hr",
+type:"Formula-heavy",
+reason:"APR/MAY 2025 Part A Q8 (β0=120, Cπ=10pF, Cμ=2pF, find fβ), NOV/DEC 2024 Part A Q7 & Q8 (CC=2μF lower cutoff, β0=120 Cμ=0.02pF find Cπ). Always a Part A question."
+},
+{
+name:"Unity Gain Bandwidth (fT) of BJT and MOSFET",
+prob:78,
+toughness:"Medium",
+time:"1.5 hrs",
+type:"Formula-heavy",
+reason:"Directly bundled with fα, fβ derivation in every paper. Must derive fT = gm/(2π(Cπ+Cμ)) and MOSFET equivalent. Always asked alongside cutoff frequencies."
+}
+],
+q16:[
+"Evaluate the total low-frequency response of the BJT amplifier shown. Transistor Q-point values: IC=1.6mA, β=100, VA=70V, rπ=1.62kΩ, ro=43.75kΩ, gm=61.54mS. Identify the pole frequencies due to each coupling capacitor and emitter bypass capacitor. [13 marks, CO4, L5]",
+"Derive the expression for the short-circuit current gain of the BJT in the circuit. Derive the alpha cut-off frequency fα, beta cut-off frequency fβ, and the unity-gain bandwidth fT. [13 marks, CO4, L3]",
+"Draw the high-frequency equivalent circuit for the CS MOSFET amplifier circuit shown. Derive its voltage gain as a function of frequency. Derive the Miller capacitance and the upper corner frequency fH. [13 marks, CO4, L3]"
+],
+q8:[
+"A bipolar transistor is biased at ICQ=1mA and has parameters Cπ=10pF, Cμ=2pF, βo=120. Determine fβ.",
+"The parameters of BJT are β=150, Cπ=2pF, Cμ=0.3pF, ICQ=1mA. Calculate the cut-off frequencies fα, fβ and fT."
+],
+highPri:[
+"fα, fβ, fT derivation — appeared in every Unit IV Part B slot",
+"Miller effect definition — guaranteed Part A 2-mark question",
+"Low frequency response — appeared in last 2 consecutive NOV papers"
+],
+lowPri:[
+"3dB frequency of cascode circuit detailed numerical (only in R15 assessment, rare in ESE)",
+"Detailed pole-zero analysis of HF BJT (only sub-part of larger question)"
+]
+},
+
+{
+id:5,
+name:"IC MOSFET Amplifiers",
+color:"#7c3aed",
+bg:"#f5f3ff",
+topics:[
+{
+name:"Differential Amplifier with Active Load (MOSFET/BJT) — Working + Derivation",
+prob:92,
+toughness:"Hard",
+time:"3 hrs",
+type:"Concept-heavy + Formula-heavy",
+reason:"Q15b in NOV/DEC 2024 AND NOV/DEC 2025 (identical question: 'explain working and advantages of differential amplifier with active load'). 100% consistency in NOV papers."
+},
+{
+name:"Cascode Current Source — Output Resistance + Working Principle",
+prob:88,
+toughness:"Hard",
+time:"3 hrs",
+type:"Formula-heavy",
+reason:"APR/MAY 2025 Q15b (output resistance of cascode current source derivation), NOV/DEC 2025 Part A Q10 (numerical: IREF=100μA, λ=0.01), R15 Unit 5. Q15a in NOV/DEC 2024. Appears every paper."
+},
+{
+name:"Wilson Current Source — Working, Construction, Systematic Offset Error",
+prob:78,
+toughness:"Medium",
+time:"2.5 hrs",
+type:"Concept-heavy",
+reason:"Q15a in NOV/DEC 2024 (explain working + construction), APR/MAY 2025 Q15a (derive input voltage, output voltage, systematic offset error, output resistance). Alternates with cascode in Q15a slot."
+},
+{
+name:"Two-Transistor NMOS Current Source (output current + output resistance)",
+prob:82,
+toughness:"Medium",
+time:"2 hrs",
+type:"Formula-heavy",
+reason:"APR/MAY 2025 Q15b part (i), NOV/DEC papers Part C (two-transistor MOSFET current source). R15 Unit 5 Assessment (calculate W/L of M1, M2). Very consistent in Part C and Part B."
+},
+{
+name:"Current Steering Circuits — Draw + Express Terminal Currents",
+prob:80,
+toughness:"Medium",
+time:"2 hrs",
+type:"Memory-heavy + Concept-heavy",
+reason:"APR/MAY 2025 Part A Q9 (sketch current steering + explain operation), R15 Unit 5 Assessment Q3 (draw with one sink and one source + expressions). Part A staple."
+},
+{
+name:"Properties of Current Mirror + Output Resistance of Cascade Mirror",
+prob:95,
+toughness:"Easy",
+time:"1 hr",
+type:"Memory-heavy",
+reason:"NOV/DEC 2024 Part A Q9 + Q10 (output resistance of cascade mirror + list properties). NOV/DEC 2025 Part A Q10 (calculate output resistance: IREF=100μA, λ=0.01, gm=0.5mA/V). CERTAIN Part A question."
+}
+],
+q16:[
+"i) Derive the expressions for input voltage, output voltage, systematic offset error and output resistance of the Wilson Current Source. ii) Derive output resistance of the cascode current source and show it is much larger than the basic two-transistor current source. [13 marks, CO5, L3]",
+"Explain the working principle, construction and advantages of a differential amplifier with active load. Derive expressions for differential mode gain, common mode gain and CMRR with active load vs resistive load. [13 marks, CO5, L4]",
+"i) Draw a basic two-transistor NMOS current source and derive the output current in terms of reference current and aspect ratio. ii) Derive the output resistance of the cascode current source configuration and show it is much larger than the basic current source. [13 marks, CO5, L3]"
+],
+q8:[
+"Draw a current steering circuit with one sink and one source terminal. Write expressions for all terminal currents in terms of reference current.",
+"Calculate the output resistance R0 of a cascode current source. Assume IREF=100μA, λ=0.01V⁻¹ for all transistors, and gm=0.5mA/V."
+],
+highPri:[
+"Differential amplifier with active load — appeared in last 2 NOV papers identically",
+"Properties of current mirror + output resistance calculation — guaranteed Part A",
+"Two-transistor NMOS current source — appears in both Part B and Part C"
+],
+lowPri:[
+"PMOS current source alone (sub-part; only old R15 assessment)",
+"CMOS common-drain with PMOS driver detail (Part A 2-mark; low full-derivation probability)"
+]
+}
+];
+
+
+/* =========================================================
+   SUMMARY DATA
+========================================================= */
+
+const summaryData = {
+
+safestScoring:[
+{topic:"DC Load Line + Q-point",unit:1,marks:"2–4 (Part A)"},
+{topic:"Miller Effect definition",unit:4,marks:"2 (Part A)"},
+{topic:"Properties of current mirror",unit:5,marks:"2 (Part A)"},
+{topic:"CMRR definition + value",unit:2,marks:"2 (Part A)"},
+{topic:"MOSFET drain current region",unit:3,marks:"2 (Part A)"},
+{topic:"fβ calculation from parameters",unit:4,marks:"2 (Part A)"},
+{topic:"Current steering circuit draw",unit:5,marks:"2 (Part A)"}
+],
+
+hardest:[
+{topic:"Self-bias design with temperature stability",unit:1},
+{topic:"BJT differential pair CMRR full derivation",unit:2},
+{topic:"MOSFET differential amplifier design + CMRR",unit:3},
+{topic:"Low frequency response + pole calculation",unit:4},
+{topic:"Wilson + Cascode current source combined",unit:5}
+],
+
+fastestUnits:[
+{unit:"Unit IV",reason:"Only 2–3 core derivations; formulas are clean and reusable",time:"8–10 hrs"},
+{unit:"Unit V",reason:"Conceptual questions (working, advantages) + 2 derivations",time:"8 hrs"},
+{unit:"Unit II",reason:"Emitter follower and Darlington cover 80% of marks",time:"10 hrs"},
+{unit:"Unit III",reason:"Source Follower + Common Gate or CS design; 2 tracks to prep",time:"10–12 hrs"},
+{unit:"Unit I",reason:"Most questions + highest complexity design problems",time:"12–15 hrs"}
+],
+
+top20percent:[
+"DC Load Line + Q-point (Unit I) → 2 marks Part A guaranteed",
+"Emitter Follower derivation + numerical (Unit II) → 13 marks Q12a",
+"MOSFET differential amplifier (Unit III) → 15 marks Part C",
+"fα, fβ, fT derivation (Unit IV) → 13 marks Q14b",
+"Cascode + Wilson current source (Unit V) → 13 marks Q15",
+"Self-bias design temperature specs (Unit I) → 13 marks Q11b",
+"Miller effect + fβ calc → 4 marks Part A guaranteed"
+]
+
+};
+
+const unitColors = [
+"#4f46e5",
+"#059669",
+"#d97706",
+"#dc2626",
+"#7c3aed"
+];
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let activeUnit = "summary";
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function renderNav() {
+
+const nav = document.getElementById("mainNav");
+
+nav.innerHTML = `
+<button
+  onclick="setActive('summary')"
+  id="nav-summary">
+  📊 Summary
+</button>
+
+${units.map(u => `
+<button
+  onclick="setActive(${u.id})"
+  id="nav-${u.id}">
+  Unit ${u.id}
+</button>
+`).join("")}
+`;
+
+updateNav();
+}
+
+
+function updateNav() {
+
+document.querySelectorAll(".nav button").forEach(btn => {
+
+btn.style.background = "#fff";
+btn.style.color = "#374151";
+
+});
+
+const activeBtn = document.getElementById(`nav-${activeUnit}`);
+
+if (!activeBtn) return;
+
+if (activeUnit === "summary") {
+
+activeBtn.style.background = "#1e1b4b";
+activeBtn.style.color = "#fff";
+
+} else {
+
+const unit = units.find(u => u.id === activeUnit);
+
+activeBtn.style.background = unit.color;
+activeBtn.style.color = "#fff";
+
+}
+
+}
+
+
+function setActive(unit) {
+
+activeUnit = unit;
+
+renderContent();
+updateNav();
+
+window.scrollTo({
+top: 0,
+behavior: "smooth"
+});
+
+}
+
+
+/* =========================================================
+   TOPIC CARD
+========================================================= */
+
+function renderTopic(topic, color) {
+
+return `
+<div
+  class="topic-card"
+  style="border-color:${color}22"
+  onclick="toggleTopic(this)">
+
+  <div class="topic-header">
+
+    <div class="topic-title-row">
+
+      <span class="topic-title">
+        ${topic.name}
+      </span>
+
+      <span class="arrow">
+        ▼
+      </span>
+
+    </div>
+
+    <div class="prob-row">
+
+      <div class="prob-track">
+
+        <div
+          class="prob-fill"
+          style="width:${topic.prob}%;background:${color}">
+        </div>
+
+      </div>
+
+      <span
+        class="prob-value"
+        style="color:${color}">
+        ${topic.prob}%
+      </span>
+
+    </div>
+
+    <div class="meta">
+
+      <span class="badge ${topic.toughness.toLowerCase()}">
+        ${topic.toughness}
+      </span>
+
+      <span class="badge time-badge">
+        ⏱ ${topic.time}
+      </span>
+
+      <span class="badge type-badge">
+        ${topic.type}
+      </span>
+
+    </div>
+
+  </div>
+
+  <div
+    class="topic-reason"
+    style="border-color:${color}22">
+
+    <strong>Why this matters:</strong>
+    ${topic.reason}
+
+  </div>
+
+</div>
+`;
+
+}
+
+
+function toggleTopic(card) {
+
+card.classList.toggle("open");
+
+const arrow = card.querySelector(".arrow");
+
+arrow.textContent =
+card.classList.contains("open") ? "▲" : "▼";
+
+}
+
+
+/* =========================================================
+   UNIT PANEL
+========================================================= */
+
+function renderUnit(unit) {
+
+return `
+
+<div
+  class="unit-panel"
+  style="
+    background:${unit.bg};
+    border-color:${unit.color}33;
+  ">
+
+  <div class="unit-title">
+
+    <span
+      class="unit-badge"
+      style="background:${unit.color}">
+      UNIT ${unit.id}
+    </span>
+
+    <span class="unit-name">
+      ${unit.name}
+    </span>
+
+  </div>
+
+  <div class="unit-tabs">
+
+    <button
+      onclick="showTab(${unit.id}, 'topics')"
+      id="tab-${unit.id}-topics"
+      style="
+        background:${unit.color};
+        color:#fff;
+      ">
+      Topics
+    </button>
+
+    <button
+      onclick="showTab(${unit.id}, 'q16')"
+      id="tab-${unit.id}-q16">
+      13-Mark Qs
+    </button>
+
+    <button
+      onclick="showTab(${unit.id}, 'q8')"
+      id="tab-${unit.id}-q8">
+      Short Qs
+    </button>
+
+    <button
+      onclick="showTab(${unit.id}, 'priority')"
+      id="tab-${unit.id}-priority">
+      Priority
+    </button>
+
+  </div>
+
+  <div id="unit-content-${unit.id}">
+
+    ${renderTopics(unit)}
+
+  </div>
+
+</div>
+
+`;
+
+}
+
+
+function renderTopics(unit) {
+
+const sorted = [...unit.topics]
+.sort((a,b) => b.prob - a.prob);
+
+return sorted
+.map(t => renderTopic(t, unit.color))
+.join("");
+
+}
+
+
+function showTab(unitId, tab) {
+
+const unit = units.find(u => u.id === unitId);
+
+const content = document.getElementById(
+`unit-content-${unitId}`
+);
+
+document.querySelectorAll(
+`#tab-${unitId}-topics,
+ #tab-${unitId}-q16,
+ #tab-${unitId}-q8,
+ #tab-${unitId}-priority`
+).forEach(button => {
+
+button.style.background = "#fff";
+button.style.color = "#374151";
+
+});
+
+const activeTab =
+document.getElementById(`tab-${unitId}-${tab}`);
+
+activeTab.style.background = unit.color;
+activeTab.style.color = "#fff";
+
+
+if (tab === "topics") {
+
+content.innerHTML = renderTopics(unit);
+
+}
+
+
+if (tab === "q16") {
+
+content.innerHTML = `
+
+<p class="question-intro">
+Most probable 13-mark (Part B) questions based on pattern analysis:
+</p>
+
+${unit.q16.map((q,i) => `
+
+<div
+  class="question"
+  style="
+    border-color:${unit.color}33;
+    border-left-color:${unit.color};
+  ">
+
+  <span
+    class="question-number"
+    style="color:${unit.color}">
+    Q${i+1}.
+  </span>
+
+  ${q}
+
+</div>
+
+`).join("")}
+
+`;
+
+}
+
+
+if (tab === "q8") {
+
+content.innerHTML = `
+
+<p class="question-intro">
+Most probable Part A (2-mark) and short questions:
+</p>
+
+${unit.q8.map((q,i) => `
+
+<div
+  class="question"
+  style="
+    border-color:${unit.color}22;
+    border-left-color:${unit.color}88;
+  ">
+
+  <span
+    class="question-number"
+    style="color:${unit.color}">
+    Q${i+1}.
+  </span>
+
+  ${q}
+
+</div>
+
+`).join("")}
+
+`;
+
+}
+
+
+if (tab === "priority") {
+
+content.innerHTML = `
+
+<div class="priority-section high-priority">
+
+  <p class="priority-title">
+    🔥 HIGH PRIORITY — Must Prepare
+  </p>
+
+  ${unit.highPri.map(p => `
+    <div class="priority-item">
+      ✓ ${p}
+    </div>
+  `).join("")}
+
+</div>
+
+
+<div class="priority-section low-priority">
+
+  <p class="priority-title">
+    ⬇ LOW PRIORITY — Skip if Short on Time
+  </p>
+
+  ${unit.lowPri.map(p => `
+    <div class="priority-item">
+      ✗ ${p}
+    </div>
+  `).join("")}
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+function renderSummary() {
+
+return `
+
+<h2 class="summary-title">
+  📊 Strategic Summary
+</h2>
+
+
+<!-- TOP 20% -->
+
+<div class="summary-box top20">
+
+  <p class="summary-heading">
+    🎯 TOP 20% TOPICS → 80% MARKS
+  </p>
+
+  ${summaryData.top20percent.map((topic,i) => `
+
+  <div class="top20-item">
+
+    <span class="top20-number">
+      ${i+1}.
+    </span>
+
+    <span>
+      ${topic}
+    </span>
+
+  </div>
+
+  `).join("")}
+
+</div>
+
+
+<!-- SAFEST SCORING -->
+
+<div class="summary-box safest">
+
+  <p class="summary-heading">
+    ✅ SAFEST SCORING TOPICS
+    (Guaranteed 2–4 marks each)
+  </p>
+
+  <div class="scoring-grid">
+
+    ${summaryData.safestScoring.map(item => `
+
+    <div class="scoring-item">
+
+      <span
+        class="unit-mini"
+        style="background:${unitColors[item.unit-1]}">
+        U${item.unit}
+      </span>
+
+      <strong>
+        ${item.topic}
+      </strong>
+
+      <span class="marks">
+        [${item.marks}]
+      </span>
+
+    </div>
+
+    `).join("")}
+
+  </div>
+
+</div>
+
+
+<!-- FASTEST UNITS -->
+
+<div class="summary-box fastest">
+
+  <p class="summary-heading">
+    ⚡ UNITS RANKED BY FASTEST COMPLETION
+    (Best ROI First)
+  </p>
+
+  ${summaryData.fastestUnits.map((item,i) => `
+
+  <div class="fastest-item">
+
+    <span class="rank">
+      #${i+1}
+    </span>
+
+    <div class="fastest-reason">
+
+      <strong>
+        ${item.unit}
+      </strong>
+
+      <span>
+        — ${item.reason}
+      </span>
+
+    </div>
+
+    <span class="study-time">
+      ${item.time}
+    </span>
+
+  </div>
+
+  `).join("")}
+
+</div>
+
+
+<!-- HARDEST -->
+
+<div class="summary-box hardest">
+
+  <p class="summary-heading">
+    ⚠️ HARDEST TOPICS — Only Attempt with Solid Prep
+  </p>
+
+  ${summaryData.hardest.map(item => `
+
+  <div class="hardest-item">
+
+    <span
+      class="unit-mini"
+      style="background:${unitColors[item.unit-1]}">
+      U${item.unit}
+    </span>
+
+    ${item.topic}
+
+  </div>
+
+  `).join("")}
+
+</div>
+
+`;
+
+}
+
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+function renderContent() {
+
+const content = document.getElementById("content");
+
+if (activeUnit === "summary") {
+
+content.innerHTML = renderSummary();
+
+return;
+
+}
+
+const unit = units.find(u => u.id === activeUnit);
+
+content.innerHTML = renderUnit(unit);
+
+}
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+renderNav();
+renderContent();
+
+</script>
+
+</body>
+</html>
