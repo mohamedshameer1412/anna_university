@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EC23C11 Control Systems — Exam Prediction Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0c0f14;
+    --surface: #141820;
+    --surface2: #1c2230;
+    --border: #262d3d;
+    --accent: #4f8ef7;
+    --accent2: #7c5cbf;
+    --green: #2ecc71;
+    --yellow: #f1c40f;
+    --red: #e74c3c;
+    --orange: #e67e22;
+    --text: #e8ecf3;
+    --muted: #7a87a0;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .hero {
+    background: linear-gradient(135deg, #0c0f14 0%, #141e35 50%, #0c0f14 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 32px 20px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(79,142,247,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    border: 1px solid rgba(79,142,247,0.35);
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    letter-spacing: 0.08em;
+  }
+  .hero h1 {
+    font-size: clamp(22px, 4vw, 36px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero p {
+    color: var(--muted);
+    font-size: 13px;
+    max-width: 520px;
+    margin: 0 auto 20px;
+  }
+  .meta-pills {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .meta-pill {
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+  }
+  .meta-pill.hot { border-color: rgba(231,76,60,0.5); color: #e74c3c; background: rgba(231,76,60,0.08); }
+  .meta-pill.cool { border-color: rgba(79,142,247,0.4); color: var(--accent); background: rgba(79,142,247,0.08); }
+
+  /* ── NAV TABS ── */
+  .nav-wrapper {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(12,15,20,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-wrapper::-webkit-scrollbar { display: none; }
+  .tabs {
+    display: flex;
+    gap: 0;
+    white-space: nowrap;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .tab-btn {
+    padding: 14px 18px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .tab-btn .u-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    background: var(--surface2);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--muted);
+  }
+  .tab-btn.active .u-num { background: rgba(79,142,247,0.15); color: var(--accent); }
+
+  /* ── CONTENT ── */
+  .content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+  }
+  .unit-panel { display: none; }
+  .unit-panel.active { display: block; }
+
+  /* ── SECTION HEADERS ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header .unit-badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: rgba(79,142,247,0.12);
+    color: var(--accent);
+    border: 1px solid rgba(79,142,247,0.3);
+    letter-spacing: 0.05em;
+  }
+  .section-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+
+  /* ── TOPIC CARDS ── */
+  .topic-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+
+  .topic-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .topic-card:hover { border-color: rgba(79,142,247,0.4); }
+  .topic-card.rank-1 { border-left: 3px solid var(--red); }
+  .topic-card.rank-2 { border-left: 3px solid var(--orange); }
+  .topic-card.rank-3 { border-left: 3px solid var(--yellow); }
+  .topic-card.rank-4 { border-left: 3px solid var(--green); }
+  .topic-card.rank-5 { border-left: 3px solid var(--accent2); }
+
+  .topic-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 16px 13px 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .rank-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .rank-1 .rank-badge { background: rgba(231,76,60,0.2); color: var(--red); }
+  .rank-2 .rank-badge { background: rgba(230,126,34,0.2); color: var(--orange); }
+  .rank-3 .rank-badge { background: rgba(241,196,15,0.2); color: var(--yellow); }
+  .rank-4 .rank-badge { background: rgba(46,204,113,0.2); color: var(--green); }
+  .rank-5 .rank-badge { background: rgba(124,92,191,0.2); color: var(--accent2); }
+
+  .topic-name {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .topic-meta {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .prob-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .prob-bar {
+    width: 60px;
+    height: 5px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .prob-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+  }
+  .high .prob-fill { background: var(--red); }
+  .med .prob-fill { background: var(--yellow); }
+  .low .prob-fill { background: var(--green); }
+
+  .prob-pct {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    min-width: 34px;
+    text-align: right;
+  }
+  .high .prob-pct { color: var(--red); }
+  .med .prob-pct { color: var(--yellow); }
+  .low .prob-pct { color: var(--green); }
+
+  .pill {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .pill-easy { background: rgba(46,204,113,0.15); color: var(--green); }
+  .pill-med { background: rgba(241,196,15,0.15); color: var(--yellow); }
+  .pill-hard { background: rgba(231,76,60,0.15); color: var(--red); }
+  .pill-type { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+  .pill-time { background: rgba(79,142,247,0.1); color: var(--accent); border: 1px solid rgba(79,142,247,0.2); }
+
+  .chevron {
+    color: var(--muted);
+    font-size: 12px;
+    transition: transform 0.25s;
+    margin-left: 4px;
+  }
+  .topic-card.open .chevron { transform: rotate(180deg); }
+
+  .topic-body {
+    display: none;
+    padding: 0 16px 14px 50px;
+    border-top: 1px solid var(--border);
+    margin-top: 0;
+    background: rgba(255,255,255,0.015);
+  }
+  .topic-card.open .topic-body { display: block; }
+  .topic-body p {
+    color: var(--muted);
+    font-size: 12.5px;
+    margin-top: 10px;
+    line-height: 1.7;
+  }
+  .topic-body p strong { color: var(--text); }
+
+  /* ── QUESTION BOXES ── */
+  .q-section { margin-bottom: 28px; }
+  .q-section-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .q-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .q-list { display: flex; flex-direction: column; gap: 8px; }
+  .q-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    transition: border-color 0.2s;
+  }
+  .q-item:hover { border-color: rgba(79,142,247,0.35); }
+  .q-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 700;
+    min-width: 20px;
+    padding-top: 1px;
+  }
+  .q-text {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.55;
+    flex: 1;
+  }
+  .q-text .hint {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+    font-family: var(--mono);
+  }
+  .q-badge {
+    flex-shrink: 0;
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+  .q-badge.fire { background: rgba(231,76,60,0.15); color: var(--red); border: 1px solid rgba(231,76,60,0.3); }
+  .q-badge.hot { background: rgba(230,126,34,0.15); color: var(--orange); border: 1px solid rgba(230,126,34,0.3); }
+  .q-badge.warm { background: rgba(241,196,15,0.12); color: var(--yellow); border: 1px solid rgba(241,196,15,0.25); }
+
+  /* ── PRIORITY BOXES ── */
+  .priority-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+  @media(max-width: 540px){ .priority-grid { grid-template-columns: 1fr; } }
+  .pbox {
+    border-radius: 8px;
+    padding: 14px 16px;
+    border: 1px solid;
+  }
+  .pbox.high-pri { background: rgba(231,76,60,0.06); border-color: rgba(231,76,60,0.25); }
+  .pbox.skip { background: rgba(124,92,191,0.06); border-color: rgba(124,92,191,0.25); }
+  .pbox-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pbox.high-pri .pbox-title { color: var(--red); }
+  .pbox.skip .pbox-title { color: var(--accent2); }
+  .pbox ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .pbox ul li {
+    font-size: 12.5px;
+    color: var(--muted);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .pbox.high-pri ul li::before { content: '▶'; position: absolute; left: 0; font-size: 8px; top: 3px; color: var(--red); }
+  .pbox.skip ul li::before { content: '–'; position: absolute; left: 0; font-size: 12px; top: 0; color: var(--accent2); }
+
+  /* ── SUMMARY TAB ── */
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+  @media(max-width: 600px){ .summary-grid { grid-template-columns: 1fr; } }
+
+  .scard {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .scard-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .scard-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12.5px;
+  }
+  .scard-item:last-child { border-bottom: none; }
+  .scard-item .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+  .dot-red { background: var(--red); }
+  .dot-orange { background: var(--orange); }
+  .dot-yellow { background: var(--yellow); }
+  .dot-green { background: var(--green); }
+  .dot-blue { background: var(--accent); }
+  .dot-purple { background: var(--accent2); }
+
+  .pareto-box {
+    background: var(--surface);
+    border: 1px solid rgba(79,142,247,0.3);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .pareto-box h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .pareto-box p { font-size: 12.5px; color: var(--muted); margin-bottom: 14px; }
+  .pareto-list { display: flex; flex-direction: column; gap: 8px; }
+  .pareto-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: var(--surface2);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .pareto-item .pi-unit {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    min-width: 42px;
+  }
+  .pareto-item .pi-topic { flex: 1; font-size: 12.5px; font-weight: 500; }
+  .pareto-item .pi-prob {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--red);
+    font-weight: 700;
+  }
+  .pareto-item .pi-marks {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    background: var(--surface);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  /* ── STUDY PLAN ── */
+  .plan-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+  .plan-row {
+    display: grid;
+    grid-template-columns: 90px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .plan-unit { font-family: var(--mono); font-size: 11px; color: var(--accent); font-weight: 600; }
+  .plan-topics { font-size: 12.5px; color: var(--muted); }
+  .plan-time {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  /* misc */
+  .divider { height: 1px; background: var(--border); margin: 24px 0; }
+  .warn-box {
+    background: rgba(241,196,15,0.07);
+    border: 1px solid rgba(241,196,15,0.25);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    font-size: 12.5px;
+    color: #c9a80a;
+    display: flex;
+    gap: 8px;
+  }
+  .warn-box::before { content: '⚠'; flex-shrink: 0; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="tag">ANNA UNIVERSITY · EC23C11 / EC5503</div>
+  <h1>Control Systems <span>Exam Predictor</span></h1>
+  <p>Data-driven topic predictions based on 12+ years of previous question papers, internal test patterns, and syllabus weightage analysis.</p>
+  <div class="meta-pills">
+    <span class="meta-pill cool">Reg 2019 + 2023</span>
+    <span class="meta-pill hot">🔥 3 Papers Analyzed</span>
+    <span class="meta-pill cool">5 Units Covered</span>
+    <span class="meta-pill cool">100 Marks</span>
+    <span class="meta-pill">Last Updated: Jul 2026</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-wrapper">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('summary')">📊 Summary</button>
+    <button class="tab-btn" onclick="showTab('u1')"><span class="u-num">U1</span> System Components</button>
+    <button class="tab-btn" onclick="showTab('u2')"><span class="u-num">U2</span> Time Response</button>
+    <button class="tab-btn" onclick="showTab('u3')"><span class="u-num">U3</span> Frequency Response</button>
+    <button class="tab-btn" onclick="showTab('u4')"><span class="u-num">U4</span> Stability</button>
+    <button class="tab-btn" onclick="showTab('u5')"><span class="u-num">U5</span> State Space</button>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ════════════════════════════════════ SUMMARY TAB ════════════════════════════════════ -->
+<div class="unit-panel active" id="tab-summary">
+
+  <div class="pareto-box">
+    <h3>⚡ Pareto Principle — Top 20% Topics → 80% Marks</h3>
+    <p>These 10 topics appear in virtually every paper. Master these before anything else.</p>
+    <div class="pareto-list">
+      <div class="pareto-item"><span class="pi-unit">UNIT II</span><span class="pi-topic">Second Order System — Time Domain Specs (ζ, ωn, Tp, Tr, Ts, Mp)</span><span class="pi-prob">97%</span><span class="pi-marks">13 mks</span></div>
+      <div class="pareto-item"><span class="pi-unit">UNIT III</span><span class="pi-topic">Bode Plot — Gain Margin & Phase Margin</span><span class="pi-prob">95%</span><span class="pi-marks">13 mks</span></div>
+      <div class="pareto-item"><span class="pi-unit">UNIT IV</span><span class="pi-topic">Root Locus — Full Sketch + Rules</span><span class="pi-prob">93%</span><span class="pi-marks">13 mks</span></div>
+      <div class="pareto-item"><span class="pi-unit">UNIT I</span><span class="pi-topic">Mechanical Systems + F-V / F-I Analogous Circuits</span><span class="pi-prob">95%</span><span class="pi-marks">13 mks</span></div>
+      <div class="pareto-item"><span class="pi-unit">UNIT IV</span><span class="pi-topic">Routh-Hurwitz Criterion — Range of K + Oscillation Freq</span><span class="pi-prob">92%</span><span class="pi-marks">13 mks</span></div>
+      <div class="pareto-item"><span class="pi-unit">UNIT I</span><span class="pi-topic">Mason's Gain Formula — Signal Flow Graph / Block Diagram</span><span class="pi-prob">93%</span><span class="pi-marks">13 mks</span></div>
+      <div class="pareto-item"><span class="pi-unit">UNIT V</span><span class="pi-topic">Controllability & Observability (Kalman's Test)</span><span class="pi-prob">90%</span><span class="pi-marks">13 mks</span></div>
+      <div class="pareto-item"><span class="pi-unit">UNIT III</span><span class="pi-topic">Nyquist Plot — Stability + Range of K</span><span class="pi-prob">88%</span><span class="pi-marks">13–15 mks</span></div>
+      <div class="pareto-item"><span class="pi-unit">UNIT II</span><span class="pi-topic">Steady State Error — Error Constants Kp, Kv, Ka</span><span class="pi-prob">88%</span><span class="pi-marks">13 mks</span></div>
+      <div class="pareto-item"><span class="pi-unit">UNIT V</span><span class="pi-topic">State Space ↔ Transfer Function Conversion</span><span class="pi-prob">85%</span><span class="pi-marks">13 mks</span></div>
+    </div>
+  </div>
+
+  <div class="summary-grid">
+    <div class="scard">
+      <div class="scard-title">🚀 Fastest Units to Complete</div>
+      <div class="scard-item"><span class="dot dot-green"></span><div><strong>Unit II</strong> — Formulas + numericals. 6–8 hrs total.</div></div>
+      <div class="scard-item"><span class="dot dot-blue"></span><div><strong>Unit V</strong> — 2 standard question types. 5–7 hrs.</div></div>
+      <div class="scard-item"><span class="dot dot-yellow"></span><div><strong>Unit IV (Routh)</strong> — Pure algorithm. 3 hrs.</div></div>
+      <div class="scard-item"><span class="dot dot-orange"></span><div><strong>Unit I (Part A)</strong> — Definitions only. 2 hrs.</div></div>
+    </div>
+    <div class="scard">
+      <div class="scard-title">⚠️ Hardest Topics (Be Careful)</div>
+      <div class="scard-item"><span class="dot dot-red"></span><div><strong>Nyquist Plot</strong> — Complex contour mapping</div></div>
+      <div class="scard-item"><span class="dot dot-red"></span><div><strong>Root Locus (Complex Zeros)</strong> — Angle/magnitude condition</div></div>
+      <div class="scard-item"><span class="dot dot-orange"></span><div><strong>Block Diagram Reduction (Multi-loop)</strong></div></div>
+      <div class="scard-item"><span class="dot dot-orange"></span><div><strong>State Transition Matrix eAt</strong></div></div>
+    </div>
+    <div class="scard">
+      <div class="scard-title">💰 Safest Scoring Topics</div>
+      <div class="scard-item"><span class="dot dot-green"></span><div><strong>2nd Order Specs</strong> — Plug-and-churn formulas</div></div>
+      <div class="scard-item"><span class="dot dot-green"></span><div><strong>Routh Array</strong> — Pure table, no graphs</div></div>
+      <div class="scard-item"><span class="dot dot-green"></span><div><strong>Steady State Error Constants</strong></div></div>
+      <div class="scard-item"><span class="dot dot-green"></span><div><strong>Bode Plot (Standard TF)</strong></div></div>
+      <div class="scard-item"><span class="dot dot-green"></span><div><strong>Controllability/Observability Matrix</strong></div></div>
+    </div>
+    <div class="scard">
+      <div class="scard-title">⚡ Best Effort-to-Marks Ratio</div>
+      <div class="scard-item"><span class="dot dot-red"></span><div><strong>#1:</strong> 2nd Order Numericals (4 hrs → 13 mks guaranteed)</div></div>
+      <div class="scard-item"><span class="dot dot-orange"></span><div><strong>#2:</strong> Routh-Hurwitz (3 hrs → 13 mks)</div></div>
+      <div class="scard-item"><span class="dot dot-yellow"></span><div><strong>#3:</strong> F-V / F-I Analogy (4 hrs → 13 mks)</div></div>
+      <div class="scard-item"><span class="dot dot-green"></span><div><strong>#4:</strong> Controllability (3 hrs → 13 mks)</div></div>
+    </div>
+  </div>
+
+  <!-- Study plan -->
+  <div class="q-section-title">RECOMMENDED STUDY ORDER</div>
+  <div class="plan-grid">
+    <div class="plan-row"><span class="plan-unit">Priority 1</span><span class="plan-topics">Unit II — 2nd Order Specs, Steady State Error (highest marks, easiest)</span><span class="plan-time">6–8 hrs</span></div>
+    <div class="plan-row"><span class="plan-unit">Priority 2</span><span class="plan-topics">Unit I — Mechanical Systems (F-V/F-I), Mason's Gain, Block Diagram</span><span class="plan-time">8–10 hrs</span></div>
+    <div class="plan-row"><span class="plan-unit">Priority 3</span><span class="plan-topics">Unit IV — Routh Array, Root Locus sketching rules</span><span class="plan-time">7–9 hrs</span></div>
+    <div class="plan-row"><span class="plan-unit">Priority 4</span><span class="plan-topics">Unit III — Bode Plot, Polar Plot, Nyquist Plot</span><span class="plan-time">8–10 hrs</span></div>
+    <div class="plan-row"><span class="plan-unit">Priority 5</span><span class="plan-topics">Unit V — State Space, Controllability, TF Conversion</span><span class="plan-time">5–7 hrs</span></div>
+    <div class="plan-row"><span class="plan-unit">TOTAL</span><span class="plan-topics">Full syllabus coverage — strategic preparation</span><span class="plan-time">~38 hrs</span></div>
+  </div>
+
+  <div class="warn-box">
+    Part C (15 marks compulsory) has appeared as: Nyquist Plot (2021, 2022, 2023, Nov/Dec 2025), Bode Plot (Nov/Dec 2024), Root Locus (Nov/Dec 2022). Expect <strong>Nyquist or Bode</strong> for Part C in the upcoming exam.
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ UNIT 1 ════════════════════════════════════ -->
+<div class="unit-panel" id="tab-u1">
+  <div class="section-header">
+    <span class="unit-badge">UNIT I</span>
+    <h2>Components of the Control System</h2>
+  </div>
+
+  <div class="q-section-title">MOST IMPORTANT TOPICS — RANKED BY PROBABILITY</div>
+  <div class="topic-grid">
+
+    <div class="topic-card rank-1" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">1</span>
+        <span class="topic-name">Mechanical Systems — Differential Equations + F-V / F-I Analogy</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap high"><div class="prob-bar"><div class="prob-fill" style="width:95%"></div></div><span class="prob-pct">95%</span></div>
+          <span class="pill pill-hard">Hard</span>
+          <span class="pill pill-time">8–10 hrs</span>
+          <span class="pill pill-type">Problem-solving</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> Appears in EVERY paper without exception — AT-1 (2025), AT-1 (2024), End-Sem Apr/May 2025, Nov/Dec 2025, Nov/Dec 2024, Nov/Dec 2023, Nov/Dec 2022, Nov/Dec 2021. Translational (M-B-K) and Rotational (J-B-K) systems both asked. Force-Voltage uses KVL mesh, Force-Current uses KCL node.<br><br><strong>Key figures:</strong> The 3-mass rotational system (J1-K1-J2-K2-J3 with B1, B2, B3) appears in at least 4 papers. The 2-mass translational (M1-M2 with K, B) also repeated 3+ times.</p>
+      </div>
+    </div>
+
+    <div class="topic-card rank-1" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">2</span>
+        <span class="topic-name">Mason's Gain Formula — Signal Flow Graph from Block Diagram</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap high"><div class="prob-bar"><div class="prob-fill" style="width:93%"></div></div><span class="prob-pct">93%</span></div>
+          <span class="pill pill-hard">Hard</span>
+          <span class="pill pill-time">6–8 hrs</span>
+          <span class="pill pill-type">Problem-solving</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> Appears in every end-semester paper as either 11(a) or 11(b). Two common question types: (1) Convert block diagram to SFG and find C(s)/R(s). (2) Directly find C(s)/R(s) from a given SFG. Complex multi-loop diagrams (with H1, H2, G1–G7) are the typical format.<br><br><strong>Formula focus:</strong> Δ = 1 − (sum of loop gains) + (sum of products of non-touching loops) − ...; Forward path gain × cofactor of Δ.</p>
+      </div>
+    </div>
+
+    <div class="topic-card rank-2" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">3</span>
+        <span class="topic-name">Block Diagram Reduction Techniques</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap high"><div class="prob-bar"><div class="prob-fill" style="width:88%"></div></div><span class="prob-pct">88%</span></div>
+          <span class="pill pill-med">Medium</span>
+          <span class="pill pill-time">4–6 hrs</span>
+          <span class="pill pill-type">Problem-solving</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> AT-1 Q6b (2025), AT-1 Q8b (2024), Nov/Dec 2025 Q11(b), Nov/Dec 2024 Q11(b). Rules: cascade, parallel, feedback loop, moving summing/take-off points. Multi-loop block diagrams with H1, H2, G1–G4 are standard.<br><br><strong>Common trap:</strong> Maintaining sign convention at summing junctions when shifting take-off points.</p>
+      </div>
+    </div>
+
+    <div class="topic-card rank-3" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">4</span>
+        <span class="topic-name">DC Servo Motor — Transfer Function Derivation</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap med"><div class="prob-bar"><div class="prob-fill" style="width:72%"></div></div><span class="prob-pct">72%</span></div>
+          <span class="pill pill-med">Medium</span>
+          <span class="pill pill-time">3–4 hrs</span>
+          <span class="pill pill-type">Memory-heavy</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> Reg 2019 papers ask Armature Controlled DC motor or Field Controlled DC motor in almost every session. Less frequent in Reg 2023 papers (EC23C11). If asked, comes as an "OR" option.<br><br><strong>Study:</strong> Armature controlled is far more likely than field controlled. Block diagram with KT, Kb, Jm, Bm, Ra, La is the standard derivation.</p>
+      </div>
+    </div>
+
+    <div class="topic-card rank-4" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">5</span>
+        <span class="topic-name">Open Loop vs Closed Loop — Definitions & Comparison</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap high"><div class="prob-bar"><div class="prob-fill" style="width:90%"></div></div><span class="prob-pct">90%</span></div>
+          <span class="pill pill-easy">Easy</span>
+          <span class="pill pill-time">0.5 hrs</span>
+          <span class="pill pill-type">Memory-heavy</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> Part A Q1 in virtually every paper (Nov/Dec 2025, Apr/May 2025, Nov/Dec 2024, Nov/Dec 2023, AT-1 2024). 2 marks. Guaranteed. Tabular comparison format recommended — sensitivity, accuracy, stability, cost, bandwidth.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="q-section-title">MOST PROBABLE 13-MARK QUESTIONS (PART B)</div>
+  <div class="q-list">
+    <div class="q-item">
+      <span class="q-num">Q1</span>
+      <div class="q-text">Write the differential equations governing the mechanical translational/rotational system shown in figure. Draw the Force-Voltage and Force-Current electrical analogous circuits. <span class="hint">★ Appears 8+ times across papers. Expect a 2-mass or 3-mass system.</span></div>
+      <span class="q-badge fire">🔥 SURE</span>
+    </div>
+    <div class="q-item">
+      <span class="q-num">Q2</span>
+      <div class="q-text">Using Mason's Gain Formula, find the transfer function C(s)/R(s) for the signal flow graph / block diagram shown in figure. <span class="hint">★ SFG with 6+ nodes and multiple feedback loops is the classic format.</span></div>
+      <span class="q-badge fire">🔥 SURE</span>
+    </div>
+    <div class="q-item">
+      <span class="q-num">Q3</span>
+      <div class="q-text">Using block diagram reduction technique, find the transfer function C(s)/R(s) for the system shown in figure. <span class="hint">★ Multi-loop diagram with forward path and feedback elements G1–G4, H1–H2.</span></div>
+      <span class="q-badge hot">HOT</span>
+    </div>
+    <div class="q-item">
+      <span class="q-num">Q4</span>
+      <div class="q-text">Derive an expression for the transfer function of an armature-controlled DC servo motor along with block diagram. <span class="hint">OR option — less likely as first choice in Reg 2023</span></div>
+      <span class="q-badge warm">WARM</span>
+    </div>
+  </div>
+
+  <div class="q-section-title">MOST PROBABLE 2-MARK (PART A) QUESTIONS</div>
+  <div class="q-list">
+    <div class="q-item"><span class="q-num">A1</span><div class="q-text">Distinguish between open-loop and closed-loop control systems.</div><span class="q-badge fire">🔥</span></div>
+    <div class="q-item"><span class="q-num">A2</span><div class="q-text">Write the force balance equation of ideal mass element, spring, and dashpot.</div><span class="q-badge hot">HOT</span></div>
+    <div class="q-item"><span class="q-num">A3</span><div class="q-text">List the elements of mechanical translational and rotational systems and their electrical equivalents.</div><span class="q-badge hot">HOT</span></div>
+    <div class="q-item"><span class="q-num">A4</span><div class="q-text">Define multivariable control system / What is signal flow graph?</div><span class="q-badge warm">WARM</span></div>
+    <div class="q-item"><span class="q-num">A5</span><div class="q-text">Draw the signal flow graph for a given set of algebraic equations.</div><span class="q-badge warm">WARM</span></div>
+  </div>
+
+  <div class="priority-grid">
+    <div class="pbox high-pri">
+      <div class="pbox-title">🔴 HIGH PRIORITY</div>
+      <ul>
+        <li>F-V and F-I analogies for any mechanical diagram</li>
+        <li>Mason's formula with forward paths + non-touching loops</li>
+        <li>Block diagram algebra — all 7 reduction rules</li>
+        <li>Comparison table: OL vs CL</li>
+        <li>Force balance equations for all 3 elements</li>
+      </ul>
+    </div>
+    <div class="pbox skip">
+      <div class="pbox-title">🔵 LOW PRIORITY (SKIP IF SHORT)</div>
+      <ul>
+        <li>AC Servo motor details</li>
+        <li>Synchros / Synchronous mechanisms</li>
+        <li>Multivariable control system theory</li>
+        <li>Field-controlled DC motor</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ UNIT 2 ════════════════════════════════════ -->
+<div class="unit-panel" id="tab-u2">
+  <div class="section-header">
+    <span class="unit-badge">UNIT II</span>
+    <h2>Time Response with System Design</h2>
+  </div>
+
+  <div class="q-section-title">MOST IMPORTANT TOPICS — RANKED BY PROBABILITY</div>
+  <div class="topic-grid">
+
+    <div class="topic-card rank-1" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">1</span>
+        <span class="topic-name">2nd Order System — All Time Domain Specifications</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap high"><div class="prob-bar"><div class="prob-fill" style="width:97%"></div></div><span class="prob-pct">97%</span></div>
+          <span class="pill pill-med">Medium</span>
+          <span class="pill pill-time">5–6 hrs</span>
+          <span class="pill pill-type">Formula-heavy</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> AT-1 Q5 (2025), AT-1 Q7 (2025), AT-2 Q7 (2025), End-Sem Q12a (Apr/May 2025), End-Sem Q12a (Nov/Dec 2025), End-Sem Q12a (Nov/Dec 2024), Q12a (Nov/Dec 2023), Q9b (Nov/Dec 2022), Q9a (Nov/Dec 2021). That's 10+ appearances.<br><br><strong>Must-know formulas:</strong> ζ = c/2√(mk), ωd = ωn√(1−ζ²), Tr = (π−φ)/ωd, Tp = π/ωd, Mp = e^(−πζ/√(1−ζ²)) × 100%, Ts = 4/ζωn (2%), Ts = 3/ζωn (5%)</p>
+      </div>
+    </div>
+
+    <div class="topic-card rank-1" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">2</span>
+        <span class="topic-name">Steady State Error — Error Constants Kp, Kv, Ka + System Type</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap high"><div class="prob-bar"><div class="prob-fill" style="width:88%"></div></div><span class="prob-pct">88%</span></div>
+          <span class="pill pill-med">Medium</span>
+          <span class="pill pill-time">4–5 hrs</span>
+          <span class="pill pill-type">Formula-heavy</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> End-Sem Q12b (Nov/Dec 2024, Nov/Dec 2023), Q12 (Apr/May 2025), AT-1 Q4 (Reg 2023), Q9 (Nov/Dec 2022), AT-1 Q5. Two sub-patterns: (i) Find Kp, Kv, Ka for given G(s) then find ess for composite input r(t) = a + bt + ct²; (ii) Given composite input, determine total steady state error.<br><br><strong>Key G(s):</strong> G(s) = 40(s+1)/[s²(1+0.5s)] type-2 system appears in multiple papers.</p>
+      </div>
+    </div>
+
+    <div class="topic-card rank-2" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">3</span>
+        <span class="topic-name">Unit Step Response — Damping Cases (Underdamped, Overdamped, Critically Damped)</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap high"><div class="prob-bar"><div class="prob-fill" style="width:82%"></div></div><span class="prob-pct">82%</span></div>
+          <span class="pill pill-med">Medium</span>
+          <span class="pill pill-time">3–4 hrs</span>
+          <span class="pill pill-type">Concept-heavy</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> Nov/Dec 2021 Q12(a)(ii), multiple AT papers. Questions ask to "discuss responses for unit step input and determine c(t) for all cases." Also appears as: given complex conjugate poles s = -2 ± j1, determine ωn, Tp, Tr, Ts, Mp.<br><br><strong>Study approach:</strong> Three cases: ζ=0 (undamped), 0&lt;ζ&lt;1 (underdamped), ζ=1 (critically), ζ&gt;1 (overdamped). Each has distinct c(t) expression.</p>
+      </div>
+    </div>
+
+    <div class="topic-card rank-3" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">4</span>
+        <span class="topic-name">Generalized Error Series / PID Controller Design</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap med"><div class="prob-bar"><div class="prob-fill" style="width:65%"></div></div><span class="prob-pct">65%</span></div>
+          <span class="pill pill-hard">Hard</span>
+          <span class="pill pill-time">3–4 hrs</span>
+          <span class="pill pill-type">Formula-heavy</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> AT-2 (Reg 2023) Q8a — "For G(s) = 10(s+2)/[s²(1+0.5s)], determine Kp, Kv, Ka; find ess for r(t)=1+5t+5t²." Nov/Dec 2024 Q12b — generalized error coefficients for r(t)=4+6t+2t³.<br><br><strong>PID:</strong> Less frequently examined in numericals; more likely as a 2-mark conceptual question about PD/PI effects.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="q-section-title">MOST PROBABLE 13-MARK QUESTIONS (PART B)</div>
+  <div class="q-list">
+    <div class="q-item">
+      <span class="q-num">Q1</span>
+      <div class="q-text">A second order control system has the transfer function G(s) = ωn²/(s²+2ζωns+ωn²). Find damping ratio, natural frequency, rise time, peak time, maximum overshoot, settling time for 2% and 5% criteria. <span class="hint">★ Exact same question repeated in Nov/Dec 2025, Apr/May 2025. G(s) = 25/(s²+6s+25) is the recurring example.</span></div>
+      <span class="q-badge fire">🔥 SURE</span>
+    </div>
+    <div class="q-item">
+      <span class="q-num">Q2</span>
+      <div class="q-text">The open loop transfer function of a unity feedback system is G(s) = K·(s+a)/[s²(s+b)]. Determine position, velocity, and acceleration error constants; obtain steady state error when input is r(t) = A + Bt + Ct². <span class="hint">★ Type-2 system with composite input — Nov/Dec 2022, Nov/Dec 2023, Nov/Dec 2024.</span></div>
+      <span class="q-badge fire">🔥 SURE</span>
+    </div>
+    <div class="q-item">
+      <span class="q-num">Q3</span>
+      <div class="q-text">A unity feedback system has G(s) = 1/[s(1+s)]. Input r(t) = 4 + 6t + 2t³. Find the generalized error coefficients and steady state error. <span class="hint">★ Generalized error series (C0, C1, C2...) — Nov/Dec 2025 Q12b.</span></div>
+      <span class="q-badge hot">HOT</span>
+    </div>
+    <div class="q-item">
+      <span class="q-num">Q4</span>
+      <div class="q-text">A unity feedback system with G(s) = 10/s(s+2). Find rise time, percentage overshoot, peak time, and settling time for a step input of 12 units. <span class="hint">★ Nov/Dec 2024 Q12b, Nov/Dec 2023 Q12(a)</span></div>
+      <span class="q-badge hot">HOT</span>
+    </div>
+  </div>
+
+  <div class="q-section-title">MOST PROBABLE 2-MARK (PART A) QUESTIONS</div>
+  <div class="q-list">
+    <div class="q-item"><span class="q-num">A1</span><div class="q-text">A second order system has damping ratio 0.6 and natural frequency 10 rad/sec. Determine the damped frequency of oscillation.</div><span class="q-badge fire">🔥</span></div>
+    <div class="q-item"><span class="q-num">A2</span><div class="q-text">What is the effect of adding a zero/pole to a transfer function on system response?</div><span class="q-badge hot">HOT</span></div>
+    <div class="q-item"><span class="q-num">A3</span><div class="q-text">A first order system has transfer function 1/(1+2s). Find time response for unit step input.</div><span class="q-badge hot">HOT</span></div>
+    <div class="q-item"><span class="q-num">A4</span><div class="q-text">How the system is classified depending on the value of damping?</div><span class="q-badge warm">WARM</span></div>
+    <div class="q-item"><span class="q-num">A5</span><div class="q-text">What is a dominant pole? / Define steady state response and steady state error.</div><span class="q-badge warm">WARM</span></div>
+  </div>
+
+  <div class="priority-grid">
+    <div class="pbox high-pri">
+      <div class="pbox-title">🔴 HIGH PRIORITY</div>
+      <ul>
+        <li>All 6 time domain specs (Tr, Tp, Ts, Mp, ωn, ζ) — memorize all formulas</li>
+        <li>Kp, Kv, Ka for Type 0, 1, 2 systems</li>
+        <li>Unit step response derivation for underdamped case</li>
+        <li>Composite input steady state error calculation</li>
+        <li>Effect of adding poles and zeros</li>
+      </ul>
+    </div>
+    <div class="pbox skip">
+      <div class="pbox-title">🔵 LOW PRIORITY (SKIP IF SHORT)</div>
+      <ul>
+        <li>Detailed PID analytical design derivation</li>
+        <li>PI/PD design using specific techniques</li>
+        <li>Resonant peak and frequency derivations (may appear in Part A only)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ UNIT 3 ════════════════════════════════════ -->
+<div class="unit-panel" id="tab-u3">
+  <div class="section-header">
+    <span class="unit-badge">UNIT III</span>
+    <h2>Frequency Response with System Analysis</h2>
+  </div>
+
+  <div class="q-section-title">MOST IMPORTANT TOPICS — RANKED BY PROBABILITY</div>
+  <div class="topic-grid">
+
+    <div class="topic-card rank-1" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">1</span>
+        <span class="topic-name">Bode Plot — Full Sketch + Gain Margin + Phase Margin</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap high"><div class="prob-bar"><div class="prob-fill" style="width:95%"></div></div><span class="prob-pct">95%</span></div>
+          <span class="pill pill-hard">Hard</span>
+          <span class="pill pill-time">7–9 hrs</span>
+          <span class="pill pill-type">Problem-solving</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> AT-2 Q6a (Reg 2023), End-Sem Q13a (Apr/May 2025), Q13(a) (Nov/Dec 2025), Q13(a) (Nov/Dec 2024), Q13(a) (Nov/Dec 2023), Q9(a) (Nov/Dec 2022), AT-2 Q10 (Nov/Dec 2023). Appears in essentially every session.<br><br><strong>Standard TFs seen:</strong> G(s) = 100/[s(s+1)(s+2)], G(s) = 100(1+0.1s)/[s(1+0.2s)(1+0.5s)], G(s) = 50/[s(1+3s)(1+4s)].<br><br><strong>Steps:</strong> Convert to standard form → find corner frequencies → draw asymptotic magnitude plot → draw phase plot → find ωgc and ωpc → compute GM and PM.</p>
+      </div>
+    </div>
+
+    <div class="topic-card rank-1" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">2</span>
+        <span class="topic-name">Nyquist Plot — Stability Analysis + Range of K</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap high"><div class="prob-bar"><div class="prob-fill" style="width:92%"></div></div><span class="prob-pct">92%</span></div>
+          <span class="pill pill-hard">Hard</span>
+          <span class="pill pill-time">7–9 hrs</span>
+          <span class="pill pill-type">Concept-heavy</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> Part C compulsory (15 marks) in Nov/Dec 2021, 2022, 2023. Also appears in Part B as Q13b in multiple papers. G(s) = K(1+s)²/s³ is the most repeated form. Nov/Dec 2025 Q16: G(s) = 1/[s(2s+1)(s+1)].<br><br><strong>Key concept:</strong> N = Z − P, stability if N = 0 for stable open-loop. Counting encirclements of (−1+j0) is the critical step. <br><br><strong>Tip:</strong> Prepare this for Part C (15 marks) — it is the most likely compulsory question.</p>
+      </div>
+    </div>
+
+    <div class="topic-card rank-2" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">3</span>
+        <span class="topic-name">Polar Plot (Nyquist Diagram) — GM, PM, K for Given Margin</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap high"><div class="prob-bar"><div class="prob-fill" style="width:85%"></div></div><span class="prob-pct">85%</span></div>
+          <span class="pill pill-hard">Hard</span>
+          <span class="pill pill-time">5–7 hrs</span>
+          <span class="pill pill-type">Problem-solving</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> AT-2 Q6b (2023), End-Sem Q13b (Nov/Dec 2025, Nov/Dec 2024, Nov/Dec 2023, Nov/Dec 2022). Always alternates with Bode in Q13 OR pattern. G(s) = 50/[s(s+1)(s+5)(s+10)] and G(s) = 10(s+1)/(s+10)² are typical.<br><br><strong>Key:</strong> Polar plot end points: at ω=0, |G|=∞, ∠G=−90n°; at ω=∞, |G|=0. Phase crossover point determines GM; gain crossover determines PM.</p>
+      </div>
+    </div>
+
+    <div class="topic-card rank-3" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">4</span>
+        <span class="topic-name">Lead / Lag / Lag-Lead Compensator Design using Bode Plot</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap med"><div class="prob-bar"><div class="prob-fill" style="width:68%"></div></div><span class="prob-pct">68%</span></div>
+          <span class="pill pill-hard">Hard</span>
+          <span class="pill pill-time">5–6 hrs</span>
+          <span class="pill pill-type">Problem-solving</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> Apr/May 2025 Q16 — "Design a lead compensator to improve phase margin by 30°." AT-2 (Reg 2023) Q10. AT-2 Q8b(i) — polar plot to find K for PM=60°. Appears mostly in Part C or as OR option in Part B.<br><br><strong>Lead compensator:</strong> Transfer function Gc(s) = α(s+z)/(s+p) where z&lt;p. Steps: (1) find existing PM, (2) compute φm needed, (3) find α, (4) find new ωgc, (5) compute z and p.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="q-section-title">MOST PROBABLE 13-MARK QUESTIONS (PART B)</div>
+  <div class="q-list">
+    <div class="q-item">
+      <span class="q-num">Q1</span>
+      <div class="q-text">Draw the Bode plot for G(s)H(s) = 100/[s(s+1)(s+2)]. Determine (i) Gain Margin (ii) Phase Margin (iii) Gain crossover frequency (iv) Phase crossover frequency. <span class="hint">★ This exact G(s) or similar appears in Apr/May 2025 Q13a AND Nov/Dec 2023 Q13a.</span></div>
+      <span class="q-badge fire">🔥 SURE</span>
+    </div>
+    <div class="q-item">
+      <span class="q-num">Q2</span>
+      <div class="q-text">Sketch the Nyquist plot for G(s)H(s) = K(1+s)²/s³. Find the range of K for stability. <span class="hint">★ Part C compulsory in Nov/Dec 2021, 2022, 2023. Also Nov/Dec 2025 Part B.</span></div>
+      <span class="q-badge fire">🔥 SURE</span>
+    </div>
+    <div class="q-item">
+      <span class="q-num">Q3</span>
+      <div class="q-text">Sketch the polar plot for G(s) = 50/[s(s+1)(s+5)(s+10)]. Calculate gain and phase margins and comment on stability. <span class="hint">★ OR option to Bode in Q13 — high probability.</span></div>
+      <span class="q-badge hot">HOT</span>
+    </div>
+    <div class="q-item">
+      <span class="q-num">Q4</span>
+      <div class="q-text">For G(s)H(s) = 20/[s(1+3s)(1+4s)]: Draw polar plot, identify phase crossover point. Design a lead compensator to improve phase margin by 30°. <span class="hint">★ Apr/May 2025 Q16 — Part C pattern</span></div>
+      <span class="q-badge hot">HOT</span>
+    </div>
+  </div>
+
+  <div class="q-section-title">MOST PROBABLE 2-MARK (PART A) QUESTIONS</div>
+  <div class="q-list">
+    <div class="q-item"><span class="q-num">A1</span><div class="q-text">Define Gain Margin and Phase Margin.</div><span class="q-badge fire">🔥</span></div>
+    <div class="q-item"><span class="q-num">A2</span><div class="q-text">State conditions for lag-lead compensator / When is lag-lead compensator preferred?</div><span class="q-badge hot">HOT</span></div>
+    <div class="q-item"><span class="q-num">A3</span><div class="q-text">Sketch the polar plot of G(s) = 1/(s+1) and comment on its shape.</div><span class="q-badge hot">HOT</span></div>
+    <div class="q-item"><span class="q-num">A4</span><div class="q-text">How do gain and phase margins relate to system stability?</div><span class="q-badge warm">WARM</span></div>
+    <div class="q-item"><span class="q-num">A5</span><div class="q-text">Why are compensators necessary in feedback control systems?</div><span class="q-badge warm">WARM</span></div>
+  </div>
+
+  <div class="priority-grid">
+    <div class="pbox high-pri">
+      <div class="pbox-title">🔴 HIGH PRIORITY</div>
+      <ul>
+        <li>Bode plot: asymptotic approximation, slope table (−20n dB/dec)</li>
+        <li>Nyquist criterion: N=Z−P, encirclement rule, range of K</li>
+        <li>Polar plot: starting point, end point, phase crossover calculation</li>
+        <li>Gain margin = 1/|G(jωpc)|, Phase margin = 180° + ∠G(jωgc)</li>
+        <li>Lead compensator design procedure (5 steps)</li>
+      </ul>
+    </div>
+    <div class="pbox skip">
+      <div class="pbox-title">🔵 LOW PRIORITY (SKIP IF SHORT)</div>
+      <ul>
+        <li>Closed loop frequency response derivation theory</li>
+        <li>Resonant peak Mr and bandwidth derivations</li>
+        <li>Lag-lead compensator full design (complex — only if time permits)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ UNIT 4 ════════════════════════════════════ -->
+<div class="unit-panel" id="tab-u4">
+  <div class="section-header">
+    <span class="unit-badge">UNIT IV</span>
+    <h2>Stability Analysis</h2>
+  </div>
+
+  <div class="q-section-title">MOST IMPORTANT TOPICS — RANKED BY PROBABILITY</div>
+  <div class="topic-grid">
+
+    <div class="topic-card rank-1" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">1</span>
+        <span class="topic-name">Root Locus — Complete Sketch using Construction Rules</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap high"><div class="prob-bar"><div class="prob-fill" style="width:93%"></div></div><span class="prob-pct">93%</span></div>
+          <span class="pill pill-hard">Hard</span>
+          <span class="pill pill-time">8–10 hrs</span>
+          <span class="pill pill-type">Problem-solving</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> End-Sem Nov/Dec 2025 Q14b, Apr/May 2025 Q14a, Nov/Dec 2024 Q14b, Nov/Dec 2023 Q14a, Nov/Dec 2022 Q13(b)/16(i), Nov/Dec 2021 Q14b, AT-2 (2022) Q9b. Virtually guaranteed in Part B Q14 or Part C Q16.<br><br><strong>Most repeated G(s) forms:</strong> K/[s(s²+4s+13)], K/[s(s+3)²(s²+2s+17)], K(s+2)/[(s+3)²(s²+2s+17)], K(s+30)/[(s+1)(s+10)(s+20)].<br><br><strong>Rules to master:</strong> Number of branches, symmetry, real-axis locus, asymptotes (angle + centroid), breakaway point, imaginary-axis crossing (via Routh), angle of departure/arrival.</p>
+      </div>
+    </div>
+
+    <div class="topic-card rank-1" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">2</span>
+        <span class="topic-name">Routh-Hurwitz Criterion — Range of K + Frequency of Oscillation</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap high"><div class="prob-bar"><div class="prob-fill" style="width:92%"></div></div><span class="prob-pct">92%</span></div>
+          <span class="pill pill-med">Medium</span>
+          <span class="pill pill-time">4–5 hrs</span>
+          <span class="pill pill-type">Formula-heavy</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> AT-2 Q7 (Apr 2025 Reg 2023), End-Sem Q14a (Nov/Dec 2025), Q14a (Nov/Dec 2024), Q7 (Apr/May 2025), Q14a (Nov/Dec 2023), AT-2 Q4/8 (2022). Standard question: given CLTF with parameter K, find range of K for stability and frequency of oscillation at marginally stable condition.<br><br><strong>Recurring C(s)/R(s):</strong> K/[s(s²+s+1)(s+2)+K], K/[(s+2)(s+4)(s²+6s+25)], K/[s(S²+4S+13)].<br><br><strong>Special row:</strong> Auxiliary equation when row becomes zero.</p>
+      </div>
+    </div>
+
+    <div class="topic-card rank-2" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">3</span>
+        <span class="topic-name">Characteristic Equation — Stability Analysis (Stable/Unstable/Marginally Stable)</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap high"><div class="prob-bar"><div class="prob-fill" style="width:80%"></div></div><span class="prob-pct">80%</span></div>
+          <span class="pill pill-easy">Easy</span>
+          <span class="pill pill-time">2–3 hrs</span>
+          <span class="pill pill-type">Problem-solving</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> Nov/Dec 2025 Q14a: 2s⁵+2s⁴+5s³+5s²+3s+5=0 (locate roots). AT-2 Q5 (Reg 2023). AT-2 Q6 (2022). Direct Routh array → count sign changes → determine number of RHP roots.<br><br><strong>Quick win:</strong> This type takes 10 minutes per question. Very high marks-per-time efficiency.</p>
+      </div>
+    </div>
+
+    <div class="topic-card rank-3" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">4</span>
+        <span class="topic-name">BIBO Stability + Absolute vs Relative Stability Concepts</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap med"><div class="prob-bar"><div class="prob-fill" style="width:75%"></div></div><span class="prob-pct">75%</span></div>
+          <span class="pill pill-easy">Easy</span>
+          <span class="pill pill-time">1–2 hrs</span>
+          <span class="pill pill-type">Memory-heavy</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> Nov/Dec 2025 Part A Q7, Q8. Nov/Dec 2022 AT-2 Q4, Q5. Nov/Dec 2024 Part A Q7, Q8. Appears consistently as 2-mark Part A questions. BIBO: bounded input → bounded output. Condition: all poles in LHP.<br><br><strong>Relative stability:</strong> Position of dominant poles relative to jω axis — gain margin and phase margin from frequency plots.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="q-section-title">MOST PROBABLE 13-MARK QUESTIONS (PART B)</div>
+  <div class="q-list">
+    <div class="q-item">
+      <span class="q-num">Q1</span>
+      <div class="q-text">Determine the range of K for stability of a unity feedback system with OLTF G(s) = K/[s(s²+s+1)(s+2)] using Routh stability criterion. Also find frequency of oscillation. <span class="hint">★ This specific form (or close variant) repeated in 5+ papers.</span></div>
+      <span class="q-badge fire">🔥 SURE</span>
+    </div>
+    <div class="q-item">
+      <span class="q-num">Q2</span>
+      <div class="q-text">Sketch the root locus for G(s)H(s) = K/[s(s²+4s+13)]. Draw as K varies from 0 to ∞. Also find the value of K and frequency at which root locus crosses the jω axis. <span class="hint">★ Nov/Dec 2024 Q14b, Nov/Dec 2022 Q16(i), Nov/Dec 2021 Q14b — same G(s).</span></div>
+      <span class="q-badge fire">🔥 SURE</span>
+    </div>
+    <div class="q-item">
+      <span class="q-num">Q3</span>
+      <div class="q-text">The characteristic equation is ẍ − (K+2)ẋ + (2K+5)x = 0. Find the values of K for which the system is (i) Stable (ii) Limitedly stable (iii) Unstable, and also when it is (i) Critically damped (ii) Underdamped (iii) Overdamped. <span class="hint">★ Apr/May 2025 Q14b — unique combined question.</span></div>
+      <span class="q-badge hot">HOT</span>
+    </div>
+    <div class="q-item">
+      <span class="q-num">Q4</span>
+      <div class="q-text">Sketch root locus for G(s)H(s) = K(s+2)/[(s+3)²(s²+2s+17)]. <span class="hint">★ Nov/Dec 2025 Q14b — with complex poles, tests angle of departure.</span></div>
+      <span class="q-badge hot">HOT</span>
+    </div>
+  </div>
+
+  <div class="q-section-title">MOST PROBABLE 2-MARK (PART A) QUESTIONS</div>
+  <div class="q-list">
+    <div class="q-item"><span class="q-num">A1</span><div class="q-text">What is the requirement for BIBO stability?</div><span class="q-badge fire">🔥</span></div>
+    <div class="q-item"><span class="q-num">A2</span><div class="q-text">What are breakaway and break-in points in root locus?</div><span class="q-badge fire">🔥</span></div>
+    <div class="q-item"><span class="q-num">A3</span><div class="q-text">How can you infer system stability from angle of departure/arrival in root locus analysis?</div><span class="q-badge hot">HOT</span></div>
+    <div class="q-item"><span class="q-num">A4</span><div class="q-text">State Nyquist stability criterion / Mention any two limitations of Routh stability criterion.</div><span class="q-badge hot">HOT</span></div>
+    <div class="q-item"><span class="q-num">A5</span><div class="q-text">Check necessary condition for stability: (a) s⁴+3s³+4s²+5s+10=0, (b) s³−8s²+7s+6=0</div><span class="q-badge warm">WARM</span></div>
+  </div>
+
+  <div class="priority-grid">
+    <div class="pbox high-pri">
+      <div class="pbox-title">🔴 HIGH PRIORITY</div>
+      <ul>
+        <li>Root locus: all 8 construction rules — memorize the algorithm</li>
+        <li>Routh array with special cases (zero in first column, all-zero row)</li>
+        <li>Range of K + marginal oscillation frequency from Routh</li>
+        <li>BIBO stability definition and conditions</li>
+        <li>Angle of departure/arrival formula</li>
+      </ul>
+    </div>
+    <div class="pbox skip">
+      <div class="pbox-title">🔵 LOW PRIORITY (SKIP IF SHORT)</div>
+      <ul>
+        <li>Relative stability by shifting the axis (modified Routh)</li>
+        <li>Nichols chart / M-N circles (not in frequent questions)</li>
+        <li>Root sensitivity analysis</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════ UNIT 5 ════════════════════════════════════ -->
+<div class="unit-panel" id="tab-u5">
+  <div class="section-header">
+    <span class="unit-badge">UNIT V</span>
+    <h2>Control System Analysis (State Space)</h2>
+  </div>
+
+  <div class="q-section-title">MOST IMPORTANT TOPICS — RANKED BY PROBABILITY</div>
+  <div class="topic-grid">
+
+    <div class="topic-card rank-1" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">1</span>
+        <span class="topic-name">Controllability & Observability — Kalman's Rank Test</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap high"><div class="prob-bar"><div class="prob-fill" style="width:90%"></div></div><span class="prob-pct">90%</span></div>
+          <span class="pill pill-med">Medium</span>
+          <span class="pill pill-time">4–5 hrs</span>
+          <span class="pill pill-type">Formula-heavy</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> End-Sem Q15a appears in EVERY paper: Nov/Dec 2025, Apr/May 2025, Nov/Dec 2024, Nov/Dec 2023, Nov/Dec 2022, Nov/Dec 2021. Reg 2019 AT-2 Q7b also tests this.<br><br><strong>Standard matrices given in exams:</strong> A = [0,1,0; 0,0,1; −6,−11,−6], B = [1;0;0]ᵀ or [0;0;1], C = [10,5,1] — This EXACT set appears in both Apr/May 2025 AND Nov/Dec 2025!<br><br><strong>Method:</strong> Qc = [B, AB, A²B], rank(Qc) = n → controllable. Qo = [Cᵀ, AᵀCᵀ, (Aᵀ)²Cᵀ], rank(Qo) = n → observable.</p>
+      </div>
+    </div>
+
+    <div class="topic-card rank-1" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">2</span>
+        <span class="topic-name">Transfer Function ↔ State Variable Conversion (Both Directions)</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap high"><div class="prob-bar"><div class="prob-fill" style="width:85%"></div></div><span class="prob-pct">85%</span></div>
+          <span class="pill pill-med">Medium</span>
+          <span class="pill pill-time">4–5 hrs</span>
+          <span class="pill pill-type">Problem-solving</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> End-Sem Q15b in Nov/Dec 2025, Nov/Dec 2024, Nov/Dec 2023, Nov/Dec 2021, Nov/Dec 2022. Two types: (a) Given Y(s)/U(s) = rational function → find state equations in CCF. (b) Given ẋ = Ax+Bu, y = Cx → find T(s) = C(sI−A)⁻¹B + D.<br><br><strong>Recurring TFs:</strong> Y(s)/U(s) = (s³+5s²+6s+1)/(s³+4s²+3s+3), Y(s)/U(s) = (s³+5s²+6s+1)/(s³+4s²+2s+1).</p>
+      </div>
+    </div>
+
+    <div class="topic-card rank-2" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">3</span>
+        <span class="topic-name">State Transition Matrix — Solution of State Equations</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap med"><div class="prob-bar"><div class="prob-fill" style="width:70%"></div></div><span class="prob-pct">70%</span></div>
+          <span class="pill pill-hard">Hard</span>
+          <span class="pill pill-time">4–5 hrs</span>
+          <span class="pill pill-type">Formula-heavy</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> Nov/Dec 2021 Q15b, AT-2 (2024) Q7a(i) — "given x(0)=[2;-1] → x(t)=[e⁻²ᵗ; -4e⁻²ᵗ], find e^At and hence A." Nov/Dec 2022 Q15b — given state model determine eAt.<br><br><strong>Methods:</strong> (1) Cayley-Hamilton theorem, (2) Laplace method: φ(t) = L⁻¹[(sI-A)⁻¹]. The Laplace method is safer under exam pressure.</p>
+      </div>
+    </div>
+
+    <div class="topic-card rank-3" onclick="toggleCard(this)">
+      <div class="topic-header">
+        <span class="rank-badge">4</span>
+        <span class="topic-name">State Space from Differential Equation / Signal Flow Graph</span>
+        <div class="topic-meta">
+          <div class="prob-bar-wrap med"><div class="prob-bar"><div class="prob-fill" style="width:65%"></div></div><span class="prob-pct">65%</span></div>
+          <span class="pill pill-med">Medium</span>
+          <span class="pill pill-time">3–4 hrs</span>
+          <span class="pill pill-type">Problem-solving</span>
+        </div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="topic-body">
+        <p><strong>Evidence:</strong> AT-2 (2024) Q5, AT-2 (Nov/Dec 2022) Q7a(ii) — "Construct state model for d³y/dt³ + 6d²y/dt² + 11dy/dt + 6y = u." Nov/Dec 2024 Q15b and Nov/Dec 2023 Q15b involve converting state equations to TF. <br><br><strong>Companion form:</strong> Phase variable canonical form is the standard approach. For nth order system: n state variables x1 = y, x2 = ẏ, ..., xn = y^(n-1).</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="q-section-title">MOST PROBABLE 13-MARK QUESTIONS (PART B)</div>
+  <div class="q-list">
+    <div class="q-item">
+      <span class="q-num">Q1</span>
+      <div class="q-text">Consider the system: ẋ = Ax + Bu, y = Cx where A = [0,1,0; 0,0,1; -6,-11,-6], B = [1;0;1], C = [10,5,1]. Check the system for (i) complete state controllability and (ii) complete observability. <span class="hint">★ This EXACT system appears in both Apr/May 2025 Q15a AND Nov/Dec 2025 Q15a. Very high chance of repetition.</span></div>
+      <span class="q-badge fire">🔥 SURE</span>
+    </div>
+    <div class="q-item">
+      <span class="q-num">Q2</span>
+      <div class="q-text">Find the state equation and output equation for the system given by Y(s)/U(s) = (s³+5s²+6s+1)/(s³+4s²+3s+3). <span class="hint">★ Appears in Nov/Dec 2025 Q15b, Nov/Dec 2024 Q15b, Nov/Dec 2023 Q15b — same format, different numerals.</span></div>
+      <span class="q-badge fire">🔥 SURE</span>
+    </div>
+    <div class="q-item">
+      <span class="q-num">Q3</span>
+      <div class="q-text">Obtain the transfer function for the state-space representation: ẋ = Ax+Bu, y = Cx with given numerical A, B, C matrices. Also determine controllability and observability. <span class="hint">★ Nov/Dec 2022 Q15a, Nov/Dec 2024 Q15a — combined question.</span></div>
+      <span class="q-badge hot">HOT</span>
+    </div>
+    <div class="q-item">
+      <span class="q-num">Q4</span>
+      <div class="q-text">Convert the state and output equations ẋ = [-4,-1.5; 4,0]x + [2;0]u(t), y = [1.5, 0.625]x into a transfer function. <span class="hint">★ Nov/Dec 2025 Q15b</span></div>
+      <span class="q-badge hot">HOT</span>
+    </div>
+  </div>
+
+  <div class="q-section-title">MOST PROBABLE 2-MARK (PART A) QUESTIONS</div>
+  <div class="q-list">
+    <div class="q-item"><span class="q-num">A1</span><div class="q-text">Define the terms controllability and observability.</div><span class="q-badge fire">🔥</span></div>
+    <div class="q-item"><span class="q-num">A2</span><div class="q-text">Write the general state space equations of a system.</div><span class="q-badge fire">🔥</span></div>
+    <div class="q-item"><span class="q-num">A3</span><div class="q-text">List out the advantages of state space modeling over transfer function modeling.</div><span class="q-badge hot">HOT</span></div>
+    <div class="q-item"><span class="q-num">A4</span><div class="q-text">When is a system said to be fully observable?</div><span class="q-badge hot">HOT</span></div>
+    <div class="q-item"><span class="q-num">A5</span><div class="q-text">Write the properties of state transition matrix eAt.</div><span class="q-badge warm">WARM</span></div>
+  </div>
+
+  <div class="priority-grid">
+    <div class="pbox high-pri">
+      <div class="pbox-title">🔴 HIGH PRIORITY</div>
+      <ul>
+        <li>Controllability matrix Qc = [B, AB, A²B] + rank test</li>
+        <li>Observability matrix Qo = [Cᵀ, AᵀCᵀ, (Aᵀ)²Cᵀ] + rank test</li>
+        <li>TF → State variables (phase variable / CCF form)</li>
+        <li>State variables → TF: T(s) = C(sI−A)⁻¹B</li>
+        <li>Properties of state transition matrix (5 properties)</li>
+      </ul>
+    </div>
+    <div class="pbox skip">
+      <div class="pbox-title">🔵 LOW PRIORITY (SKIP IF SHORT)</div>
+      <ul>
+        <li>Digital control design using state feedback</li>
+        <li>State variable analysis of digital control system (z-domain)</li>
+        <li>Sampled data control theory</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="warn-box">
+    Unit V is the <strong>fastest unit to prepare</strong>. There are essentially only 2 question types in Part B: (1) Controllability/Observability test, and (2) TF ↔ State Space conversion. Master these two and you are guaranteed 13 marks from Unit V.
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.unit-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleCard(card) {
+  const wasOpen = card.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.topic-card.open').forEach(c => c.classList.remove('open'));
+  if (!wasOpen) card.classList.add('open');
+}
+
+// Animate probability bars on load
+window.addEventListener('load', () => {
+  document.querySelectorAll('.prob-fill').forEach(el => {
+    const w = el.style.width;
+    el.style.width = '0%';
+    setTimeout(() => { el.style.width = w; }, 200);
+  });
+});
+</script>
+</body>
+</html>
