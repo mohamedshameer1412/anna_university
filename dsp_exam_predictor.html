@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSP Exam Prediction Dashboard</title>
+<style>
+  :root {
+    --bg-base: #f8fafc;
+    --bg-surface: #ffffff;
+    --bg-surface-hover: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --border-light: #e2e8f0;
+    --primary: #2563eb;
+    --primary-light: #eff6ff;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-full: 9999px;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  .dashboard-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .dashboard-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+  .dashboard-header p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.125rem; font-weight: 600; margin: 2rem 0 1rem;
+    color: var(--text-primary); letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+
+  /* Heatmap */
+  .heat-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.75rem; margin-bottom: 2rem;
+  }
+  .heat-cell {
+    border-radius: var(--radius-md); padding: 0.75rem 1rem; text-align: left;
+    font-size: 0.75rem; font-weight: 600; transition: all 0.2s;
+    box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.05);
+    display: flex; flex-direction: column; gap: 4px; cursor: default;
+  }
+  .heat-cell:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .heat-cell span { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
+
+  /* Navigation Tabs */
+  .unit-tabs {
+    display: flex; gap: 0.5rem; margin-bottom: 1.5rem; overflow-x: auto;
+    padding: 0.35rem; background: var(--border-light); border-radius: var(--radius-md);
+  }
+  .unit-tab {
+    padding: 0.6rem 1.25rem; border-radius: var(--radius-sm);
+    font-size: 0.875rem; font-weight: 500; color: var(--text-secondary);
+    cursor: pointer; transition: all 0.2s ease; white-space: nowrap;
+    border: none; background: transparent; flex: 1; text-align: center;
+  }
+  .unit-tab:hover { color: var(--text-primary); }
+  .unit-tab.active {
+    background: var(--bg-surface); color: var(--text-primary);
+    box-shadow: var(--shadow-sm); font-weight: 600;
+  }
+
+  .unit-content { display: none; animation: fadeIn 0.3s ease; }
+  .unit-content.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+  .unit-header {
+    font-size: 1.25rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-light);
+  }
+
+  /* Cards */
+  .topic-card {
+    background: var(--bg-surface); border: 1px solid var(--border-light);
+    border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm); transition: box-shadow 0.2s;
+  }
+  .topic-card:hover { box-shadow: var(--shadow-md); }
+  .topic-name { font-size: 1.05rem; font-weight: 600; color: var(--text-primary); line-height: 1.3; margin-bottom: 0.75rem;}
+  
+  /* Tags */
+  .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+  .tag {
+    font-size: 0.7rem; padding: 0.25rem 0.6rem; border-radius: var(--radius-full);
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+    display: inline-flex; align-items: center; gap: 0.25rem;
+  }
+  .pill-high { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+  .pill-med { background: #fef9c3; color: #854d0e; border: 1px solid #fef08a; }
+  .pill-low { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+  .pill-easy { background: #e0f2fe; color: #075985; border: 1px solid #bae6fd; }
+  .pill-med-t { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+  .pill-hard { background: #fce7f3; color: #9d174d; border: 1px solid #fbcfe8; }
+  .pill-type { background: #f3f4f6; color: #374151; border: 1px solid #e5e7eb; }
+
+  /* Probability Bar */
+  .prob-container { margin-bottom: 1rem; }
+  .prob-label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); display: flex; justify-content: space-between; margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em;}
+  .prob-bar { height: 8px; border-radius: var(--radius-full); background: var(--bg-base); overflow: hidden; border: 1px solid var(--border-light);}
+  .prob-fill { height: 100%; border-radius: var(--radius-full); transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
+  .bar-high { background: var(--success); }
+  .bar-med { background: var(--warning); }
+  .bar-low { background: var(--danger); }
+
+  .reason { 
+    font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6; 
+    background: var(--bg-base); padding: 0.875rem 1rem; border-radius: var(--radius-sm); 
+    border-left: 3px solid var(--primary); 
+  }
+
+  /* Lists */
+  .q-list { list-style: none; padding: 0; margin-bottom: 1.5rem; }
+  .q-list li {
+    padding: 0.875rem 1rem; border: 1px solid var(--border-light); border-radius: var(--radius-sm);
+    font-size: 0.875rem; color: var(--text-primary); margin-bottom: 0.5rem; background: var(--bg-surface);
+    display: flex; gap: 0.75rem; align-items: flex-start; line-height: 1.5;
+  }
+  .q-list li::before { content: "↳"; color: var(--text-muted); font-size: 1rem; line-height: 1.5; font-weight: 600;}
+
+  /* Grid Layouts */
+  .two-col { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+  
+  /* Summary Cards */
+  .summary-card { background: var(--bg-surface); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 1.5rem; box-shadow: var(--shadow-sm); }
+  .summary-title { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border-light); padding-bottom: 0.75rem; }
+  .summary-items { list-style: none; }
+  .summary-items li { font-size: 0.875rem; padding: 0.6rem 0; color: var(--text-primary); border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center;}
+  .summary-items li:last-child { border-bottom: none; padding-bottom: 0; }
+  .summary-items li span { color: var(--text-secondary); font-size: 0.8rem; background: var(--bg-base); padding: 0.1rem 0.5rem; border-radius: var(--radius-sm); font-weight: 500;}
+
+  .q16-box { background: linear-gradient(to right, var(--primary-light), #e0e7ff); border: 1px solid #c7d2fe; border-radius: var(--radius-md); padding: 1.5rem; margin-bottom: 1.5rem; }
+  .q16-title { font-size: 1rem; font-weight: 700; color: #3730a3; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;}
+  .q16-box .q-list li { background: transparent; border: none; padding: 0.5rem 0; border-bottom: 1px solid #c7d2fe; border-radius: 0; color: #312e81; font-weight: 500;}
+  .q16-box .q-list li:last-child { border-bottom: none; padding-bottom: 0;}
+
+  /* Skip Tags */
+  .skip-section { margin-top: 2rem; padding: 1.25rem; background: #fff1f2; border: 1px dashed #fecdd3; border-radius: var(--radius-md); }
+  .skip-title { font-size: 0.75rem; font-weight: 700; color: #9f1239; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
+  .skiptag { display: inline-flex; background: white; color: #be123c; border: 1px solid #fda4af; font-size: 0.75rem; padding: 0.35rem 0.75rem; border-radius: var(--radius-full); font-weight: 600; margin-right: 0.5rem; margin-bottom: 0.5rem; box-shadow: var(--shadow-sm); }
+
+  @media(max-width: 640px) {
+    .heat-grid { grid-template-columns: repeat(2, 1fr); }
+    .two-col { grid-template-columns: 1fr; }
+    .unit-tabs { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="dashboard-header">
+    <h1>DSP Exam Prediction Dashboard</h1>
+    <p>Topic probabilities, probable questions, and study strategy by unit</p>
+  </div>
+
+  <h2 class="section-title">Topic Frequency Heatmap — Across All Papers</h2>
+  <div class="heat-grid">
+    <div class="heat-cell" style="background-color: #eff6ff; color: #1e3a8a; border-color: #bfdbfe;">
+      DFT/FFT <span>95%</span>
+    </div>
+    <div class="heat-cell" style="background-color: #eff6ff; color: #1e3a8a; border-color: #bfdbfe;">
+      IIR Design <span>92%</span>
+    </div>
+    <div class="heat-cell" style="background-color: #eff6ff; color: #1e3a8a; border-color: #bfdbfe;">
+      FIR Design <span>90%</span>
+    </div>
+    <div class="heat-cell" style="background-color: #f0fdf4; color: #14532d; border-color: #bbf7d0;">
+      Z-transform <span>85%</span>
+    </div>
+    <div class="heat-cell" style="background-color: #f0fdf4; color: #14532d; border-color: #bbf7d0;">
+      Bilinear BZT <span>85%</span>
+    </div>
+    <div class="heat-cell" style="background-color: #f0fdf4; color: #14532d; border-color: #bbf7d0;">
+      Butterworth <span>82%</span>
+    </div>
+    <div class="heat-cell" style="background-color: #f0fdf4; color: #14532d; border-color: #bbf7d0;">
+      Convolution <span>80%</span>
+    </div>
+    <div class="heat-cell" style="background-color: #fefce8; color: #713f12; border-color: #fef08a;">
+      Overlap Methods <span>75%</span>
+    </div>
+    <div class="heat-cell" style="background-color: #fefce8; color: #713f12; border-color: #fef08a;">
+      Chebyshev <span>75%</span>
+    </div>
+    <div class="heat-cell" style="background-color: #f0fdf4; color: #14532d; border-color: #bbf7d0;">
+      Window Method <span>88%</span>
+    </div>
+  </div>
+
+  <div class="unit-tabs">
+    <button class="unit-tab active" onclick="switchUnit('u1',this)">Unit I</button>
+    <button class="unit-tab" onclick="switchUnit('u2',this)">Unit II</button>
+    <button class="unit-tab" onclick="switchUnit('u3',this)">Unit III</button>
+    <button class="unit-tab" onclick="switchUnit('u4',this)">Unit IV</button>
+    <button class="unit-tab" onclick="switchUnit('u5',this)">Unit V</button>
+    <button class="unit-tab" onclick="switchUnit('summary',this)" style="font-weight:700; color:var(--primary);">Strategy</button>
+  </div>
+
+  <div id="u1" class="unit-content active">
+    <div class="unit-header">Unit I — Classification of DT Signals and Systems</div>
+
+    <div class="topic-card">
+      <div class="topic-name">Convolution sum — Linear &amp; Circular</div>
+      <div class="tags">
+        <span class="tag pill-high">Probability: 90%</span>
+        <span class="tag pill-med-t">Toughness: Medium</span>
+        <span class="tag pill-type">Problem-solving</span>
+        <span class="tag pill-easy">Study: 4 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>90%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-high" style="width:90%"></div></div>
+      </div>
+      <div class="reason">Appeared in every single paper examined. Both linear (graphical/tabular) and circular convolution asked repeatedly. Circular convolution is a staple 2-mark and 13-mark question across Reg 2019 and Reg 2023 papers.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-name">Overlap-Add &amp; Overlap-Save methods</div>
+      <div class="tags">
+        <span class="tag pill-high">Probability: 85%</span>
+        <span class="tag pill-med-t">Toughness: Medium</span>
+        <span class="tag pill-type">Problem-solving</span>
+        <span class="tag pill-easy">Study: 3 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>85%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-high" style="width:85%"></div></div>
+      </div>
+      <div class="reason">Appears as 12–13 mark questions in every assessment and end-semester. Both methods equally weighted. Overlap-save slightly more frequent in recent papers (Reg 2023).</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-name">LTI system properties — linearity, causality, stability, time-invariance</div>
+      <div class="tags">
+        <span class="tag pill-high">Probability: 80%</span>
+        <span class="tag pill-easy">Toughness: Easy</span>
+        <span class="tag pill-type">Concept</span>
+        <span class="tag pill-easy">Study: 2 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>80%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-high" style="width:80%"></div></div>
+      </div>
+      <div class="reason">Consistent 2-mark and 6-mark question. "Check if system is linear, causal, stable" type numerical appears in every paper. Very high return on investment.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-name">Energy &amp; Power signals</div>
+      <div class="tags">
+        <span class="tag pill-med">Probability: 65%</span>
+        <span class="tag pill-easy">Toughness: Easy</span>
+        <span class="tag pill-type">Formula</span>
+        <span class="tag pill-easy">Study: 1 hr</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>65%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-med" style="width:65%"></div></div>
+      </div>
+      <div class="reason">Frequent 2-mark question. "Check if x(n) = e^2n·u(n) is energy or power signal" is a near-verbatim repeat across multiple papers.</div>
+    </div>
+
+    <h3 class="section-title">Most probable 13-mark questions</h3>
+    <ul class="q-list">
+      <li>Use graphical method to compute the linear convolution of h[n]={2,0,−2,1,3} and x[n]={3,−2,0,1,2,5,−1,4}</li>
+      <li>Determine the output y(n) of an FIR filter with impulse response h(n)={1,1,1} for lengthy input x(n)={3,−1,0,1,3,2,0,1,2,1} using overlap-save method</li>
+      <li>Determine the convolution of x(n) and h(n) = δ(n)−δ(n−1)+δ(n−2)−δ(n−3) using graphical method. Also check system properties.</li>
+    </ul>
+
+    <h3 class="section-title">Most probable 8-mark questions</h3>
+    <ul class="q-list">
+      <li>Check whether x(n) = u(n) − u(n−1) is energy or power signal</li>
+      <li>Determine if y(n) = 2x(n) + 1/x(n−1) is linear, time-invariant, causal and stable</li>
+      <li>Perform circular convolution of x(n)={1,2,2,1} and z(n)={2,3,1,1}</li>
+    </ul>
+
+    <div class="skip-section">
+      <div class="skip-title">Low Priority — Safe to skip if time is short</div>
+      <span class="skiptag">Ramp signal derivation</span>
+      <span class="skiptag">Random signal theory</span>
+      <span class="skiptag">Periodic/aperiodic classification (theory only)</span>
+    </div>
+  </div>
+
+  <div id="u2" class="unit-content">
+    <div class="unit-header">Unit II — Spectral Analysis of DT Signals and Systems</div>
+
+    <div class="topic-card">
+      <div class="topic-name">DFT computation — 8-point, N-point (direct + FFT)</div>
+      <div class="tags">
+        <span class="tag pill-high">Probability: 95%</span>
+        <span class="tag pill-hard">Toughness: Hard</span>
+        <span class="tag pill-type">Problem-solving</span>
+        <span class="tag pill-med-t">Study: 5 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>95%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-high" style="width:95%"></div></div>
+      </div>
+      <div class="reason">The single most repeated topic. 8-point DFT computation appears in every single paper without exception. Radix-2 DIT-FFT is the dominant algorithm tested. Parseval's theorem verification attached frequently.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-name">Radix-2 DIT-FFT &amp; DIF-FFT algorithms</div>
+      <div class="tags">
+        <span class="tag pill-high">Probability: 90%</span>
+        <span class="tag pill-hard">Toughness: Hard</span>
+        <span class="tag pill-type">Problem-solving</span>
+        <span class="tag pill-med-t">Study: 4 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>90%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-high" style="width:90%"></div></div>
+      </div>
+      <div class="reason">DIT and DIF both tested. DIT more common in assessments; DIF appeared in 2025 end-sem (IDFT using DIT-FFT). Also: count of multiplications/additions for N-point DFT vs FFT is a guaranteed 2-mark.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-name">DTFT properties &amp; computation</div>
+      <div class="tags">
+        <span class="tag pill-high">Probability: 80%</span>
+        <span class="tag pill-med-t">Toughness: Medium</span>
+        <span class="tag pill-type">Formula</span>
+        <span class="tag pill-easy">Study: 3 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>80%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-high" style="width:80%"></div></div>
+      </div>
+      <div class="reason">DTFT of 0.8^n·u(n) and using DTFT properties to derive related sequences (time shift, modulation, conjugation) is a recurring 12-mark pattern in recent Reg 2023 papers.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-name">DFT properties — circular time shift, circular convolution</div>
+      <div class="tags">
+        <span class="tag pill-high">Probability: 75%</span>
+        <span class="tag pill-med-t">Toughness: Medium</span>
+        <span class="tag pill-type">Concept</span>
+        <span class="tag pill-easy">Study: 2 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>75%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-high" style="width:75%"></div></div>
+      </div>
+      <div class="reason">Circular time shift, twiddle factor properties, and DFT-IDFT method for linear convolution are consistent 2-mark and part questions.</div>
+    </div>
+
+    <h3 class="section-title">Most probable 13-mark questions</h3>
+    <ul class="q-list">
+      <li>Compute the 8-point DFT of x(n)={1,2,3,4,2,1} using radix-2 decimation-in-time FFT algorithm. Plot magnitude and phase spectrum.</li>
+      <li>Determine the 8-point IDFT using Radix-2 DIT-FFT algorithm given X(k)={20,−5.828−j2.279, 0,−0.172−j0.279, 0,−0.172+j0.279, 0,−5.828+j2.279}</li>
+      <li>Consider DTFT of {0.8^n u(n)} = 1/(1−0.8e^−jω). Compute DTFT of: i) 0.8^n u(n)cos(0.1πn), ii) n·0.8^n u(n), iii) 0.8^−n u(−n), iv) 0.8^n u(n−2)</li>
+      <li>Sample x(t)=1+cos2πt at 4 samples/sec. Determine 8-point DFT using DIT-FFT. Verify Parseval's theorem.</li>
+    </ul>
+
+    <h3 class="section-title">Most probable 8-mark questions</h3>
+    <ul class="q-list">
+      <li>Calculate number of complex multiplications and additions for 64-point DFT using radix-2 FFT vs direct computation</li>
+      <li>State and prove circular time shift property of DFT</li>
+      <li>Find four-point DFT of x(n)={1,0,1,1} using radix-2 DIT-FFT algorithm</li>
+    </ul>
+
+    <div class="skip-section">
+      <div class="skip-title">Low priority</div>
+      <span class="skiptag">Discrete Fourier series derivation</span>
+      <span class="skiptag">Power spectral estimation (less frequent)</span>
+    </div>
+  </div>
+
+  <div id="u3" class="unit-content">
+    <div class="unit-header">Unit III — Characterization of DT LTI Systems</div>
+
+    <div class="topic-card">
+      <div class="topic-name">Z-transform, ROC, and inverse Z-transform</div>
+      <div class="tags">
+        <span class="tag pill-high">Probability: 88%</span>
+        <span class="tag pill-hard">Toughness: Hard</span>
+        <span class="tag pill-type">Problem-solving</span>
+        <span class="tag pill-med-t">Study: 5 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>88%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-high" style="width:88%"></div></div>
+      </div>
+      <div class="reason">Heavy Z-transform numericals including partial fraction/long division inverse Z-transform, causal vs anticausal ROC, stability analysis. A definite 13-mark question. Appeared in every end-semester paper.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-name">Transfer function from difference equations — stability and causality analysis</div>
+      <div class="tags">
+        <span class="tag pill-high">Probability: 85%</span>
+        <span class="tag pill-med-t">Toughness: Medium</span>
+        <span class="tag pill-type">Problem-solving</span>
+        <span class="tag pill-easy">Study: 3 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>85%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-high" style="width:85%"></div></div>
+      </div>
+      <div class="reason">Given difference equation → find H(z) → ROC → stability for causal/anticausal. Exact pattern repeats across Reg 2019 and Reg 2023 papers. Also: frequency response from difference equation is tested.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-name">Z-transform properties — initial/final value, time reversal, shifting</div>
+      <div class="tags">
+        <span class="tag pill-med">Probability: 70%</span>
+        <span class="tag pill-easy">Toughness: Easy</span>
+        <span class="tag pill-type">Memory</span>
+        <span class="tag pill-easy">Study: 1.5 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>70%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-med" style="width:70%"></div></div>
+      </div>
+      <div class="reason">2-mark questions on Z-transform properties are very consistent. Initial/final value theorem, time reversal, and the DTFT–Z-transform relationship are frequently tested.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-name">Unit step/impulse response from difference equations</div>
+      <div class="tags">
+        <span class="tag pill-high">Probability: 75%</span>
+        <span class="tag pill-med-t">Toughness: Medium</span>
+        <span class="tag pill-type">Problem-solving</span>
+        <span class="tag pill-easy">Study: 3 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>75%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-high" style="width:75%"></div></div>
+      </div>
+      <div class="reason">Determine unit step response and impulse response using Z-transform with given initial conditions. Appeared verbatim in Reg 2023 Assessment Test-2 and end-sem.</div>
+    </div>
+
+    <h3 class="section-title">Most probable 13-mark questions</h3>
+    <ul class="q-list">
+      <li>A LTI system is characterized by H(z)=(3−4z⁻¹)/(1−3.5z⁻¹+1.5z⁻²). Specify ROC and find h(n) for: (i) causal, (ii) anticausal conditions. Comment on stability.</li>
+      <li>Obtain x(n) given X(z)={(1+1.16z⁻¹)/[(1−0.5z⁻¹)(1−0.33z⁻¹)]}; |z|>0.5</li>
+      <li>DT-LTI system: y(n)−y(n−1)+(3/16)y(n−2)=x(n)−(1/2)x(n−1). Comment on stability, sketch ROC for causal and anti-causal systems.</li>
+      <li>Determine the response of DT-LTI: y(n)=−0.8y(n−1)+x(n) for unit step input with initial conditions i) y(−1)=0, ii) y(−1)=2/9</li>
+    </ul>
+
+    <h3 class="section-title">Most probable 8-mark questions</h3>
+    <ul class="q-list">
+      <li>Find Z-transform of x(n) = a^(n+1) u(n+1) and plot ROC</li>
+      <li>Find initial and final values of X(z) = (1+z⁻¹)/(1−0.25z⁻²)</li>
+      <li>Given H(z)=(z+0.3)/(z²−0.6z+0.08), determine system stability</li>
+    </ul>
+
+    <div class="skip-section">
+      <div class="skip-title">Low priority</div>
+      <span class="skiptag">Relation between Z-transform and DTFT (theory only)</span>
+    </div>
+  </div>
+
+  <div id="u4" class="unit-content">
+    <div class="unit-header">Unit IV — Design of IIR Filters</div>
+
+    <div class="topic-card">
+      <div class="topic-name">Bilinear Z-Transform (BZT) — Butterworth &amp; Chebyshev digital filter design</div>
+      <div class="tags">
+        <span class="tag pill-high">Probability: 92%</span>
+        <span class="tag pill-hard">Toughness: Hard</span>
+        <span class="tag pill-type">Problem-solving</span>
+        <span class="tag pill-med-t">Study: 6 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>92%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-high" style="width:92%"></div></div>
+      </div>
+      <div class="reason">The highest-mark guaranteed topic across all papers. BZT is the dominant method for IIR filter design in ALL end-sems. Chebyshev Type-I via BZT appeared in 2025 end-sem as 13 marks. Always includes realization structure.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-name">Butterworth analog filter design (order determination + poles + transfer function)</div>
+      <div class="tags">
+        <span class="tag pill-high">Probability: 88%</span>
+        <span class="tag pill-hard">Toughness: Hard</span>
+        <span class="tag pill-type">Formula</span>
+        <span class="tag pill-med-t">Study: 4 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>88%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-high" style="width:88%"></div></div>
+      </div>
+      <div class="reason">Design of Butterworth LPF from specs (passband gain, passband/stopband frequencies) is a staple 12-mark question in every assessment. The same spec values reappear — memorize the standard procedure.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-name">Impulse Invariance method</div>
+      <div class="tags">
+        <span class="tag pill-high">Probability: 78%</span>
+        <span class="tag pill-hard">Toughness: Hard</span>
+        <span class="tag pill-type">Formula</span>
+        <span class="tag pill-med-t">Study: 4 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>78%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-high" style="width:78%"></div></div>
+      </div>
+      <div class="reason">Appeared as 13/14 mark question in Reg 2023 end-sem. Butterworth filter design using impulse invariance is a consistent alternative in Part-B. Also: "using IIM, find digital filter from H(s)=1/(s+1)²" is a 2-mark repeat.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-name">IIR filter realization — Direct, Cascade, Parallel forms</div>
+      <div class="tags">
+        <span class="tag pill-high">Probability: 80%</span>
+        <span class="tag pill-med-t">Toughness: Medium</span>
+        <span class="tag pill-type">Concept</span>
+        <span class="tag pill-easy">Study: 2 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>80%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-high" style="width:80%"></div></div>
+      </div>
+      <div class="reason">Always part of the filter design question ("also obtain cascade/canonic realization"). Draw cascade form structure for given difference equation is a guaranteed sub-question in Part-C of end-sem.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-name">Prewarping — why it is needed in BZT</div>
+      <div class="tags">
+        <span class="tag pill-med">Probability: 70%</span>
+        <span class="tag pill-easy">Toughness: Easy</span>
+        <span class="tag pill-type">Memory</span>
+        <span class="tag pill-easy">Study: 0.5 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>70%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-med" style="width:70%"></div></div>
+      </div>
+      <div class="reason">2-mark definition question appearing consistently. "Why is prewarping needed?" or "What is the need for prewarping?" — direct repeat.</div>
+    </div>
+
+    <h3 class="section-title">Most probable 13-mark questions</h3>
+    <ul class="q-list">
+      <li>Using Bilinear Transformation, design a recursive digital Chebyshev Type-I filter with equiripple passband: 0.8≤|H(jω)|≤1 for 0≤ω≤0.2π; |H(jω)|≤0.2 for 0.6π≤ω≤π</li>
+      <li>Design a Butterworth digital LPF using BZT: Passband Edge 1kHz, Passband Ripple 2dB, Stopband Edge 3kHz, Stopband Ripple 20dB, Fs=8kHz. Obtain cascade and canonic realization.</li>
+      <li>Use Impulse Invariance to design Butterworth filter: 0.707≤|H(e^jω)|≤1 for 0≤ω≤0.5π; |H(e^jω)|≤0.2 for 0.75π≤ω≤π. T=1sec.</li>
+      <li>Design a Chebyshev Type-I analog LPF: αp=3dB, αs=16dB, fp=1kHz, fs=2kHz. Also obtain canonic and cascade realization.</li>
+    </ul>
+
+    <h3 class="section-title">Most probable 8-mark questions</h3>
+    <ul class="q-list">
+      <li>Using IIM, obtain digital filter H(z) from H(s)=1/[(s+1)(s+2)]</li>
+      <li>Compute poles and find transfer function for 2nd-order prototype Butterworth filter</li>
+      <li>Draw cascade form structure for: y(n)=(3/4)y(n−1)−(1/8)y(n−2)+x(n)+(1/3)x(n−1)</li>
+    </ul>
+
+    <div class="skip-section">
+      <div class="skip-title">Lower priority</div>
+      <span class="skiptag">Parallel form realization (standalone)</span>
+      <span class="skiptag">Analog filter theory (concept only)</span>
+    </div>
+  </div>
+
+  <div id="u5" class="unit-content">
+    <div class="unit-header">Unit V — Design of FIR Filters</div>
+
+    <div class="topic-card">
+      <div class="topic-name">FIR filter design using window functions (Hamming, Hanning, Rectangular)</div>
+      <div class="tags">
+        <span class="tag pill-high">Probability: 93%</span>
+        <span class="tag pill-hard">Toughness: Hard</span>
+        <span class="tag pill-type">Problem-solving</span>
+        <span class="tag pill-med-t">Study: 6 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>93%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-high" style="width:93%"></div></div>
+      </div>
+      <div class="reason">The single most tested FIR topic. Hamming window appears in every paper. 15-tap LPF/HPF/BPF design with window method is the dominant 13-mark question. Hanning window HPF also appears. Cutoff frequencies π/2, π/4, π/3, π/6 are the standard values.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-name">Frequency sampling method — FIR filter coefficients from H(2πk/N)</div>
+      <div class="tags">
+        <span class="tag pill-high">Probability: 88%</span>
+        <span class="tag pill-hard">Toughness: Hard</span>
+        <span class="tag pill-type">Problem-solving</span>
+        <span class="tag pill-med-t">Study: 4 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>88%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-high" style="width:88%"></div></div>
+      </div>
+      <div class="reason">15-tap linear phase FIR with H(2πk/15) given as piecewise specification is a near-verbatim repeat across Reg 2019 and Reg 2023. Also asked in Part-C (compulsory question) in end-sems. Very high priority.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-name">DFT-IDFT method for linear convolution using FIR filter</div>
+      <div class="tags">
+        <span class="tag pill-high">Probability: 80%</span>
+        <span class="tag pill-med-t">Toughness: Medium</span>
+        <span class="tag pill-type">Problem-solving</span>
+        <span class="tag pill-easy">Study: 3 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>80%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-high" style="width:80%"></div></div>
+      </div>
+      <div class="reason">Part-C compulsory question pattern. "FIR filter h(n)={1,2}; determine response for x(n)={1,2,7} using DFT-IDFT" appeared verbatim in multiple assessments.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-name">Linear phase FIR structures — transversal and symmetric realization</div>
+      <div class="tags">
+        <span class="tag pill-med">Probability: 70%</span>
+        <span class="tag pill-easy">Toughness: Easy</span>
+        <span class="tag pill-type">Concept</span>
+        <span class="tag pill-easy">Study: 1.5 hrs</span>
+      </div>
+      <div class="prob-container">
+        <div class="prob-label"><span>Frequency across papers</span><span>70%</span></div>
+        <div class="prob-bar"><div class="prob-fill bar-med" style="width:70%"></div></div>
+      </div>
+      <div class="reason">Draw the linear phase realization for h(n)={1,2,3,4,3,2,1} or similar. Also: conditions for linear phase. High-value, low-effort 2-mark questions on Gibbs phenomenon and window selection.</div>
+    </div>
+
+    <h3 class="section-title">Most probable 13-mark questions</h3>
+    <ul class="q-list">
+      <li>Use Hamming window to design a 15-tap non-recursive linear phase LPF with cutoff frequency π/2 rad. Realize the transfer function.</li>
+      <li>Use Hanning window to design a 15-tap non-recursive linear phase HPF with cutoff frequency π/6 rad. Realize the transfer function of the designed filter.</li>
+      <li>Determine coefficients of a linear phase FIR filter of length M=15 with symmetric unit sample response satisfying H(2πk/15): 1 for k=0,1,2,3; 0.6 for k=4; 0 for k=5,6,7</li>
+      <li>Design and realize a non-recursive FIR filter using Hamming window for H(e^jω) = e^−j5ω for |ω|≤π/3 and 0 otherwise</li>
+    </ul>
+
+    <h3 class="section-title">Most probable 8-mark questions</h3>
+    <ul class="q-list">
+      <li>Determine the length of FIR filter and window required for stopband attenuation between 24dB and 40dB, transition band 200Hz, sampling frequency 2kHz</li>
+      <li>What is Gibbs phenomenon? How to avoid it in FIR filter design?</li>
+      <li>Draw the linear phase realization for h(n)={1,2,3,4,3,2,1}</li>
+    </ul>
+
+    <div class="skip-section">
+      <div class="skip-title">Lower priority</div>
+      <span class="skiptag">Comparison of FIR vs IIR (theory only)</span>
+      <span class="skiptag">Kaiser window (rarely tested)</span>
+    </div>
+  </div>
+
+  <div id="summary" class="unit-content">
+    <div class="unit-header">Strategic Summary for Maximum Marks</div>
+
+    <div class="q16-box">
+      <div class="q16-title">Top 20% topics that can score 80% marks (Pareto Picks)</div>
+      <ul class="q-list">
+        <li>8-point DFT using Radix-2 DIT-FFT (Unit II) — guaranteed 13 marks</li>
+        <li>BZT-based IIR filter design with realization (Unit IV) — guaranteed 13 marks</li>
+        <li>15-tap FIR using Hamming/Hanning window (Unit V) — guaranteed 13 marks</li>
+        <li>Z-transform + ROC + inverse Z-transform (Unit III) — guaranteed 13 marks</li>
+        <li>Overlap-add or Overlap-save method (Unit I) — guaranteed 13 marks</li>
+        <li>Frequency sampling FIR design H(2πk/15) (Unit V) — Part-C compulsory candidate</li>
+      </ul>
+    </div>
+
+    <div class="two-col">
+      <div class="summary-card">
+        <div class="summary-title">Safest Scoring Topics</div>
+        <ul class="summary-items">
+          <li>Overlap-save method <span>U1</span></li>
+          <li>8-pt DFT via FFT <span>U2</span></li>
+          <li>Butterworth design <span>U4</span></li>
+          <li>Hamming window FIR <span>U5</span></li>
+          <li>System properties check <span>U1</span></li>
+          <li>Z-transform properties <span>U3</span></li>
+        </ul>
+      </div>
+      <div class="summary-card">
+        <div class="summary-title">Hardest Topics</div>
+        <ul class="summary-items">
+          <li>BZT Chebyshev design <span>U4</span></li>
+          <li>DIF-FFT IDFT <span>U2</span></li>
+          <li>Freq. sampling FIR <span>U5</span></li>
+          <li>Z-transform (partial frac) <span>U3</span></li>
+          <li>Hamming window BPF <span>U5</span></li>
+          <li>IIM full design <span>U4</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="summary-card">
+        <div class="summary-title">Fastest Units to Complete</div>
+        <ul class="summary-items">
+          <li>Unit I <span>10–12 hrs total</span></li>
+          <li>Unit III <span>12 hrs (Z-transform)</span></li>
+          <li>Unit II <span>14 hrs (FFT heavy)</span></li>
+          <li>Unit V <span>15 hrs (FIR design)</span></li>
+          <li>Unit IV <span>16 hrs (IIR design)</span></li>
+        </ul>
+      </div>
+      <div class="summary-card">
+        <div class="summary-title">Highest Probability-to-Effort Ratio</div>
+        <ul class="summary-items">
+          <li>Energy/power signal (U1) <span>1hr / 65%</span></li>
+          <li>Prewarping theory (U4) <span>0.5hr / 70%</span></li>
+          <li>Gibbs phenomenon (U5) <span>0.5hr / 80%</span></li>
+          <li>FFT count formula (U2) <span>0.5hr / 90%</span></li>
+          <li>LTI system props (U1) <span>2hr / 80%</span></li>
+          <li>Z-transform props (U3) <span>1.5hr / 70%</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="summary-card" style="margin-bottom:1rem">
+      <div class="summary-title">Topics Ranked by Probability</div>
+      <ul class="summary-items">
+        <li>1. 8-point DFT (FFT) computation <span>95%</span></li>
+        <li>2. FIR window design (Hamming/Hanning, 15-tap) <span>93%</span></li>
+        <li>3. BZT IIR filter design <span>92%</span></li>
+        <li>4. Convolution (linear + circular) <span>90%</span></li>
+        <li>5. Radix-2 DIT/DIF FFT algorithm <span>90%</span></li>
+        <li>6. Butterworth analog filter design <span>88%</span></li>
+        <li>7. Frequency sampling FIR H(2πk/N) <span>88%</span></li>
+        <li>8. Z-transform + ROC + inverse <span>88%</span></li>
+        <li>9. Overlap-add/save methods <span>85%</span></li>
+        <li>10. Diff. equation → H(z) → stability <span>85%</span></li>
+      </ul>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-title">Topics Safe to Skip (If Time is Limited)</div>
+      <ul class="summary-items">
+        <li>Ramp / pulse signal derivations <span>Unit I</span></li>
+        <li>DFS (Discrete Fourier Series) — derivation only <span>Unit II</span></li>
+        <li>Kaiser window design <span>Unit V</span></li>
+        <li>Parallel form realization standalone <span>Unit IV</span></li>
+        <li>Multirate systems / polyphase <span>(Not in Reg 2023)</span></li>
+        <li>Power spectral estimation using DFT <span>Unit II</span></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function switchUnit(id, el) {
+  document.querySelectorAll('.unit-content').forEach(d => {
+    d.style.display = 'none';
+    d.classList.remove('active');
+  });
+  document.querySelectorAll('.unit-tab').forEach(t => t.classList.remove('active'));
+  
+  const content = document.getElementById(id);
+  content.style.display = 'block';
+  setTimeout(() => content.classList.add('active'), 10);
+  
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>
