@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AESD EC23C05 Exam Dashboard</title>
+<style>
+
+  :root {
+    --bg-base: #f8fafc;
+    --surface-0: #f1f5f9;
+    --surface-1: #ffffff;
+    --surface-2: #ffffff;
+    
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    
+    --bg-success: #dcfce7;
+    --text-success: #166534;
+    --border-success: #bbf7d0;
+    --fill-success: #22c55e;
+    
+    --bg-danger: #fee2e2;
+    --text-danger: #991b1b;
+    --border-danger: #fecaca;
+    
+    --bg-warning: #fef9c3;
+    --text-warning: #854d0e;
+    --border-warning: #fef08a;
+    
+    --bg-accent: #eff6ff;
+    --text-accent: #1e40af;
+    --border-accent: #bfdbfe;
+    
+    --bg-muted: #f1f5f9;
+    --border-muted: #cbd5e1;
+    
+    --bg-pro: #f3e8ff;
+    --text-pro: #6b21a8;
+    --border-pro: #d8b4fe;
+    
+    --radius: 8px;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+  
+  /* Buttons and interactive elements */
+  button { font-family: inherit; }
+  .pli:hover { background-color: #f8fafc !important; }
+  
+  /* Tables */
+  table th { background: #f8fafc; font-weight: 600; color: var(--text-secondary); }
+  
+  /* Topic Cards hover */
+  div[style*="border-radius:12px"] { box-shadow: var(--shadow-sm); transition: box-shadow 0.2s, transform 0.2s; }
+  div[style*="border-radius:12px"]:hover { box-shadow: var(--shadow-md); }
+  
+  /* Make the planner checkbox a bit nicer */
+  input[type="checkbox"] { width: 1.1rem; height: 1.1rem; accent-color: var(--fill-success); cursor: pointer; }
+
+</style>
+<!-- Include Tabler Icons for the UI icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.36.0/tabler-icons.min.css">
+</head>
+<body>
+<div class="wrap">
+<h2 class="sr-only">EC23C05 AESD exam intelligence — topic probability analysis and study planner for Anna University Reg 2023 end semester exam</h2>
+<div id="ar" style="font-size:14px;line-height:1.6;color:var(--text-primary);padding:.25rem 0 2rem"></div>
+<script>
+const U=[
+  {id:'u1',tab:'Unit I',name:'Feedback amplifiers & stability',peak:98,hrs:'5–6h',diff:'Hard',slot:'Q11',wt:'danger',
+   warn:'Q11 (13 marks) appears in every single paper — both OR options always test feedback topology analysis. Cannot skip.',
+   topics:[
+    {n:'Feedback topology ID + small signal analysis',p:98,d:'Hard',h:6,t:'Problem-solving',r:'Q11 in EVERY paper across all regulations. Prepare series-shunt (BJT), shunt-shunt (single transistor), MOSFET source follower. All three have appeared.'},
+    {n:'Gain-bandwidth product / closed-loop BW',p:85,d:'Easy',h:1,t:'Formula',r:'Part A numerical in multiple papers. BW_f = BW_open × (1+Aβ). Also percentage change in closed-loop gain: dA_f/A_f = dA/A × 1/(1+Aβ).'},
+    {n:'Phase margin / gain margin definition',p:70,d:'Medium',h:2,t:'Concept',r:'Part A NOV/DEC 2025 Q1. Three-pole stability in APR/MAY 2025 Part C as full 15-mark question. Know: PM from phase of T(jω) at gain crossover.'},
+    {n:'Dominant pole frequency compensation',p:55,d:'Hard',h:3,t:'Problem-solving',r:'APR/MAY 2025 Part C Q16(ii) — insert dominant pole for 45° PM in three-pole amplifier. Strong Part C candidate for next exam.'},
+    {n:'Sensitivity of closed-loop gain',p:50,d:'Easy',h:1,t:'Formula',r:'APR/MAY 2025 Part A Q2 — percentage change in A_f given dA=10⁵, A=10⁶, β=0.01999.'},
+  ],
+   qs:[
+    {m:13,q:'For the BJT two-stage amplifier in Fig., identify the feedback topology. Draw small-signal equivalent circuit. Derive A_vf, R_if, R_of with feedback. [Series-shunt type — Q11 every paper]',hot:1},
+    {m:13,q:'Determine the transresistance gain, input impedance, and output impedance of a single-transistor shunt-shunt feedback amplifier. Given R_F, R_S, R_C, h_fe, h_ie.',hot:1},
+    {m:13,q:'For the MOSFET source follower with R_of feedback: identify topology, draw small-signal equivalent, derive A_vf, R_if, R_of. [Q11b NOV/DEC 2025 variant]'},
+    {m:6,q:'Insert a dominant pole for T(f)=2000/[(1+jf/10⁴)(1+jf/10⁶)(1+jf/10⁸)] to achieve phase margin ≥ 45°. Evaluate f_d.'},
+    {m:6,q:'Calculate closed-loop BW and % change in gain. Given A=10⁶, β=0.01999, dA=10⁵.'},
+  ],
+   hi:['Series-shunt BJT: small signal → A_vf, R_if, R_of formulas','Shunt-shunt (transresistance) — single transistor analysis','Phase margin: PM = 180° + ∠T(jω_c)','BW_f = BW_open × (1+Aβ) — Part A calculation'],
+   lo:["Miller's theorem derivation (Part A only)",'Current-series topology alone','Full Bode plot construction from scratch']},
+
+  {id:'u2',tab:'Unit II',name:'Operational amplifiers',peak:95,hrs:'4–5h',diff:'Medium',slot:'Q12',wt:'warning',
+   warn:'Q12 alternates: NOV/DEC 2025 = integrator/differentiator; APR/MAY 2025 = log amplifier + op-amp circuits. Log amplifier has elevated probability for next exam.',
+   topics:[
+    {n:'Slew rate — definition and numerical',p:95,d:'Easy',h:0.5,t:'Formula',r:'Part A Q3 in BOTH recent end-sems. SR=2πf·Vm. Example: 10V p-p at 1MHz → SR=62.8 V/μs. Define: SR = dVo/dt|max.'},
+    {n:'Practical differentiator + frequency response',p:85,d:'Medium',h:2,t:'Concept',r:'Q12(b)(i) NOV/DEC 2025 AND Q12(a)(ii) APR/MAY 2025 — appeared in both end-sems. Practical: add R1 in series with C, shows frequency range for differentiator operation.'},
+    {n:'Practical integrator + frequency response',p:75,d:'Medium',h:2,t:'Concept',r:'Q12(a)(i) NOV/DEC 2025 (7 marks). Practical realization: R in parallel with C feedback. Show frequency range where circuit operates as integrator.'},
+    {n:'Log amplifier (op-amp + diode) with numericals',p:60,d:'Medium',h:2,t:'Formula',r:'Q12(a) APR/MAY 2025 (8 marks). Vout = -VT·ln(Vin/Is·R). Compute for Vin=0.1V, 0.5V, 1V (Is=1μA). NOT in NOV/DEC 2025 — elevated for next exam.'},
+    {n:'Non-inverting summer + subtractor derivations',p:65,d:'Easy',h:1,t:'Formula',r:'Q12(a)(ii) and Q12(b)(ii) NOV/DEC 2025 — paired sub-questions. Derive both using virtual ground and KCL.'},
+    {n:'Input bias current + offset compensation',p:60,d:'Easy',h:1,t:'Memory',r:'APR/MAY 2025 Part A Q4. I_B+=500nA, I_B-=650nA. Find output offset and compensation resistor R_comp = R_f || R_in.'},
+    {n:'Instrumentation amplifier (3 op-amp)',p:55,d:'Medium',h:1.5,t:'Concept',r:'APR/MAY 2025 Q14(a)(ii) (6 marks). Gain = (1 + 2R/R_G)(R_F/R_1). Block diagram + output voltage derivation.'},
+  ],
+   qs:[
+    {m:13,q:'i. Derive integrator using op-amp. Draw practical realization and frequency response. Show range for integrator operation. ii. Derive two-input non-inverting summer using op-amp.',hot:1},
+    {m:13,q:'i. Log amplifier (op-amp + diode). Derive Vout=-VT·ln(Vin/IsR). Calculate Vout for Vin=0.1V, 0.5V, 1V (Is=1μA). ii. Vin(t)=5sin(1000t) applied to differentiator (C=0.1μF, R=10kΩ) — find Vout(t). ★ Elevated',hot:1},
+    {m:13,q:'i. Draw practical differentiator using op-amp. Derive frequency response and show operating range. ii. Derive two-input non-inverting subtractor.'},
+    {m:6,q:'Draw 3 op-amp instrumentation amplifier. Derive output voltage. State CMRR advantage over single op-amp differential amplifier.'},
+    {m:6,q:'Define slew rate. Calculate required SR for op-amp in voltage follower: 10V peak-to-peak, frequency 1 MHz.'},
+  ],
+   hi:['Slew rate: SR=2πfVm — Part A numerical every paper','Differentiator: practical circuit + frequency response range','Integrator: practical circuit (R||C) + operating range','Log amplifier: Vout=-VT·ln(Vin/IsR) with numerical'],
+   lo:['Antilog amplifier (not in Reg 2023 end-sem yet)','IC fabrication technology (Part A only)','Folded cascode op-amp (Reg 2019 specific)']},
+
+  {id:'u3',tab:'Unit III',name:'Oscillators & power amplifiers',peak:90,hrs:'8–10h',diff:'Hard',slot:'Q13',wt:'warning',
+   warn:'Colpitts appeared in both recent end-sems — RC phase shift has NOT appeared in any Reg 2023 end-sem yet, making it the highest elevated topic.',
+   topics:[
+    {n:'Colpitts oscillator (MOSFET) + parasitic analysis',p:90,d:'Hard',h:3,t:'Problem-solving',r:'Q13(a) in BOTH NOV/DEC 2025 and APR/MAY 2025. Ceq=C1C2/(C1+C2), f=1/(2π√(CeqL)), gain condition gm ≥ C1/(C2·ro). Must analyze parasitic Cgs/Cgd impact.'},
+    {n:'RC phase shift oscillator — frequency + hfe_min',p:75,d:'Hard',h:3,t:'Problem-solving',r:'IAT-II 2025 Q8b + APR/MAY 2021. Zero Reg 2023 end-sem appearances — highest elevated probability. fo=1/(2π√6·RC), hfe_min=4RC/RE+23+29RE/RC.'},
+    {n:'Schmitt trigger VTC (Part A)',p:90,d:'Easy',h:1,t:'Memory',r:'Part A every paper. Draw VTC with hysteresis bands V_H and V_L. UTP = V_sat·R1/(R1+R2), LTP = -V_sat·R1/(R1+R2).'},
+    {n:'Astable vs monostable multivibrator',p:85,d:'Easy',h:1,t:'Memory',r:'Part A NOV/DEC 2025 Q7 (difference), IAT-II Q5 (draw output waveform). 2 guaranteed marks every paper.'},
+    {n:'Class B power amplifier — VTC + efficiency',p:80,d:'Medium',h:2.5,t:'Problem-solving',r:'Q13(b) NOV/DEC 2025. VTC sketch, η_max=π/4=78.5%, efficiency at max power dissipation = 50%, max power dissipation at Vom=2Vcc/π.'},
+    {n:'Wien bridge oscillator + design numerical',p:65,d:'Easy',h:2,t:'Formula',r:'Part A APR/MAY 2025 Q5, IAT-II. f=1/(2πRC), Barkhausen gain=3. Design: find C for fo=6.5kHz with R=3kΩ.'},
+    {n:'Class A power amplifier — load line + efficiency',p:65,d:'Medium',h:2,t:'Problem-solving',r:'APR/MAY 2025 Q13b(i). η_max=25%, P_out=(V_cc²)/(8R_L), load line construction. Not in NOV/DEC 2025.'},
+    {n:'Hartley oscillator — frequency + numerical',p:60,d:'Medium',h:2,t:'Formula',r:'IAT-II 2025 Q8a (10 marks) + APR/MAY 2021. Leq=L1+L2+2M, f=1/(2π√(Leq·C)). Not yet in Reg 2023 end-sem.'},
+  ],
+   qs:[
+    {m:13,q:'RC phase shift oscillator — derive fo=1/(2π√6·RC) and condition for hfe_min. Given R1=43kΩ, R2=24kΩ, Rc=3.5kΩ, R=1.2kΩ, hie=1.1kΩ — find fo, C, verify hfe for sustained oscillation. ★ Highest elevated',hot:1},
+    {m:13,q:'MOSFET-based Colpitts oscillator. Derive frequency of oscillation and gain condition for sustaining oscillations. Analyze impact of parasitic Cgs, Cgd on fo — increase or decrease? Justify.'},
+    {m:13,q:'Sketch VTC of Class B power amplifier and explain principle of operation. Derive η_max=π/4=78.5% and efficiency at the point of maximum power dissipation (50%).'},
+    {m:6,q:'Design Wien bridge oscillator for fo=6.5kHz. R1=R2=3kΩ, C1=C2=C — find C. Confirm Barkhausen gain condition (A ≥ 3).'},
+    {m:6,q:'Hartley oscillator: L1=12μH, L2=5μH, C=15nF, M≈0 — find fo. Find feedback voltage when Vo=7.5V.'},
+  ],
+   hi:['RC phase shift: fo=1/(2π√6·RC), hfe_min formula + numerical','Colpitts: Ceq formula + gain = C1/C2 + parasitic cap analysis','Class B: VTC, η_max=π/4, efficiency at max dissipation','Schmitt VTC + astable vs monostable — Part A guaranteed'],
+   lo:['Bistable multivibrator detailed analysis (Part A only)','Class C amplifier (not appeared anywhere — skip)','Comparator detailed design (Part A only)']},
+
+  {id:'u4',tab:'Unit IV',name:'Special function ICs',peak:95,hrs:'7–8h',diff:'Easy–Med',slot:'Q14',wt:'success',
+   warn:'Highest ROI unit. SAR ADC + 555 Timer + R-2R DAC appear in 100% of Reg 2023 papers. 7 hours prep → 13 guaranteed marks. Start here.',
+   topics:[
+    {n:'SAR ADC — architecture + binary trace numerical',p:95,d:'Medium',h:2.5,t:'Problem-solving',r:'Q14 in ALL Reg 2023 papers. Always 6–8 marks. Trace algorithm (e.g. 11011010) tested every time. Explain charge redistribution in capacitor DAC.'},
+    {n:'555 timer monostable — T=1.1RC + design',p:92,d:'Easy',h:2,t:'Formula',r:'Every Reg 2023 paper. T=1.1RC. Find R for 5s pulse given C=10μF → R=454kΩ. Describe behavior if trigger held low longer than T.'},
+    {n:'R-2R ladder DAC — circuit + Vout calculation',p:90,d:'Medium',h:2,t:'Problem-solving',r:'Both end-sem papers. Thevenin analysis → Vout = Vref × (D/2^n). Numericals for inputs 100 and 001 with Vref=5V.'},
+    {n:'PLL — block diagram + applications (Part A)',p:90,d:'Easy',h:2,t:'Memory',r:'Part A every paper (list 4 applications). IAT-II full 8-mark question on phase detector + LPF + VCO lock mechanism.'},
+    {n:'Flash ADC — comparator array + encoding',p:65,d:'Medium',h:2,t:'Concept',r:'Q14(b)(i) NOV/DEC 2025. 2-bit: 3 comparators, priority encoder. 2^n comparators for n-bit. Not in APR/MAY 2025.'},
+    {n:'Weighted resistor DAC + comparison with R-2R',p:60,d:'Easy',h:1,t:'Formula',r:'Part A APR/MAY 2025 Q7. 4-bit DAC: Vout=-Vref(b3/2+b2/4+b1/8+b0/16). Compare: weighted requires precision resistors.'},
+    {n:'Instrumentation amplifier derivation',p:55,d:'Medium',h:1.5,t:'Concept',r:'APR/MAY 2025 Q14(a)(ii). Vout=(V2-V1)(1+2R/R_G)(R_F/R_1). Block diagram + output voltage derivation.'},
+  ],
+   qs:[
+    {m:13,q:'i. Draw 3-bit SAR ADC. Explain charge redistribution in capacitor DAC and comparator decisions in successive clock cycles. ii. Design IC 555 monostable for 5-second pulse (C=10μF — find R). Describe output behavior if trigger held low longer than programmed width. ★ 3/3 papers',hot:1},
+    {m:13,q:'i. Elucidate 3-bit R-2R DAC for inputs 100 and 001. Draw equivalent circuit and find Vout (Vref=5V). Compare weighted resistor DAC vs R-2R DAC. ii. Draw SAR ADC. Find comparator output at each conversion step for input 11011010.',hot:1},
+    {m:13,q:'i. Draw 2-bit Flash ADC. Explain phases of operation and role of priority encoder. ii. Draw functional diagram of SAR ADC. Trace conversion for analog input 11011010.'},
+    {m:6,q:'Draw PLL block diagram. Explain phase detector, LPF, VCO in achieving frequency lock. Distinguish lock range from capture range.'},
+    {m:6,q:'Draw 3 op-amp instrumentation amplifier. Derive output voltage. State CMRR advantage over single differential amplifier.'},
+  ],
+   hi:['SAR ADC: functional block + trace binary input — in 100% of Reg 2023 papers','555 Timer monostable: T=1.1RC derivation + design (find R)','R-2R DAC: Thevenin analysis + Vout for given binary input','PLL: 4 applications for Part A + block diagram for Part B'],
+   lo:['ADC/DAC specification details (Part A at most)','PLL capture range mathematical derivation','555 astable detailed design']},
+
+  {id:'u5',tab:'Unit V',name:'Tuned amplifiers',peak:98,hrs:'10–12h',diff:'Hard',slot:'Q15 + Q16',wt:'danger',
+   warn:'Highest mark density unit — Q15 (13 marks) AND potentially Q16 Part C (15 marks). Tapped inductor appeared in BOTH Q15 and Q16 of NOV/DEC 2025.',
+   topics:[
+    {n:'Single tuned BJT/FET — gain + BW derivation',p:98,d:'Hard',h:4,t:'Problem-solving',r:'EVERY paper without exception. Av=-gm·Rp at resonance, BW=fo/Q, Q=Rp/(ωoL). fo=1/(2π√LC). Numerical always given.'},
+    {n:'Tapped inductor design (n, Reff, current gain)',p:90,d:'Hard',h:3,t:'Problem-solving',r:'NOV/DEC 2025 Q15 AND Q16 (Part C). IAT-II Q10. Key: Reff=n²·Rin, Ic/Iin=1/n. Bandwidth: BW=1/(2πReff_eff·C). PART C RISK.'},
+    {n:'Q factor series and parallel — numerical',p:90,d:'Easy',h:1,t:'Formula',r:'Part A every paper. Qs=ωoL/Rs, Qp=Rp/(ωoL). IAT-II Q3 numerical: L=3H, R=2kΩ. 2 guaranteed marks.'},
+    {n:'Synchronously tuned N-stage BW formula',p:85,d:'Medium',h:2.5,t:'Problem-solving',r:'Q15(b) in BOTH end-sems. BW_N=BW_1·√(2^(1/N)-1). IF amplifier numerical always paired. For N=2: BW_2=BW_1·0.644.'},
+    {n:'IF amplifier design (10.7MHz or 455kHz)',p:75,d:'Hard',h:3,t:'Problem-solving',r:'IAT-II Q10, Part A APR/MAY 2025 Q10. Given gm, L, required BW per stage — find C and Rp. For 2-stage IF amp: each stage BW = overall BW/0.644.'},
+    {n:'Stagger tuned + comparison with synchronous',p:60,d:'Medium',h:2,t:'Concept',r:'APR/MAY 2025 Q15(b)(ii). Flat response vs peaked. Always asked as comparison. Stagger: center frequencies offset, gain non-uniform.'},
+    {n:'Neutralization technique',p:55,d:'Medium',h:1.5,t:'Concept',r:'First appeared NOV/DEC 2025 Q15(b)(ii). Cgd feedback causes self-oscillation in tuned amps. Neutralization capacitor Cn cancels it.'},
+  ],
+   qs:[
+    {m:13,q:'Draw CE BJT single-tuned amplifier. Derive Av=-gm·Rp and 3-dB BW=fo/Q. Examine how gain varies as frequency deviates from resonance — show gain vs frequency curve. ★ 5/5 papers',hot:1},
+    {m:15,q:'[Part C risk] Design single tuned BJT with tapped coil: fo=450kHz, BW=20kHz, Rin=5kΩ, Cin=100pF, gm=60mA/V. Find tapping ratio n, capacitor C, current gain Ic/Iin. Sketch circuit. [NOV/DEC 2025 Q16 type]',hot:1},
+    {m:13,q:'i. Draw synchronously tuned two-stage amplifier. Derive 3-dB BW: BW_N=BW_1·√(2^(1/N)-1). ii. Explain neutralization technique in tuned amplifiers — why needed, how it works.'},
+    {m:13,q:'Design FET single tuned: gm=5mA/V, ro=10kΩ, fo=1MHz, gain=-10V/V, BW=10kHz. Co≈0. Find L, C, Q. Is Q suitable for communication? Analyze synchronous vs stagger tuned.'},
+    {m:6,q:'Q factor: L=3H, R=2kΩ. Find Q in (a) series and (b) parallel configurations.'},
+  ],
+   hi:['Tapped inductor: n, Reff=n²·Rin, Ic/Iin=1/n — PART C RISK','Single tuned: Av=-gm·Rp, BW=fo/Q — in EVERY paper','Synchronous N-stage BW formula + IF amplifier design','Q factor series vs parallel — Part A guaranteed every exam'],
+   lo:['Transformer coupling theory (Part A only)','Stagger tuned as standalone full question','Inductor loss equivalent circuit deep-dive']},
+];
+
+const PARTC={
+  hist:[
+    {e:'NOV/DEC 2025',u:'V',t:'Single tuned BJT with tapped coil — fo=450kHz, BW=20kHz, gm=60mA/V'},
+    {e:'APR/MAY 2025',u:'I',t:'MOSFET series-shunt feedback + three-pole dominant pole (45° phase margin)'},
+    {e:'APR/MAY 2024',u:'II',t:'Folded cascode op-amp design (Reg 2019)'},
+    {e:'APR/MAY 2021',u:'I',t:'Find R_F for A_vf=−10k, derive R_in and R_out'},
+  ],
+  preds:[
+    {p:55,u:'I',c:'accent',lbl:'Unit I — frequency compensation',desc:'Three-pole feedback stability. Insert dominant pole for 45° PM. Find β for specific phase margin. APR/MAY 2025 Part C was this exact type. Pattern suggests Unit I returns.'},
+    {p:35,u:'V',c:'warning',lbl:'Unit V — tuned amplifier design',desc:'IF stage design for FM/AM radio. Given gm, Rin, Cin, BW, fo — find L, C, n, current gain. NOV/DEC 2025 Q16 was this type.'},
+    {p:10,u:'II',c:'danger',lbl:'Unit II — op-amp design',desc:'Advanced op-amp circuit. Appeared APR/MAY 2024 under Reg 2019 but not confirmed for Reg 2023 pattern.'},
+  ],
+};
+
+const PLAN=[
+  {u:'Unit IV — highest ROI (start here)',items:[
+    {t:'SAR ADC: architecture + trace binary input step-by-step',h:2.5},
+    {t:'555 timer monostable: T=1.1RC derivation + design (find R)',h:2},
+    {t:'R-2R DAC: circuit + Thevenin analysis + Vout numerical',h:2},
+    {t:'PLL: block diagram — phase detector, LPF, VCO',h:1.5},
+    {t:'Flash ADC: 2-bit circuit + priority encoder + truth table',h:1.5},
+  ]},
+  {u:'Unit II — op-amp',items:[
+    {t:'Slew rate: SR=2πfVm — define + calculate numerical',h:0.5},
+    {t:'Integrator: derivation + practical realization + frequency response',h:2},
+    {t:'Differentiator: practical circuit + frequency response',h:2},
+    {t:'Log amplifier: Vout=-VT·ln(Vin/IsR) + numericals',h:2},
+    {t:'Non-inverting summer + subtractor derivations',h:1},
+    {t:'Instrumentation amplifier: block diagram + Vout formula',h:1.5},
+  ]},
+  {u:'Unit I — feedback amplifiers',items:[
+    {t:'Series-shunt BJT: small signal → Avf, Rif, Rof',h:2.5},
+    {t:'Shunt-shunt transresistance: single transistor analysis',h:2},
+    {t:'Phase margin + gain margin: definition + calculation',h:1.5},
+    {t:'Dominant pole: insert fd for 45° PM in 3-pole amplifier',h:2},
+  ]},
+  {u:'Unit III — oscillators & power amps',items:[
+    {t:'Colpitts: Ceq + frequency + gain condition + parasitic cap analysis',h:3},
+    {t:'RC phase shift: fo=1/(2π√6·RC), hfe_min + numerical',h:3},
+    {t:'Class B: η_max=π/4, VTC sketch, power at max dissipation',h:2.5},
+    {t:'Wien bridge: fo + design numerical + gain condition',h:1.5},
+    {t:'Hartley: Leq=L1+L2+2M, frequency + feedback voltage',h:2},
+    {t:'Schmitt VTC + astable vs monostable (Part A prep)',h:1},
+  ]},
+  {u:'Unit V — tuned amplifiers (highest mark density)',items:[
+    {t:'Single tuned BJT: Av=-gm·Rp, BW=fo/Q — derivation + numerical',h:4},
+    {t:'Tapped inductor: n, Reff=n²·Rin, Ic/Iin=1/n — Part C risk',h:3},
+    {t:'Q factor series vs parallel: numerical — Part A guaranteed',h:1},
+    {t:'Synchronous tuned N-stage BW + IF amplifier design',h:2.5},
+    {t:'Stagger tuned comparison + neutralization technique',h:1.5},
+  ]},
+];
+
+const TOP20=[
+  ['Feedback topology analysis (Q11)','I','98%','13','●●●●●'],
+  ['Single tuned + tapped inductor (Q15/Q16)','V','98%','13–15','●●●●○'],
+  ['SAR ADC + 555 timer (Q14)','IV','95%','13','●●●○○'],
+  ['Colpitts oscillator full derivation','III','90%','9–13','●●●○○'],
+  ['R-2R ladder DAC circuit + Vout','IV','90%','6–7','●●○○○'],
+  ['Integrator + differentiator (Q12)','II','85%','13','●●●○○'],
+  ['Class B power amplifier efficiency','III','80%','9–13','●●●○○'],
+  ['Synchronously tuned BW formula (Q15b)','V','85%','7','●●○○○'],
+  ['555 timer monostable design','IV','92%','6–7','●●○○○'],
+  ['Part A: slew rate, Q factor, PLL apps, Schmitt, ring osc.','II/III/V','95%','10–14','●●○○○'],
+];
+
+function pc(p){return p>=85?'success':p>=65?'accent':p>=50?'warning':'muted'}
+function dc(d){return d==='Hard'?'danger':d==='Easy'?'success':'warning'}
+function tc(t){const s=t.toLowerCase();return s.includes('problem')?'danger':s.includes('formula')?'accent':s.includes('memory')?'muted':'success'}
+
+function bdg(txt,role){
+  return `<span style="font-size:11px;padding:2px 8px;border-radius:4px;background:var(--bg-${role});color:var(--text-${role});border:.5px solid var(--border-${role});white-space:nowrap">${txt}</span>`;
+}
+
+function bar(p,role){
+  return `<div style="height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin:2px 0 0"><div class="bf" data-w="${p}" style="height:100%;width:0;background:var(--text-${role});border-radius:2px"></div></div>`;
+}
+
+function secH(txt){
+  return `<div style="display:flex;align-items:center;gap:8px;margin:20px 0 12px"><div style="width:3px;height:14px;background:var(--text-accent);border-radius:0"></div><span style="font-size:11px;font-weight:500;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.1em">${txt}</span></div>`;
+}
+
+function topicC(t){
+  const r=pc(t.p),id='tc'+Math.random().toString(36).slice(2);
+  return `<div style="border:.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:8px">
+    <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer" onclick="var b=document.getElementById('${id}');b.style.display=b.style.display==='block'?'none':'block';this.querySelector('.ci').style.transform=b.style.display==='block'?'rotate(180deg)':'rotate(0)'">
+      <div style="width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;background:var(--bg-${r});color:var(--text-${r});border:.5px solid var(--border-${r})">${t.p}%</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:500;color:var(--text-primary);margin-bottom:4px">${t.n}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px">${bdg(t.d,dc(t.d))}${bdg(t.h+'h',r)}${bdg(t.t,tc(t.t))}</div>
+      </div>
+      <i class="ci ti ti-chevron-down" style="font-size:16px;color:var(--text-muted);flex-shrink:0;transition:transform .2s" aria-hidden="true"></i>
+    </div>
+    <div style="padding:0 14px 8px">${bar(t.p,r)}</div>
+    <div id="${id}" style="display:none;border-top:.5px solid var(--border);padding:14px">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:10px">
+        ${[['Probability',t.p+'%',`var(--text-${r})`],['Difficulty',t.d,'var(--text-primary)'],['Study time',t.h+' hrs','var(--text-primary)'],['Type',t.t,'var(--text-primary)']].map(([l,v,c])=>`<div><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">${l}</div><div style="font-size:14px;font-weight:500;color:${c}">${v}</div></div>`).join('')}
+      </div>
+      <div style="font-size:12px;color:var(--text-secondary);background:var(--surface-0);border-radius:var(--radius);padding:10px;border:.5px solid var(--border)">${t.r}</div>
+    </div>
+  </div>`;
+}
+
+function qC(q){
+  return `<div style="background:var(--surface-1);border-radius:var(--radius);padding:11px 13px;margin-bottom:7px;font-size:13px;color:var(--text-primary);border-left:3px solid ${q.hot?'var(--text-success)':'var(--border)'};line-height:1.6">
+    ${q.hot?`<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:var(--bg-success);color:var(--text-success);border:.5px solid var(--border-success);font-weight:500;margin-right:6px">★ High prob</span>`:''}
+    ${q.q}
+    <div style="margin-top:5px"><span style="font-size:11px;color:var(--text-muted)">${q.m} marks</span></div>
+  </div>`;
+}
+
+function alert(txt,wt){
+  return `<div style="background:var(--bg-${wt});border:.5px solid var(--border-${wt});border-radius:var(--radius);padding:10px 12px;margin-bottom:16px;display:flex;gap:8px;align-items:flex-start"><i class="ti ti-info-circle" style="font-size:16px;color:var(--text-${wt});flex-shrink:0;margin-top:1px" aria-hidden="true"></i><span style="color:var(--text-primary);font-size:13px">${txt}</span></div>`;
+}
+
+function unitP(u){
+  return `<div style="background:var(--surface-1);border-radius:12px;padding:16px 20px;margin-bottom:16px;border:.5px solid var(--border)">
+      <div style="font-size:13px;font-weight:500;color:var(--text-secondary);margin-bottom:2px">${u.tab} · ${u.slot}</div>
+      <div style="font-size:17px;font-weight:500;color:var(--text-primary);margin-bottom:8px">${u.name}</div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <div><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em">Peak probability</div><div style="font-size:22px;font-weight:500;color:var(--text-${pc(u.peak)})">${u.peak}%</div></div>
+        <div><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em">Study time</div><div style="font-size:22px;font-weight:500;color:var(--text-primary)">${u.hrs}</div></div>
+        <div><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em">Difficulty</div><div style="font-size:22px;font-weight:500;color:var(--text-${dc(u.diff)})">${u.diff}</div></div>
+      </div>
+    </div>
+    ${alert(u.warn,u.wt)}
+    ${secH('Topics by probability')}
+    ${u.topics.map(topicC).join('')}
+    ${secH('Most probable questions')}
+    ${u.qs.map(qC).join('')}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px">
+      <div style="background:var(--surface-1);border-radius:12px;padding:14px;border:.5px solid var(--border-success)">
+        <div style="font-size:11px;font-weight:500;color:var(--text-success);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:5px"><i class="ti ti-arrow-up" style="font-size:14px" aria-hidden="true"></i>High priority</div>
+        ${u.hi.map(h=>`<div style="font-size:12px;color:var(--text-secondary);padding:3px 0;display:flex;gap:6px;line-height:1.5"><span style="color:var(--text-success);flex-shrink:0">→</span>${h}</div>`).join('')}
+      </div>
+      <div style="background:var(--surface-1);border-radius:12px;padding:14px;border:.5px solid var(--border-danger)">
+        <div style="font-size:11px;font-weight:500;color:var(--text-danger);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:5px"><i class="ti ti-arrow-down" style="font-size:14px" aria-hidden="true"></i>Low priority</div>
+        ${u.lo.map(l=>`<div style="font-size:12px;color:var(--text-secondary);padding:3px 0;display:flex;gap:6px;line-height:1.5"><span style="color:var(--text-muted);flex-shrink:0">→</span>${l}</div>`).join('')}
+      </div>
+    </div>`;
+}
+
+function overviewP(){
+  const rows=TOP20.map((r,i)=>`<tr style="border-bottom:.5px solid var(--border)">
+    <td style="padding:8px 10px;font-size:13px;font-weight:500;color:${i<3?'var(--text-warning)':'var(--text-muted)'};font-family:var(--font-mono)">${String(i+1).padStart(2,'0')}</td>
+    <td style="padding:8px 10px;font-size:13px;color:var(--text-primary)">${r[0]}</td>
+    <td style="padding:8px 10px"><span style="font-size:11px;padding:1px 6px;border-radius:3px;background:var(--bg-accent);color:var(--text-accent);border:.5px solid var(--border-accent)">${r[1]}</span></td>
+    <td style="padding:8px 10px;font-size:13px;font-weight:500;font-family:var(--font-mono);color:${parseInt(r[2])>=85?'var(--text-success)':'var(--text-accent)'}">${r[2]}</td>
+    <td style="padding:8px 10px;font-size:13px;color:var(--text-accent);font-family:var(--font-mono)">${r[3]}</td>
+    <td style="padding:8px 10px;font-size:12px;color:var(--text-muted)">${r[4]}</td>
+  </tr>`).join('');
+  
+  return `${alert('<strong>Smart start:</strong> Unit IV (555 Timer + SAR ADC + R-2R DAC) takes ~7 hrs and covers 13 guaranteed marks. Start here if time is limited.','success')}
+    ${secH('Top 20% topics → 80% of marks')}
+    <div style="background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;overflow:auto;margin-bottom:16px">
+      <table style="width:100%;border-collapse:collapse;min-width:480px">
+        <thead><tr style="background:var(--surface-0)">
+          ${['#','Topic','Unit','Prob.','Marks','Effort'].map(h=>`<th style="text-align:left;padding:8px 10px;font-size:10px;color:var(--text-muted);font-weight:500;text-transform:uppercase;letter-spacing:.06em;border-bottom:.5px solid var(--border)">${h}</th>`).join('')}
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    ${secH('Paper structure — mark allocation')}
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:16px">
+      ${[['Part A','10 × 2 = 20 marks','All 10 questions compulsory. Guaranteed topics: slew rate, Q factor, PLL applications, Schmitt trigger, ring oscillator, phase margin.','accent'],
+         ['Part B','5 × 13 = 65 marks','Q11–Q15, each with (a)/(b) OR choice. Q11 always feedback, Q14 always ADC/DAC/PLL, Q15 always tuned amplifier.','success'],
+         ['Part C','1 × 15 = 15 marks','Q16 COMPULSORY — no OR option. Always design/derivation-heavy. Currently alternates between Unit I and Unit V.','warning']].map(([t,v,d,c])=>`
+        <div style="background:var(--surface-1);border-radius:12px;padding:14px 16px;border:.5px solid var(--border-${c})">
+          <div style="font-size:12px;font-weight:500;color:var(--text-${c});text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">${t}</div>
+          <div style="font-size:20px;font-weight:500;color:var(--text-primary);margin-bottom:6px">${v}</div>
+          <div style="font-size:12px;color:var(--text-secondary);line-height:1.6">${d}</div>
+        </div>`).join('')}
+    </div>
+    ${secH('Fastest units to complete')}
+    <div style="background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;overflow:hidden">
+      ${[['1st','Unit IV — Special function ICs','7–8h','Structured formulas. SAR ADC, 555 timer, R-2R DAC. Highest ROI.','success'],
+         ['2nd','Unit II — Op-amp','4–5h','Templated derivations. Integrator/differentiator patterns.','accent'],
+         ['3rd','Unit I — Feedback amplifiers','5–6h','Only Q11 pattern matters. Focus on 3 topology types only.','pro'],
+         ['4th','Unit III — Oscillators','8–10h','Oscillator formulas quick, but power amplifier derivations take time.','warning'],
+         ['5th','Unit V — Tuned amplifiers','10–12h','Most complex numericals. Tapped inductor requires most practice.','danger']].map(([r,u,h,d,c],i)=>`
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:.5px solid ${i<4?'var(--border)':'none'}">
+          <div style="font-size:13px;font-weight:500;color:var(--text-muted);font-family:var(--font-mono);min-width:24px">${r}</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text-primary)">${u}</div><div style="font-size:12px;color:var(--text-secondary);margin-top:2px">${d}</div></div>
+          <div style="font-size:13px;font-weight:500;color:var(--text-${c});font-family:var(--font-mono);white-space:nowrap">${h}</div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function partcP(){
+  return `${alert('<strong>Q16 is compulsory — 15 marks, no OR option.</strong> This is 15% of your total marks. Part C preparation is the single highest-leverage study decision you can make.','accent')}
+    ${secH('Prediction for upcoming exam')}
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-bottom:20px">
+      ${PARTC.preds.map(p=>`
+        <div style="background:var(--surface-1);border-radius:12px;padding:16px;border:.5px solid ${p.p===55?'var(--border-accent)':'var(--border)'}">
+          <div style="font-size:10px;padding:2px 8px;border-radius:3px;background:var(--bg-${p.c});color:var(--text-${p.c});border:.5px solid var(--border-${p.c});display:inline-block;font-weight:500;margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em">${p.p===55?'Best bet':'Alternative'} · ${p.p}%</div>
+          <div style="font-size:14px;font-weight:500;color:var(--text-primary);margin-bottom:6px">${p.lbl}</div>
+          <div style="font-size:12px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px">${p.desc}</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden"><div class="bf" data-w="${p.p}" style="height:100%;width:0;background:var(--text-${p.c});border-radius:3px"></div></div>
+            <span style="font-size:14px;font-weight:500;font-family:var(--font-mono);color:var(--text-${p.c})">${p.p}%</span>
+          </div>
+        </div>`).join('')}
+    </div>
+    ${secH('Historical Part C pattern')}
+    <div style="background:var(--surface-1);border:.5px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px">
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr style="background:var(--surface-0)">${['Exam','Unit','Topic','Marks'].map(h=>`<th style="text-align:left;padding:8px 12px;font-size:10px;color:var(--text-muted);font-weight:500;text-transform:uppercase;border-bottom:.5px solid var(--border)">${h}</th>`).join('')}</tr></thead>
+        <tbody>${PARTC.hist.map((r,i)=>{const uc={I:'accent',II:'pro',V:'warning'}[r.u]||'accent';return`<tr style="border-bottom:.5px solid ${i<3?'var(--border)':'none'}"><td style="padding:9px 12px;font-size:13px;font-weight:500;font-family:var(--font-mono);color:var(--text-primary)">${r.e}</td><td style="padding:9px 12px"><span style="font-size:11px;padding:1px 7px;border-radius:3px;background:var(--bg-${uc});color:var(--text-${uc});border:.5px solid var(--border-${uc})">${r.u}</span></td><td style="padding:9px 12px;font-size:12px;color:var(--text-secondary)">${r.t}</td><td style="padding:9px 12px;font-size:13px;font-weight:500;font-family:var(--font-mono);color:var(--text-success)">15</td></tr>`;}).join('')}</tbody>
+      </table>
+    </div>
+    ${secH('Recommended preparation')}
+    <div style="background:var(--surface-1);border-radius:var(--radius);padding:12px 14px;margin-bottom:8px;font-size:13px;border-left:3px solid var(--text-accent);color:var(--text-primary);line-height:1.65"><strong>Primary — Unit I (55%):</strong> Practice inserting dominant pole for T(f)=2000/[(1+jf/10⁴)(1+jf/10⁶)(1+jf/10⁸)]. Find f_d for PM≥45°. Also: given T(f) with β·1000 in numerator, find β for 45° PM and calculate resulting closed-loop gain.</div>
+    <div style="background:var(--surface-1);border-radius:var(--radius);padding:12px 14px;font-size:13px;border-left:3px solid var(--text-warning);color:var(--text-primary);line-height:1.65"><strong>Secondary — Unit V (35%):</strong> Tapped inductor design from specs: fo, BW, gm, Rin, Cin → find n, C, Rp_eff, gain. Key formulas: Reff=n²·Rin, BW=1/(2π·Rp_eff·C), Ic/Iin=1/n.</div>`;
+}
+
+function plannerP(){
+  let total=0;
+  PLAN.forEach(s=>s.items.forEach(i=>total+=i.h));
+  return `<div style="background:var(--surface-1);border:.5px solid var(--border-accent);border-radius:12px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px">
+      <div><div style="font-size:13px;color:var(--text-secondary)">Total study hours remaining</div><div style="font-size:12px;color:var(--text-muted);margin-top:2px">Check off topics as you complete them</div></div>
+      <div style="text-align:right"><div id="hr-tot" style="font-size:32px;font-weight:500;color:var(--text-accent);font-family:var(--font-mono)">${total}</div><div id="hr-pct" style="font-size:12px;color:var(--text-muted)">0% complete</div></div>
+    </div>
+    ${PLAN.map(s=>`<div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;padding:10px 0 4px">${s.u}</div>
+    ${s.items.map(item=>`<div class="pli" data-h="${item.h}" style="display:flex;align-items:flex-start;gap:8px;padding:9px 12px;border:.5px solid var(--border);border-radius:var(--radius);margin-bottom:6px;cursor:pointer" onclick="tP(this)">
+      <input type="checkbox" style="accent-color:var(--fill-success);width:14px;height:14px;flex-shrink:0;margin-top:1px;cursor:pointer" onclick="event.stopPropagation()">
+      <span class="pll" style="flex:1;font-size:13px;color:var(--text-primary)">${item.t}</span>
+      <span style="font-size:12px;font-family:var(--font-mono);color:var(--text-accent);font-weight:500;white-space:nowrap">${item.h}h</span>
+    </div>`).join('')}`).join('')}`;
+}
+
+const TABS=['Overview','Unit I','Unit II','Unit III','Unit IV','Unit V','Part C','Planner'];
+const PANELS=[overviewP(),...U.map(unitP),partcP(),plannerP()];
+
+document.getElementById('ar').innerHTML=`
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap">
+    <div style="background:var(--bg-accent);border:.5px solid var(--border-accent);border-radius:var(--radius);padding:4px 10px;font-size:12px;color:var(--text-accent);font-family:var(--font-mono)">EC23C05</div>
+    <div>
+      <div style="font-size:16px;font-weight:500;color:var(--text-primary)">AESD exam intelligence dashboard</div>
+      <div style="font-size:12px;color:var(--text-secondary)">Anna University · Reg 2023 · Semester IV · 5 papers analysed (2021–2025)</div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:1.25rem">
+    ${[{v:'5',l:'Papers',s:'2021–2025'},{v:'8',l:'Guaranteed',s:'100% rate'},{v:'46h',l:'Full prep',s:'all 5 units'},{v:'20h',l:'Smart prep',s:'top 20%'},{v:'15',l:'Part C',s:'compulsory'},{v:'98%',l:'Peak prob.',s:'Q11+Q15'}].map(s=>`<div style="background:var(--surface-1);border-radius:var(--radius);padding:.75rem 1rem"><div style="font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px">${s.l}</div><div style="font-size:20px;font-weight:500;color:var(--text-primary);margin-bottom:1px">${s.v}</div><div style="font-size:11px;color:var(--text-secondary)">${s.s}</div></div>`).join('')}
+  </div>
+  <div id="tbr" style="display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;border-bottom:.5px solid var(--border);margin-bottom:1.25rem;position:sticky;top:0;background:var(--surface-0,var(--surface-2));z-index:10;padding:.375rem 0 0">
+    ${TABS.map((t,i)=>`<button id="tb${i}" onclick="sw(${i})" style="background:none;border:none;padding:7px 13px;font-size:13px;cursor:pointer;color:${i===0?'var(--text-accent)':'var(--text-secondary)'};border-bottom:2px solid ${i===0?'var(--text-accent)':'transparent'};white-space:nowrap;font-family:inherit;transition:color .15s">${t}</button>`).join('')}
+  </div>
+  <div id="pnls">${PANELS.map((p,i)=>`<div id="pn${i}" style="display:${i===0?'block':'none'}">${p}</div>`).join('')}</div>
+`;
+
+function sw(i){
+  for(let j=0;j<TABS.length;j++){
+    const b=document.getElementById('tb'+j),p=document.getElementById('pn'+j);
+    if(b){b.style.color=j===i?'var(--text-accent)':'var(--text-secondary)';b.style.borderBottom=j===i?'2px solid var(--text-accent)':'2px solid transparent';}
+    if(p)p.style.display=j===i?'block':'none';
+  }
+  setTimeout(aB,80);
+}
+
+function aB(){
+  document.querySelectorAll('#pnls .bf').forEach(el=>{
+    const pn=el.closest('[id^=pn]');
+    if(pn&&pn.style.display!=='none'){const w=el.getAttribute('data-w');if(w&&el.style.width==='0%'||el.style.width==='')el.style.width=w+'%';}
+  });
+}
+
+function tP(el){
+  const cb=el.querySelector('input');
+  cb.checked=!cb.checked;
+  const on=cb.checked;
+  el.style.borderColor=on?'var(--border-success)':'var(--border)';
+  el.style.background=on?'var(--bg-success)':'';
+  const lbl=el.querySelector('.pll');
+  if(lbl){lbl.style.textDecoration=on?'line-through':'none';lbl.style.color=on?'var(--text-muted)':'var(--text-primary)';}
+  let tot=0,dn=0;
+  document.querySelectorAll('.pli').forEach(e=>{const h=parseFloat(e.getAttribute('data-h')||0);tot+=h;if(e.querySelector('input').checked)dn+=h;});
+  const ht=document.getElementById('hr-tot'),hp=document.getElementById('hr-pct');
+  if(ht)ht.textContent=Math.round((tot-dn)*10)/10;
+  if(hp)hp.textContent=Math.round(dn/tot*100)+'% complete';
+}
+
+const st=document.createElement('style');
+st.textContent='#tbr::-webkit-scrollbar{display:none}.bf{transition:width .55s cubic-bezier(.22,1,.36,1)}';
+document.head.appendChild(st);
+setTimeout(aB,500);
+</script>
+</div>
+</body>
+</html>
