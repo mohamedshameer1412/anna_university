@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LANM Exam Predictor — MA23C03</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2333;
+    --border: #30363d;
+    --accent: #58a6ff;
+    --accent2: #f78166;
+    --accent3: #56d364;
+    --accent4: #ffa657;
+    --accent5: #bc8cff;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --high: #f85149;
+    --med: #ffa657;
+    --low: #56d364;
+    --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --mono: 'Cascadia Code', 'Fira Code', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1f3c 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 2rem 1.5rem;
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  .header-inner { max-width: 1200px; margin: 0 auto; }
+  .header-top { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+  .badge { background: var(--accent); color: #0d1117; font-size: 0.65rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 20px; letter-spacing: 0.05em; }
+  .badge.hot { background: var(--accent2); }
+  h1 { font-size: 1.5rem; font-weight: 700; color: var(--text); margin-top: 0.4rem; }
+  .subtitle { color: var(--muted); font-size: 0.85rem; margin-top: 0.25rem; }
+  .meta-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+  .pill { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 0.3rem 0.8rem; font-size: 0.75rem; color: var(--muted); }
+  .pill span { color: var(--accent); font-weight: 600; }
+
+  /* NAV TABS */
+  .nav-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; overflow-x: auto; }
+  .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; gap: 0; }
+  .tab-btn {
+    padding: 0.85rem 1.2rem; font-size: 0.82rem; font-weight: 600;
+    color: var(--muted); background: none; border: none; cursor: pointer;
+    border-bottom: 2px solid transparent; white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .tab-btn:hover { color: var(--text); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-btn .tab-num { display: inline-block; background: var(--surface2); border-radius: 10px; padding: 0.1rem 0.4rem; font-size: 0.7rem; margin-left: 0.3rem; }
+
+  /* MAIN */
+  .main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* OVERVIEW CARDS */
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 1.2rem; position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .stat-card.blue::before { background: var(--accent); }
+  .stat-card.orange::before { background: var(--accent4); }
+  .stat-card.green::before { background: var(--accent3); }
+  .stat-card.purple::before { background: var(--accent5); }
+  .stat-card.red::before { background: var(--high); }
+  .stat-label { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .stat-val { font-size: 2rem; font-weight: 700; margin: 0.3rem 0; }
+  .stat-val.blue { color: var(--accent); }
+  .stat-val.orange { color: var(--accent4); }
+  .stat-val.green { color: var(--accent3); }
+  .stat-val.purple { color: var(--accent5); }
+  .stat-sub { font-size: 0.75rem; color: var(--muted); }
+
+  /* SECTION HEADERS */
+  .section-title {
+    font-size: 1rem; font-weight: 700; color: var(--text);
+    display: flex; align-items: center; gap: 0.6rem;
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.6rem; border-bottom: 1px solid var(--border);
+  }
+  .section-title .icon { font-size: 1.1rem; }
+
+  /* TOPIC CARDS */
+  .topic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1rem; }
+  .topic-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 1.2rem; cursor: pointer; transition: border-color 0.2s, transform 0.15s;
+    position: relative;
+  }
+  .topic-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .topic-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
+  .topic-name { font-size: 0.92rem; font-weight: 600; color: var(--text); }
+  .prob-badge {
+    background: var(--surface2); border-radius: 6px; padding: 0.25rem 0.6rem;
+    font-size: 0.8rem; font-weight: 700; white-space: nowrap; flex-shrink: 0;
+  }
+  .prob-badge.hot { color: var(--high); border: 1px solid var(--high)33; }
+  .prob-badge.warm { color: var(--accent4); border: 1px solid var(--accent4)33; }
+  .prob-badge.cool { color: var(--accent3); border: 1px solid var(--accent3)33; }
+
+  .topic-meta { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.7rem 0; }
+  .tag {
+    font-size: 0.7rem; padding: 0.2rem 0.55rem; border-radius: 20px; font-weight: 500;
+  }
+  .tag.diff-easy { background: #56d36420; color: var(--accent3); }
+  .tag.diff-med { background: #ffa65720; color: var(--accent4); }
+  .tag.diff-hard { background: #f8514920; color: var(--high); }
+  .tag.type { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+  .tag.time { background: #58a6ff15; color: var(--accent); }
+
+  .prob-bar { background: var(--border); border-radius: 4px; height: 5px; margin: 0.6rem 0; }
+  .prob-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+  .prob-fill.hot { background: linear-gradient(90deg, var(--high), var(--accent4)); }
+  .prob-fill.warm { background: linear-gradient(90deg, var(--accent4), #ffd700); }
+  .prob-fill.cool { background: linear-gradient(90deg, var(--accent3), var(--accent)); }
+
+  .reason { font-size: 0.78rem; color: var(--muted); line-height: 1.5; margin-top: 0.5rem; }
+
+  /* QUESTION CARDS */
+  .q-section { margin: 1.5rem 0; }
+  .q-section-label {
+    font-size: 0.72rem; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 0.7rem; display: flex; align-items: center; gap: 0.4rem;
+  }
+  .q-section-label .marks { background: var(--accent); color: #0d1117; border-radius: 4px; padding: 0.1rem 0.4rem; font-size: 0.65rem; }
+  .q-section-label .marks.orange { background: var(--accent4); }
+  .q-section-label .marks.purple { background: var(--accent5); }
+
+  .q-card {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 1rem 1.1rem; margin-bottom: 0.6rem; display: flex; gap: 0.8rem; align-items: flex-start;
+    transition: border-color 0.2s;
+  }
+  .q-card:hover { border-color: var(--border); }
+  .q-num { background: var(--surface); border: 1px solid var(--border); color: var(--muted); border-radius: 6px; padding: 0.2rem 0.5rem; font-size: 0.72rem; font-family: var(--mono); flex-shrink: 0; }
+  .q-text { font-size: 0.85rem; color: var(--text); line-height: 1.55; flex: 1; }
+  .q-signal {
+    font-size: 0.68rem; color: var(--muted); margin-top: 0.35rem;
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+  }
+  .signal-chip { background: var(--surface); border-radius: 4px; padding: 0.15rem 0.4rem; }
+  .signal-chip.fire { color: var(--high); }
+  .signal-chip.warm { color: var(--accent4); }
+  .signal-chip.new { color: var(--accent3); }
+
+  /* OVERVIEW — 80/20 */
+  .pareto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media(max-width:700px){ .pareto-grid { grid-template-columns: 1fr; } }
+  .pareto-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem;
+  }
+  .pareto-card h3 { font-size: 0.82rem; color: var(--muted); font-weight: 600; margin-bottom: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .rank-list { list-style: none; }
+  .rank-item { display: flex; align-items: center; gap: 0.7rem; padding: 0.45rem 0; border-bottom: 1px solid var(--border); }
+  .rank-item:last-child { border-bottom: none; }
+  .rank-n { font-size: 0.7rem; font-family: var(--mono); color: var(--muted); width: 1.5rem; text-align: right; flex-shrink: 0; }
+  .rank-name { font-size: 0.82rem; color: var(--text); flex: 1; }
+  .rank-prob { font-size: 0.78rem; font-weight: 700; }
+
+  /* UNIT HEADER */
+  .unit-hero {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 1.4rem 1.6rem; margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  }
+  .unit-num { font-size: 3rem; font-weight: 800; opacity: 0.12; font-family: var(--mono); line-height: 1; }
+  .unit-info { flex: 1; }
+  .unit-title { font-size: 1.1rem; font-weight: 700; }
+  .unit-subtitle { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
+  .unit-stats { display: flex; gap: 1rem; margin-top: 0.8rem; flex-wrap: wrap; }
+  .u-stat { text-align: center; }
+  .u-stat-val { font-size: 1.3rem; font-weight: 700; }
+  .u-stat-lab { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; }
+
+  /* SKIP LIST */
+  .skip-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.7rem; }
+  .skip-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    padding: 0.9rem 1rem; display: flex; gap: 0.8rem; align-items: flex-start;
+  }
+  .skip-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.1rem; }
+  .skip-name { font-size: 0.85rem; color: var(--text); font-weight: 500; }
+  .skip-reason { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+
+  /* ANIMATIONS */
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  .tab-content.active { animation: fadeIn 0.25s ease; }
+
+  /* COLLAPSE */
+  .collapsible { cursor: pointer; user-select: none; }
+  .collapsible .chevron { transition: transform 0.2s; display: inline-block; }
+  .collapsible.open .chevron { transform: rotate(90deg); }
+  .collapse-body { overflow: hidden; max-height: 0; transition: max-height 0.35s ease; }
+  .collapse-body.open { max-height: 2000px; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* RESPONSIVE */
+  @media(max-width: 640px) {
+    .header { padding: 1.2rem; }
+    h1 { font-size: 1.2rem; }
+    .main { padding: 1rem; }
+    .topic-grid { grid-template-columns: 1fr; }
+  }
+
+  /* PRIORITY HIGHLIGHT */
+  .priority-strip { background: linear-gradient(90deg, #f8514920 0%, transparent 100%); border-left: 3px solid var(--high); border-radius: 0 8px 8px 0; padding: 0.8rem 1rem; margin-bottom: 0.6rem; }
+  .priority-label { font-size: 0.7rem; color: var(--high); font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; }
+  .priority-text { font-size: 0.85rem; color: var(--text); margin-top: 0.3rem; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  th { background: var(--surface2); color: var(--muted); font-weight: 600; text-align: left; padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--border); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  td { padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 1.5rem; overflow-x: auto; }
+
+  .flame { color: var(--high); }
+  .star { color: var(--accent4); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-top">
+      <div>
+        <div style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;">
+          <span class="badge">MA23C03</span>
+          <span class="badge hot">NOV/DEC 2025 PREDICTION</span>
+          <span class="badge" style="background:var(--accent3);color:#0d1117;">Anna University — Reg 2023</span>
+        </div>
+        <h1>Linear Algebra &amp; Numerical Methods</h1>
+        <div class="subtitle">Exam Prediction Engine — 3 Papers Analysed (2024 × 2 + 2025 May)</div>
+      </div>
+    </div>
+    <div class="meta-pills">
+      <div class="pill">Papers: <span>3</span></div>
+      <div class="pill">Questions indexed: <span>~180</span></div>
+      <div class="pill">Units: <span>5</span></div>
+      <div class="pill">Max Marks: <span>100</span></div>
+      <div class="pill">Pattern: <span>Part A 20 + Part B 65 + Part C 15</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-bar">
+  <div class="nav-inner">
+    <button class="tab-btn active" onclick="switchTab('overview',this)">📊 Overview</button>
+    <button class="tab-btn" onclick="switchTab('u1',this)">Unit I <span class="tab-num">Vector Spaces</span></button>
+    <button class="tab-btn" onclick="switchTab('u2',this)">Unit II <span class="tab-num">Lin. Transforms</span></button>
+    <button class="tab-btn" onclick="switchTab('u3',this)">Unit III <span class="tab-num">Inner Products</span></button>
+    <button class="tab-btn" onclick="switchTab('u4',this)">Unit IV <span class="tab-num">Numerical Linear</span></button>
+    <button class="tab-btn" onclick="switchTab('u5',this)">Unit V <span class="tab-num">Eigenvalue Num.</span></button>
+    <button class="tab-btn" onclick="switchTab('strategy',this)">🎯 Strategy</button>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ====== OVERVIEW ====== -->
+<div id="overview" class="tab-content active">
+
+  <div class="stat-grid">
+    <div class="stat-card blue">
+      <div class="stat-label">Safest Unit</div>
+      <div class="stat-val blue">IV</div>
+      <div class="stat-sub">Numerical methods — predictable numericals</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-label">Hardest Unit</div>
+      <div class="stat-val orange">V</div>
+      <div class="stat-sub">SVD + QR + Power method</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-label">Fastest to Finish</div>
+      <div class="stat-val green">I</div>
+      <div class="stat-sub">Vector spaces — mostly concept/proof</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="stat-label">Highest ROI</div>
+      <div class="stat-val purple">III</div>
+      <div class="stat-sub">Gram-Schmidt + inner product proofs</div>
+    </div>
+    <div class="stat-card red">
+      <div class="stat-label">🔥 Top Question</div>
+      <div class="stat-val" style="font-size:1rem;color:var(--high);margin-top:0.5rem">SVD (13M)</div>
+      <div class="stat-sub">Appeared in ALL 3 papers — 100% chance</div>
+    </div>
+  </div>
+
+  <div class="section-title"><span class="icon">🏆</span> 80/20 Rule — Top 20% Topics That Cover ~80% Marks</div>
+
+  <div class="pareto-grid">
+    <div class="pareto-card">
+      <h3>🔥 Must-Do Topics (Ranked by Probability × Marks)</h3>
+      <ul class="rank-list">
+        <li class="rank-item"><span class="rank-n">1</span><span class="rank-name">SVD — Singular Value Decomposition</span><span class="rank-prob" style="color:var(--high)">100%</span></li>
+        <li class="rank-item"><span class="rank-n">2</span><span class="rank-name">Diagonalization — ODE System</span><span class="rank-prob" style="color:var(--high)">95%</span></li>
+        <li class="rank-item"><span class="rank-n">3</span><span class="rank-name">Gram-Schmidt Orthogonalization</span><span class="rank-prob" style="color:var(--high)">92%</span></li>
+        <li class="rank-item"><span class="rank-n">4</span><span class="rank-name">Gauss-Seidel / Gauss-Jacobi</span><span class="rank-prob" style="color:var(--accent4)">90%</span></li>
+        <li class="rank-item"><span class="rank-n">5</span><span class="rank-name">QR Decomposition</span><span class="rank-prob" style="color:var(--accent4)">88%</span></li>
+        <li class="rank-item"><span class="rank-n">6</span><span class="rank-name">Linear Transformation (N(T), R(T))</span><span class="rank-prob" style="color:var(--accent4)">85%</span></li>
+        <li class="rank-item"><span class="rank-n">7</span><span class="rank-name">Power Method (Eigenvalues)</span><span class="rank-prob" style="color:var(--accent4)">85%</span></li>
+        <li class="rank-item"><span class="rank-n">8</span><span class="rank-name">LU Decomposition</span><span class="rank-prob" style="color:var(--accent3)">80%</span></li>
+        <li class="rank-item"><span class="rank-n">9</span><span class="rank-name">Orthogonal Complement / Least Squares</span><span class="rank-prob" style="color:var(--accent3)">78%</span></li>
+        <li class="rank-item"><span class="rank-n">10</span><span class="rank-name">Vector Space / Subspace Proofs</span><span class="rank-prob" style="color:var(--accent3)">75%</span></li>
+      </ul>
+    </div>
+
+    <div class="pareto-card">
+      <h3>⚡ Unit Speed vs Marks Overview</h3>
+      <ul class="rank-list">
+        <li class="rank-item">
+          <span class="rank-n">I</span>
+          <div style="flex:1">
+            <div class="rank-name">Vector Spaces</div>
+            <div class="stat-sub">~8–10 hrs to prep. Pure theory + subspace proofs.</div>
+          </div>
+          <span class="rank-prob" style="color:var(--accent3)">Easy</span>
+        </li>
+        <li class="rank-item">
+          <span class="rank-n">II</span>
+          <div style="flex:1">
+            <div class="rank-name">Linear Transformations</div>
+            <div class="stat-sub">~12–15 hrs. Diagonalization is heavy.</div>
+          </div>
+          <span class="rank-prob" style="color:var(--accent4)">Med</span>
+        </li>
+        <li class="rank-item">
+          <span class="rank-n">III</span>
+          <div style="flex:1">
+            <div class="rank-name">Inner Product Spaces</div>
+            <div class="stat-sub">~10–12 hrs. Gram-Schmidt is formulaic.</div>
+          </div>
+          <span class="rank-prob" style="color:var(--accent3)">Easy-Med</span>
+        </li>
+        <li class="rank-item">
+          <span class="rank-n">IV</span>
+          <div style="flex:1">
+            <div class="rank-name">Numerical Linear Systems</div>
+            <div class="stat-sub">~10 hrs. Iterative methods are repetitive.</div>
+          </div>
+          <span class="rank-prob" style="color:var(--accent3)">Easy</span>
+        </li>
+        <li class="rank-item">
+          <span class="rank-n">V</span>
+          <div style="flex:1">
+            <div class="rank-name">Numerical Eigenvalue</div>
+            <div class="stat-sub">~15–18 hrs. SVD is lengthy but doable.</div>
+          </div>
+          <span class="rank-prob" style="color:var(--high)">Hard</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-title"><span class="icon">📌</span> Mark Distribution Across Papers (Observed Pattern)</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Unit</th><th>Topic</th><th>Nov/Dec 2024 (Set 1)</th><th>Nov/Dec 2024 (Set 2)</th><th>May 2025</th><th>Predicted Nov/Dec 2025</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>I</td><td>Vector Spaces/Subspaces</td><td>8M + 5M</td><td>7M + 6M</td><td>8M + 5M</td><td style="color:var(--accent4)">8M + 5M ✅</td></tr>
+        <tr><td>II</td><td>Linear Transformation + Diagonalization</td><td>13M (ODE)</td><td>13M (ODE)</td><td>13M</td><td style="color:var(--high)">13M ODE ✅✅✅</td></tr>
+        <tr><td>III</td><td>Gram-Schmidt + Inner Products</td><td>8M + 5M</td><td>8M + 5M</td><td>8M + 5M</td><td style="color:var(--accent4)">8M + 5M ✅</td></tr>
+        <tr><td>IV</td><td>Gauss Methods + LU/SOR</td><td>8M + 5M</td><td>8M + 5M</td><td>8M + 5M</td><td style="color:var(--accent4)">8M + 5M ✅</td></tr>
+        <tr><td>V</td><td>SVD (13M) + QR/Power</td><td>13M SVD</td><td>13M SVD</td><td>13M QR</td><td style="color:var(--high)">13M SVD ✅✅✅</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- ====== UNIT I ====== -->
+<div id="u1" class="tab-content">
+  <div class="unit-hero">
+    <div class="unit-num">01</div>
+    <div class="unit-info">
+      <div class="unit-title">Unit I — Vector Spaces</div>
+      <div class="unit-subtitle">Subspaces · Linear Independence · Basis · Dimension · Linear Span</div>
+      <div class="unit-stats">
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--accent3)">~20M</div><div class="u-stat-lab">Expected Marks</div></div>
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--accent3)">8–10h</div><div class="u-stat-lab">Prep Time</div></div>
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--accent3)">Easy</div><div class="u-stat-lab">Difficulty</div></div>
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--accent3)">3rd</div><div class="u-stat-lab">Priority Rank</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"><span class="icon">📌</span> Most Important Topics</div>
+  <div class="topic-grid">
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Subspace Verification (W is a subspace proof)</div>
+        <div class="prob-badge hot">88%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill hot" style="width:88%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-easy">Easy</span>
+        <span class="tag type">Concept-heavy</span>
+        <span class="tag time">⏱ 2h</span>
+      </div>
+      <div class="reason">Appeared in all 3 papers. Skew-symmetric matrix subspace (M₂×₂) appeared twice — very likely to repeat with a different matrix set.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Basis and Dimension of a Space</div>
+        <div class="prob-badge hot">82%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill hot" style="width:82%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-easy">Easy</span>
+        <span class="tag type">Problem-solving</span>
+        <span class="tag time">⏱ 2h</span>
+      </div>
+      <div class="reason">Basis finding appears in Part A and Part B consistently. Paired with subspace problems.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Linear Independence / Span (P₂(ℝ) Polynomials)</div>
+        <div class="prob-badge warm">75%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill warm" style="width:75%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-easy">Easy</span>
+        <span class="tag type">Problem-solving</span>
+        <span class="tag time">⏱ 2h</span>
+      </div>
+      <div class="reason">f(x), g(x) in Span(S) type problems recur. {1−2x−2x², 1−x+6x²} style sets appeared twice.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Vector Space Axiom Verification (modified ops)</div>
+        <div class="prob-badge warm">70%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill warm" style="width:70%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-med">Medium</span>
+        <span class="tag type">Concept-heavy</span>
+        <span class="tag time">⏱ 3h</span>
+      </div>
+      <div class="reason">ℝ² with non-standard addition/scalar multiplication — verify 8 axioms. 8M question. Appeared in 2/3 papers.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Linear Independence of Matrix Sets (M₂×₂)</div>
+        <div class="prob-badge warm">68%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill warm" style="width:68%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-easy">Easy</span>
+        <span class="tag type">Problem-solving</span>
+        <span class="tag time">⏱ 1h</span>
+      </div>
+      <div class="reason">5M questions on sets of 2×2 matrices appear frequently. Fast to solve, often 5M Part B subpart.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Part A: Linear Dep/Indep True/False + Zero Vector</div>
+        <div class="prob-badge cool">65%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill cool" style="width:65%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-easy">Easy</span>
+        <span class="tag type">Memory-heavy</span>
+        <span class="tag time">⏱ 0.5h</span>
+      </div>
+      <div class="reason">2M question — "Is {u₁,u₃,u₃,0} linearly dependent?" — appeared verbatim in 2 papers. Memorize the theorem.</div>
+    </div>
+
+  </div>
+
+  <div class="section-title"><span class="icon">❓</span> Most Probable Questions</div>
+
+  <div class="q-section">
+    <div class="q-section-label"><span class="marks orange">13M / 8M</span> Part B High-Probability Questions</div>
+
+    <div class="q-card">
+      <div class="q-num">Q1</div>
+      <div>
+        <div class="q-text">Is ℝ² a vector space over ℝ with the operations (a₁,a₂)+(b₁,b₂) = (a₁+b₁, a₂−b₂) and c(a₁,a₂) = (ca₁, ca₂)? Verify all axioms. [8M]</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared: 2/3 papers</span><span class="signal-chip warm">CO1</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">Q2</div>
+      <div>
+        <div class="q-text">Let W = {A ∈ M₂×₂(ℝ) | A = −Aᵀ} be the set of all skew-symmetric matrices. Prove W is a subspace of M₂×₂(ℝ). Find a basis and dimension of W. [5M]</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared: 2/3 papers verbatim</span><span class="signal-chip warm">CO1</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">Q3</div>
+      <div>
+        <div class="q-text">Let S = {1−2x−2x², 1−x+6x²}, f(x) = 3−5x+2x², g(x) = −2+3x−x² in P₂(ℝ). Find whether f(x), g(x) are in Span(S). [8M]</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared: 2/3 papers verbatim</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">Q4</div>
+      <div>
+        <div class="q-text">Is V = {(2x, y; 3x+y, 3y) : x,y ∈ ℝ} a vector space over ℝ with respect to usual matrix addition and scalar multiplication? Explain. [7M]</div>
+        <div class="q-signal"><span class="signal-chip warm">⭐ Appeared: 2/3 papers</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="q-section">
+    <div class="q-section-label"><span class="marks">2M</span> Part A High-Probability Questions</div>
+    <div class="q-card">
+      <div class="q-num">A1</div>
+      <div class="q-text">State with reason: (I) {u₁, u₃, u₃, 0} ⊂ V is linearly dependent. (II) The empty set is linearly independent. [2M] — Appeared verbatim in 2 papers.</div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">A2</div>
+      <div class="q-text">If x,y,z are vectors in V such that x+z = y+z, prove x = y. [2M] — Appeared verbatim in 2 papers.</div>
+    </div>
+  </div>
+
+  <div class="section-title"><span class="icon">🚫</span> Low Priority (Skip if Time Limited)</div>
+  <div class="skip-grid">
+    <div class="skip-card"><div class="skip-icon">⏭</div><div><div class="skip-name">F⁴ / F⁵ vector spaces (abstract field F)</div><div class="skip-reason">Appeared only in May 2025 — low repeat probability for ECE branch</div></div></div>
+    <div class="skip-card"><div class="skip-icon">⏭</div><div><div class="skip-name">P₃(F) polynomial space proof</div><div class="skip-reason">Single appearance — complex, low ROI</div></div></div>
+  </div>
+</div>
+
+<!-- ====== UNIT II ====== -->
+<div id="u2" class="tab-content">
+  <div class="unit-hero">
+    <div class="unit-num">02</div>
+    <div class="unit-info">
+      <div class="unit-title">Unit II — Linear Transformations</div>
+      <div class="unit-subtitle">Null Space · Range · Matrix of T · Eigenvalues · Diagonalization · ODE Systems</div>
+      <div class="unit-stats">
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--accent4)">~25M</div><div class="u-stat-lab">Expected Marks</div></div>
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--accent4)">12–15h</div><div class="u-stat-lab">Prep Time</div></div>
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--accent4)">Medium</div><div class="u-stat-lab">Difficulty</div></div>
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--accent4)">2nd</div><div class="u-stat-lab">Priority Rank</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"><span class="icon">📌</span> Most Important Topics</div>
+  <div class="topic-grid">
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Diagonalization → Solve ODE System x'=Ax</div>
+        <div class="prob-badge hot">95%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill hot" style="width:95%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-hard">Hard</span>
+        <span class="tag type">Problem-solving-heavy</span>
+        <span class="tag time">⏱ 5h</span>
+      </div>
+      <div class="reason">THE 13M question of Unit II. Appeared in ALL 3 papers as a 13M question. Find eigenvalues, P, D, solve general solution. This is non-negotiable prep.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Linear Transformation Proof + N(T), R(T), Dimension Theorem</div>
+        <div class="prob-badge hot">88%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill hot" style="width:88%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-med">Medium</span>
+        <span class="tag type">Problem-solving-heavy</span>
+        <span class="tag time">⏱ 3h</span>
+      </div>
+      <div class="reason">T: ℝ³ → ℝ² or T: ℝ² → W type questions with nullity/rank appeared in all papers. 8M subpart.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Eigenvalues & Eigenvectors (2×2 / 3×3)</div>
+        <div class="prob-badge warm">80%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill warm" style="width:80%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-med">Medium</span>
+        <span class="tag type">Formula-heavy</span>
+        <span class="tag time">⏱ 2h</span>
+      </div>
+      <div class="reason">5M subpart on eigenspaces of a 2×2 matrix. Appeared in 2/3 papers. Also needed for diagonalization.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Matrix of Linear Transformation w.r.t. Bases</div>
+        <div class="prob-badge warm">72%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill warm" style="width:72%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-med">Medium</span>
+        <span class="tag type">Formula-heavy</span>
+        <span class="tag time">⏱ 2h</span>
+      </div>
+      <div class="reason">Part A 2M question appeared twice. Also 5M Part B on change-of-basis matrix.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Is T linear? (det, multiplication, etc.)</div>
+        <div class="prob-badge cool">65%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill cool" style="width:65%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-easy">Easy</span>
+        <span class="tag type">Concept-heavy</span>
+        <span class="tag time">⏱ 1h</span>
+      </div>
+      <div class="reason">Part A 2M: T(a,b)=ab, T(A)=det(A) type — appear almost every exam. Easy 2 marks.</div>
+    </div>
+
+  </div>
+
+  <div class="section-title"><span class="icon">❓</span> Most Probable Questions</div>
+
+  <div class="q-section">
+    <div class="q-section-label"><span class="marks orange">13M</span> The Big Question — Very High Confidence</div>
+
+    <div class="priority-strip">
+      <div class="priority-label">🔥 APPEARED IN ALL 3 PAPERS — DEFINITELY COMING</div>
+      <div class="priority-text">Find the general solution to the system x₁' = ax₁ + bx₃; x₂' = cx₁ + dx₂ + ex₃; x₃' = fx₁ + gx₂ + hx₃ using diagonalization of matrices.</div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">Q1</div>
+      <div>
+        <div class="q-text">Find the general solution using diagonalization: x₁' = x₁ − x₃; x₂' = x₁ + 2x₂ + x₃; x₃' = 2x₁ + 2x₂ + 3x₃. [13M] (Nov/Dec 2025 format)</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared: 2/3 papers with this exact coefficient matrix</span></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-num">Q2</div>
+      <div>
+        <div class="q-text">Using diagonalization, solve y₁' = 4y₁ + y₃; y₂' = −2y₁ + y₂; y₃' = −2y₁ + y₃. Find the solution satisfying y₁(0) = −1, y₂(0) = 1, y₃(0) = 0. [13M]</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared: 2 papers with initial conditions</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="q-section">
+    <div class="q-section-label"><span class="marks">8M</span> High-Probability 8M Questions</div>
+    <div class="q-card">
+      <div class="q-num">Q3</div>
+      <div>
+        <div class="q-text">Prove that T: ℝ³ → ℝ² defined by T(a₁,a₂,a₃) = (a₁−a₂, 2a₃) is a linear transformation. Find bases for N(T) and R(T). Compute nullity and rank and verify the dimension theorem. [8M]</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared: 2 papers</span></div>
+      </div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Q4</div>
+      <div>
+        <div class="q-text">Let T: ℝ³ → ℝ³ defined by T(a₁,a₂,a₃) = (4a₁+a₃, 2a₁+3a₂+2a₃, a₁+4a₃). Find eigenspaces and check T for diagonalizability. Find P and D such that P⁻¹AP = D. [8M]</div>
+        <div class="q-signal"><span class="signal-chip warm">⭐ Appeared: Nov/Dec 2024 and May 2025</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"><span class="icon">🚫</span> Low Priority</div>
+  <div class="skip-grid">
+    <div class="skip-card"><div class="skip-icon">⏭</div><div><div class="skip-name">T: P₂→P₃ with derivative (T(f(x)) = xf(x) + f'(x))</div><div class="skip-reason">Single appearance in May 2025 — atypical for ECE branch</div></div></div>
+    <div class="skip-card"><div class="skip-icon">⏭</div><div><div class="skip-name">Change-of-basis matrix [T]ᵧᵦ computation (detailed)</div><div class="skip-reason">Only 5M, appeared once — skip if pressed for time</div></div></div>
+  </div>
+</div>
+
+<!-- ====== UNIT III ====== -->
+<div id="u3" class="tab-content">
+  <div class="unit-hero">
+    <div class="unit-num">03</div>
+    <div class="unit-info">
+      <div class="unit-title">Unit III — Inner Product Spaces</div>
+      <div class="unit-subtitle">Inner Products · Norms · Orthogonality · Gram-Schmidt · Complement · Least Squares</div>
+      <div class="unit-stats">
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--accent5)">~20M</div><div class="u-stat-lab">Expected Marks</div></div>
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--accent5)">10–12h</div><div class="u-stat-lab">Prep Time</div></div>
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--accent3)">Easy-Med</div><div class="u-stat-lab">Difficulty</div></div>
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--accent5)">1st</div><div class="u-stat-lab">ROI Rank</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"><span class="icon">📌</span> Most Important Topics</div>
+  <div class="topic-grid">
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Gram-Schmidt Orthogonalization Process</div>
+        <div class="prob-badge hot">92%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill hot" style="width:92%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-med">Medium</span>
+        <span class="tag type">Formula-heavy</span>
+        <span class="tag time">⏱ 3h</span>
+      </div>
+      <div class="reason">8M question. Appeared in ALL 3 papers. Subsets of ℝ³ or ℝ⁴ with different vectors each time but same procedure. Master the formula once.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Inner Product Computations: C([0,1]) with ∫₀¹ f(t)g(t)dt</div>
+        <div class="prob-badge hot">85%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill hot" style="width:85%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-med">Medium</span>
+        <span class="tag type">Formula-heavy</span>
+        <span class="tag time">⏱ 2h</span>
+      </div>
+      <div class="reason">f(t)=t², g(t)=t+1 → compute ⟨f,g⟩, ‖f‖, ‖g‖, ‖f+g‖, verify Cauchy-Schwarz and triangle inequality. Appeared in 2/3 papers with similar f,g.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Orthogonal Complement S⊥ — Find Basis</div>
+        <div class="prob-badge warm">78%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill warm" style="width:78%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-med">Medium</span>
+        <span class="tag type">Problem-solving</span>
+        <span class="tag time">⏱ 2h</span>
+      </div>
+      <div class="reason">5M question. S = {(1,0,−1),(1,−1,0)} → find S⊥. Or plane x−3y+z=0 → find orthogonal complement. Appeared in 2 papers.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Inner Product Properties Proof (linearity in 2nd argument, etc.)</div>
+        <div class="prob-badge warm">75%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill warm" style="width:75%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-easy">Easy</span>
+        <span class="tag type">Concept-heavy</span>
+        <span class="tag time">⏱ 1.5h</span>
+      </div>
+      <div class="reason">5M: Prove ⟨x,y+z⟩ = ⟨x,y⟩+⟨x,z⟩, ⟨x,cy⟩ = c̄⟨x,y⟩, ‖cx‖ = |c|·‖x‖. Appeared in 2 papers identically.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Least Squares Line Fitting (Matrix Method)</div>
+        <div class="prob-badge warm">70%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill warm" style="width:70%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-med">Medium</span>
+        <span class="tag type">Problem-solving</span>
+        <span class="tag time">⏱ 2h</span>
+      </div>
+      <div class="reason">Part C or 8M: data points (−2,4),(−1,3),(0,1),(1,−1) → best fit line and error. Appeared in 2/3 papers. Also possible from inner product perspective.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Cauchy-Schwarz + Triangle Inequality (Proof)</div>
+        <div class="prob-badge cool">65%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill cool" style="width:65%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-med">Medium</span>
+        <span class="tag type">Concept-heavy</span>
+        <span class="tag time">⏱ 1.5h</span>
+      </div>
+      <div class="reason">State and prove both inequalities — 8M. Appeared in Nov/Dec 2024 as a main question. Derivation-based — memorize proof structure.</div>
+    </div>
+
+  </div>
+
+  <div class="section-title"><span class="icon">❓</span> Most Probable Questions</div>
+
+  <div class="q-section">
+    <div class="q-section-label"><span class="marks orange">8M</span> Probable 8M Questions</div>
+    <div class="q-card">
+      <div class="q-num">Q1</div>
+      <div>
+        <div class="q-text">Apply Gram-Schmidt process to the subset S = {(1,0,1,0),(1,1,1,1),(0,1,2,1)} of ℝ⁴ with the standard inner product. Obtain an orthonormal basis β for span(S). [8M]</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared: 2 papers with this exact set</span></div>
+      </div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Q2</div>
+      <div>
+        <div class="q-text">Let f(t) = t², g(t) = t+1 in C([0,1]) with ⟨f,g⟩ = ∫₀¹ f(t)g(t)dt. Compute ⟨f,g⟩, ‖f‖, ‖g‖, ‖f+g‖. Verify Cauchy-Schwarz and triangle inequality. [8M]</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared: 2 papers verbatim</span></div>
+      </div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Q3</div>
+      <div>
+        <div class="q-text">Apply Gram-Schmidt orthogonalization to {(1,1,1),(0,1,1),(0,0,1)} with standard inner product of ℝ³ to get orthonormal basis. [8M]</div>
+        <div class="q-signal"><span class="signal-chip warm">⭐ Appeared: 2/3 papers</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-section">
+    <div class="q-section-label"><span class="marks">5M</span> Probable 5M Questions</div>
+    <div class="q-card">
+      <div class="q-num">Q4</div>
+      <div>
+        <div class="q-text">Define the orthogonal complement of a non-empty subset S. Find S⊥ for S = {(1,0,−1),(1,−1,0)} ⊂ ℝ³. Write down a basis for S⊥. [5M]</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared: 2 papers identical</span></div>
+      </div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Q5</div>
+      <div>
+        <div class="q-text">Let V be an inner product space. For x,y,z ∈ V and c ∈ F, prove: (i) ⟨x,y+z⟩ = ⟨x,y⟩+⟨x,z⟩; (ii) ⟨x,cy⟩ = c̄⟨x,y⟩; (iii) ‖cx‖ = |c|·‖x‖. [5M]</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared: 2 papers verbatim</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"><span class="icon">🚫</span> Low Priority</div>
+  <div class="skip-grid">
+    <div class="skip-card"><div class="skip-icon">⏭</div><div><div class="skip-name">Complex inner product on ℂⁿ (May 2025 only)</div><div class="skip-reason">Single appearance — complex conjugate inner product. Low probability for ECE repeat.</div></div></div>
+  </div>
+</div>
+
+<!-- ====== UNIT IV ====== -->
+<div id="u4" class="tab-content">
+  <div class="unit-hero">
+    <div class="unit-num">04</div>
+    <div class="unit-info">
+      <div class="unit-title">Unit IV — Numerical Solution of Linear Systems</div>
+      <div class="unit-subtitle">Gauss Elimination · Gauss-Jordan · LU · Cholesky · Jacobi · Gauss-Seidel · SOR</div>
+      <div class="unit-stats">
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--accent3)">~20M</div><div class="u-stat-lab">Expected Marks</div></div>
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--accent3)">10h</div><div class="u-stat-lab">Prep Time</div></div>
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--accent3)">Easy</div><div class="u-stat-lab">Difficulty</div></div>
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--accent3)">Safest</div><div class="u-stat-lab">Risk Level</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"><span class="icon">📌</span> Most Important Topics</div>
+  <div class="topic-grid">
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Gauss-Seidel Method (Iterative, 3 decimal places)</div>
+        <div class="prob-badge hot">90%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill hot" style="width:90%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-easy">Easy</span>
+        <span class="tag type">Formula-heavy</span>
+        <span class="tag time">⏱ 2h</span>
+      </div>
+      <div class="reason">8M question. Appeared in ALL 3 papers. 3×3 system, X⁰=(0,0,0), correct to 3 decimals. Extremely safe marks — just practice the iteration loop.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">LU Decomposition</div>
+        <div class="prob-badge hot">85%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill hot" style="width:85%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-easy">Easy</span>
+        <span class="tag type">Formula-heavy</span>
+        <span class="tag time">⏱ 2h</span>
+      </div>
+      <div class="reason">5M or 7M question. Appeared in 3/3 papers. Find L and U for a 3×3 matrix. Purely algorithmic — no concept needed, just practice.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Gauss-Jacobi Method (Iterative)</div>
+        <div class="prob-badge warm">82%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill warm" style="width:82%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-easy">Easy</span>
+        <span class="tag type">Formula-heavy</span>
+        <span class="tag time">⏱ 2h</span>
+      </div>
+      <div class="reason">8M question as the OR option to Gauss-Seidel. Appeared in 2/3 papers. Larger 3×3 systems (30x-2y+3z=48 type). Same procedure as Seidel but simultaneous update.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">SOR Method (Successive Over-Relaxation, w=1.25)</div>
+        <div class="prob-badge warm">80%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill warm" style="width:80%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-easy">Easy</span>
+        <span class="tag type">Formula-heavy</span>
+        <span class="tag time">⏱ 1.5h</span>
+      </div>
+      <div class="reason">Part A 2M question (write iteration scheme) AND Part B 6M application. w=1.25 used every time. Appeared in 2/3 papers. Very predictable.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Gaussian Elimination with Partial Pivoting</div>
+        <div class="prob-badge warm">75%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill warm" style="width:75%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-easy">Easy</span>
+        <span class="tag type">Problem-solving</span>
+        <span class="tag time">⏱ 2h</span>
+      </div>
+      <div class="reason">5M or 7M question. Appeared as an OR subpart in 2/3 papers. Standard row reduction with pivoting.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Cholesky Decomposition</div>
+        <div class="prob-badge cool">60%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill cool" style="width:60%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-easy">Easy</span>
+        <span class="tag type">Formula-heavy</span>
+        <span class="tag time">⏱ 1h</span>
+      </div>
+      <div class="reason">Part A 2M question in 2/3 papers (explain the method). May come as a 2M or definition. Low probability for full 5M problem but high for 2M theory.</div>
+    </div>
+
+  </div>
+
+  <div class="section-title"><span class="icon">❓</span> Most Probable Questions</div>
+
+  <div class="q-section">
+    <div class="q-section-label"><span class="marks orange">8M</span> 8M Questions</div>
+    <div class="q-card">
+      <div class="q-num">Q1</div>
+      <div>
+        <div class="q-text">Solve using Gauss-Seidel method: 5x₁−x₂ = 9; −x₁+5x₂−x₃ = 4; −x₂+5x₃ = −6. Initial solution X⁰ = (0,0,0). Correct to 3 decimals. [8M]</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared: 2 papers verbatim</span></div>
+      </div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Q2</div>
+      <div>
+        <div class="q-text">Solve using Gauss-Jacobi method: 30x−2y+3z = 48; x+17y−2z = 48; 2x+2y+18z = 30. X⁰=(0,0,0), correct to 3 decimals. [8M]</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared: 2 papers verbatim</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-section">
+    <div class="q-section-label"><span class="marks">5–7M</span> 5–7M Questions</div>
+    <div class="q-card">
+      <div class="q-num">Q3</div>
+      <div>
+        <div class="q-text">Find the LU decomposition for the matrix A = [[1,3,1],[1,4,2],[1,2,−3]]. [5M]</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared: 2 papers with this exact matrix</span></div>
+      </div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Q4</div>
+      <div>
+        <div class="q-text">Solve using Gaussian elimination method: 2x+y+4z = 12; 8x−3y+2z = 20; 4x+11y−z = 33. [5M]</div>
+        <div class="q-signal"><span class="signal-chip warm">⭐ Appeared: 2 papers</span></div>
+      </div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Q5</div>
+      <div>
+        <div class="q-text">Write down the iteration scheme for SOR method with w=1.25 for 24x+13y=50; 2x+10y=22. Perform 1 iteration from X⁰=(0,0). [2M or 6M]</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared: 2 papers verbatim</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"><span class="icon">🚫</span> Low Priority</div>
+  <div class="skip-grid">
+    <div class="skip-card"><div class="skip-icon">⏭</div><div><div class="skip-name">Gauss-Jordan Inverse (detailed steps)</div><div class="skip-reason">Only Part A 2M question — not likely as a full problem. Know the concept only.</div></div></div>
+  </div>
+</div>
+
+<!-- ====== UNIT V ====== -->
+<div id="u5" class="tab-content">
+  <div class="unit-hero">
+    <div class="unit-num">05</div>
+    <div class="unit-info">
+      <div class="unit-title">Unit V — Numerical Eigenvalue Problems</div>
+      <div class="unit-subtitle">Power Method · Inverse Power · Jacobi Rotation · QR Decomposition · SVD</div>
+      <div class="unit-stats">
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--high)">~22M</div><div class="u-stat-lab">Expected Marks</div></div>
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--high)">15–18h</div><div class="u-stat-lab">Prep Time</div></div>
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--high)">Hard</div><div class="u-stat-lab">Difficulty</div></div>
+        <div class="u-stat"><div class="u-stat-val" style="color:var(--accent4)">Must</div><div class="u-stat-lab">Skip Risk</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"><span class="icon">📌</span> Most Important Topics</div>
+  <div class="topic-grid">
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">SVD — Singular Value Decomposition (13M)</div>
+        <div class="prob-badge hot">100%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill hot" style="width:100%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-hard">Hard</span>
+        <span class="tag type">Problem-solving-heavy</span>
+        <span class="tag time">⏱ 5h</span>
+      </div>
+      <div class="reason">THE 13M question of Unit V. Appeared in ALL 3 papers as the main 15(a) question. A = UΣVᵀ. The matrix changes but the method is identical. This is the highest-marks single question in the paper. MUST PREPARE.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">QR Decomposition</div>
+        <div class="prob-badge hot">88%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill hot" style="width:88%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-hard">Hard</span>
+        <span class="tag type">Formula-heavy</span>
+        <span class="tag time">⏱ 4h</span>
+      </div>
+      <div class="reason">8M as OR option to SVD, or paired 7M in Part C. 3×3 or 4×4 matrices. Appeared in 3/3 papers. Gram-Schmidt applied to columns → Q; R = QᵀA.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Power Method — Largest Eigenvalue</div>
+        <div class="prob-badge hot">85%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill hot" style="width:85%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-med">Medium</span>
+        <span class="tag type">Problem-solving</span>
+        <span class="tag time">⏱ 2.5h</span>
+      </div>
+      <div class="reason">7M Part C question. Appeared in 3/3 papers. 3×3 matrix, X₀=(1,0,1)ᵀ, iterate until convergence. The matrix A = [[3,2,4],[2,0,2],[4,2,3]] appeared twice — very high chance of repeat.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Jacobi Rotation Method (Symmetric Matrix)</div>
+        <div class="prob-badge warm">80%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill warm" style="width:80%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-hard">Hard</span>
+        <span class="tag type">Problem-solving-heavy</span>
+        <span class="tag time">⏱ 4h</span>
+      </div>
+      <div class="reason">5–6M as OR subpart. Find all eigenvalues/eigenvectors of symmetric 3×3 matrix. The matrix [[2,0,1],[0,2,0],[1,0,2]] appeared in 2 papers — nearly certain to appear again.</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Inverse Power Method — Smallest Eigenvalue</div>
+        <div class="prob-badge warm">72%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill warm" style="width:72%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-med">Medium</span>
+        <span class="tag type">Formula-heavy</span>
+        <span class="tag time">⏱ 2h</span>
+      </div>
+      <div class="reason">7M question. Find smallest eigenvalue of [[2,−1,0],[−1,2,−1],[0,−1,1]]. Appeared in 2 papers with same matrix. Also Part A 2M: "How do you find smallest eigenvalue using inverse power method?"</div>
+    </div>
+
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-name">Singular Values of Diagonal/Special Matrices (Part A)</div>
+        <div class="prob-badge warm">70%</div>
+      </div>
+      <div class="prob-bar"><div class="prob-fill warm" style="width:70%"></div></div>
+      <div class="topic-meta">
+        <span class="tag diff-easy">Easy</span>
+        <span class="tag type">Memory-heavy</span>
+        <span class="tag time">⏱ 0.5h</span>
+      </div>
+      <div class="reason">Part A 2M: Find singular values of diag(−2,1,1) type matrix. Appeared in both Nov/Dec 2024 sets. Square root of eigenvalues of AᵀA.</div>
+    </div>
+
+  </div>
+
+  <div class="section-title"><span class="icon">❓</span> Most Probable Questions</div>
+
+  <div class="q-section">
+    <div class="q-section-label"><span class="marks orange">13M</span> THE Question — 100% Confidence</div>
+    <div class="priority-strip">
+      <div class="priority-label">🔥🔥 SVD HAS APPEARED IN ALL 3 PAPERS. IT IS COMING.</div>
+      <div class="priority-text">The matrix changes but the method is the same. Prep SVD thoroughly — it's 13 guaranteed marks.</div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Q1</div>
+      <div>
+        <div class="q-text">Find the singular value decomposition of A = [[1,1],[0,1],[1,0]]. [13M] — Standard 3×2 matrix used in Nov/Dec 2025 pattern.</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared in 2/3 papers with same matrix</span></div>
+      </div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Q2</div>
+      <div>
+        <div class="q-text">Find the singular value decomposition of A = [[3,0,−3],[2,0,−2],[6,0,−6]]. [13M] — Appeared in Nov/Dec 2024 (both sets).</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared: 2 papers with this matrix</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-section">
+    <div class="q-section-label"><span class="marks">8M</span> Probable 8M Questions</div>
+    <div class="q-card">
+      <div class="q-num">Q3</div>
+      <div>
+        <div class="q-text">Find the QR decomposition of A = [[1,2,4],[0,0,5],[0,3,6]]. [8M]</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared: 2/3 papers with this matrix</span></div>
+      </div>
+    </div>
+    <div class="q-card">
+      <div class="q-num">Q4</div>
+      <div>
+        <div class="q-text">Using Jacobi's rotation method, find all eigenvalues and eigenvectors of A = [[2,0,1],[0,2,0],[1,0,2]]. [5M]</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared: 2 papers with this matrix</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="q-section">
+    <div class="q-section-label"><span class="marks purple">7M (Part C)</span></div>
+    <div class="q-card">
+      <div class="q-num">Q5</div>
+      <div>
+        <div class="q-text">Find the numerically largest eigenvalue of A = [[3,2,4],[2,0,2],[4,2,3]] using power method. Initial approx X₀ = (1,0,1)ᵀ. Correct to 3 decimal places. [7M]</div>
+        <div class="q-signal"><span class="signal-chip fire">🔥 Appeared: 2/3 papers — same matrix, same X₀</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title"><span class="icon">🚫</span> Low Priority</div>
+  <div class="skip-grid">
+    <div class="skip-card"><div class="skip-icon">⏭</div><div><div class="skip-name">Pseudo-inverse from SVD</div><div class="skip-reason">Part A 2M only (May 2025). Appears low probability as full question.</div></div></div>
+  </div>
+</div>
+
+<!-- ====== STRATEGY ====== -->
+<div id="strategy" class="tab-content">
+
+  <div class="section-title"><span class="icon">🎯</span> Optimal Exam Strategy — Minimum Effort, Maximum Marks</div>
+
+  <div class="priority-strip" style="border-color:var(--accent3);background:linear-gradient(90deg,#56d36420 0%,transparent 100%);">
+    <div class="priority-label" style="color:var(--accent3)">CORE INSIGHT</div>
+    <div class="priority-text">This exam is highly predictable. The 13M questions in Unit II (Diagonalization) and Unit V (SVD) alone = 26M. Master these two + Gram-Schmidt (8M) + Gauss-Seidel (8M) + Power Method (7M) = 49M before writing a word in the exam hall.</div>
+  </div>
+
+  <div class="section-title"><span class="icon">⚡</span> Power Prep Plan — Top 20% Effort → 80% Marks</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>#</th><th>Topic</th><th>Unit</th><th>Marks</th><th>Prep Time</th><th>Confidence</th><th>Priority</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>SVD (Singular Value Decomposition)</td><td>V</td><td>13M</td><td>5h</td><td style="color:var(--high)">100%</td><td>🔥 MUST</td></tr>
+        <tr><td>2</td><td>Diagonalization → ODE System x'=Ax</td><td>II</td><td>13M</td><td>5h</td><td style="color:var(--high)">95%</td><td>🔥 MUST</td></tr>
+        <tr><td>3</td><td>Gram-Schmidt Orthogonalization</td><td>III</td><td>8M</td><td>3h</td><td style="color:var(--high)">92%</td><td>🔥 MUST</td></tr>
+        <tr><td>4</td><td>Gauss-Seidel Iterative Method</td><td>IV</td><td>8M</td><td>2h</td><td style="color:var(--high)">90%</td><td>🔥 MUST</td></tr>
+        <tr><td>5</td><td>Power Method (Largest Eigenvalue)</td><td>V</td><td>7M</td><td>2.5h</td><td style="color:var(--accent4)">85%</td><td>⭐ High</td></tr>
+        <tr><td>6</td><td>LU Decomposition</td><td>IV</td><td>5–7M</td><td>2h</td><td style="color:var(--accent4)">85%</td><td>⭐ High</td></tr>
+        <tr><td>7</td><td>QR Decomposition</td><td>V</td><td>8M</td><td>4h</td><td style="color:var(--accent4)">88%</td><td>⭐ High</td></tr>
+        <tr><td>8</td><td>N(T), R(T) + Dimension Theorem</td><td>II</td><td>8M</td><td>3h</td><td style="color:var(--accent4)">88%</td><td>⭐ High</td></tr>
+        <tr><td>9</td><td>Vector Space / Subspace Proof</td><td>I</td><td>8M</td><td>2h</td><td style="color:var(--accent3)">88%</td><td>✅ Do it</td></tr>
+        <tr><td>10</td><td>Inner Product + Cauchy-Schwarz verify</td><td>III</td><td>8M</td><td>2h</td><td style="color:var(--accent3)">85%</td><td>✅ Do it</td></tr>
+        <tr><td>11</td><td>Gauss-Jacobi Method</td><td>IV</td><td>8M</td><td>2h</td><td style="color:var(--accent3)">82%</td><td>✅ Do it</td></tr>
+        <tr><td>12</td><td>Orthogonal Complement S⊥</td><td>III</td><td>5M</td><td>1.5h</td><td style="color:var(--accent3)">78%</td><td>✅ Do it</td></tr>
+        <tr><td>13</td><td>Inner Product Properties Proof</td><td>III</td><td>5M</td><td>1.5h</td><td style="color:var(--accent3)">75%</td><td>✅ Do it</td></tr>
+        <tr><td>14</td><td>Jacobi Rotation Method</td><td>V</td><td>5–6M</td><td>4h</td><td style="color:var(--accent3)">80%</td><td>✅ Do it</td></tr>
+        <tr><td>15</td><td>Part A Pattern (all 10 topics)</td><td>All</td><td>20M</td><td>4h</td><td style="color:var(--accent3)">85%</td><td>✅ Quick win</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title"><span class="icon">📅</span> Recommended Study Schedule (Last 10 Days)</div>
+
+  <div class="pareto-grid">
+    <div class="pareto-card">
+      <h3>Days 1–4: Foundation + Big Questions</h3>
+      <ul class="rank-list">
+        <li class="rank-item"><span class="rank-n">D1</span><span class="rank-name">SVD full derivation + 2 practice matrices</span><span class="rank-prob" style="color:var(--high)">5h</span></li>
+        <li class="rank-item"><span class="rank-n">D2</span><span class="rank-name">Diagonalization ODE — eigen→P→D→general solution</span><span class="rank-prob" style="color:var(--high)">5h</span></li>
+        <li class="rank-item"><span class="rank-n">D3</span><span class="rank-name">QR Decomposition + Jacobi Rotation</span><span class="rank-prob" style="color:var(--accent4)">5h</span></li>
+        <li class="rank-item"><span class="rank-n">D4</span><span class="rank-name">Gram-Schmidt (3 practice sets) + Orthogonal Complement</span><span class="rank-prob" style="color:var(--accent4)">4h</span></li>
+      </ul>
+    </div>
+    <div class="pareto-card">
+      <h3>Days 5–8: Numericals + Theory</h3>
+      <ul class="rank-list">
+        <li class="rank-item"><span class="rank-n">D5</span><span class="rank-name">Gauss-Seidel + Gauss-Jacobi (3 each)</span><span class="rank-prob" style="color:var(--accent3)">4h</span></li>
+        <li class="rank-item"><span class="rank-n">D6</span><span class="rank-name">LU Decomposition + SOR Method + Gaussian Elimination</span><span class="rank-prob" style="color:var(--accent3)">4h</span></li>
+        <li class="rank-item"><span class="rank-n">D7</span><span class="rank-name">N(T)/R(T) + Vector Space / Subspace proofs</span><span class="rank-prob" style="color:var(--accent3)">4h</span></li>
+        <li class="rank-item"><span class="rank-n">D8</span><span class="rank-name">Power Method + Inverse Power Method</span><span class="rank-prob" style="color:var(--accent3)">4h</span></li>
+      </ul>
+    </div>
+    <div class="pareto-card">
+      <h3>Days 9–10: Revision + Part A</h3>
+      <ul class="rank-list">
+        <li class="rank-item"><span class="rank-n">D9</span><span class="rank-name">All Part A questions (2M each) — memorize answers</span><span class="rank-prob" style="color:var(--accent3)">3h</span></li>
+        <li class="rank-item"><span class="rank-n">D9</span><span class="rank-name">Inner product computations + Least squares</span><span class="rank-prob" style="color:var(--accent3)">2h</span></li>
+        <li class="rank-item"><span class="rank-n">D10</span><span class="rank-name">Quick revision — SVD, Diagonalization ODE, Gram-Schmidt</span><span class="rank-prob" style="color:var(--accent4)">3h</span></li>
+        <li class="rank-item"><span class="rank-n">D10</span><span class="rank-name">Mock exam — pick 1 set and solve under 3h</span><span class="rank-prob" style="color:var(--high)">3h</span></li>
+      </ul>
+    </div>
+    <div class="pareto-card">
+      <h3>🏆 Safest Marks (Low Effort)</h3>
+      <ul class="rank-list">
+        <li class="rank-item"><span class="rank-n">1</span><span class="rank-name">Part A — 10 × 2M = 20M (all formulaic/definition)</span><span class="rank-prob" style="color:var(--accent3)">4h prep</span></li>
+        <li class="rank-item"><span class="rank-n">2</span><span class="rank-name">LU Decomposition (5M) — purely algorithmic</span><span class="rank-prob" style="color:var(--accent3)">2h prep</span></li>
+        <li class="rank-item"><span class="rank-n">3</span><span class="rank-name">Gauss-Seidel/Jacobi — repetitive iteration steps</span><span class="rank-prob" style="color:var(--accent3)">2h prep</span></li>
+        <li class="rank-item"><span class="rank-n">4</span><span class="rank-name">Orthogonal complement S⊥ — just solve Ax=0</span><span class="rank-prob" style="color:var(--accent3)">1.5h prep</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-title"><span class="icon">⚠️</span> What to Skip If Time is Very Limited</div>
+  <div class="skip-grid">
+    <div class="skip-card"><div class="skip-icon">⏭</div><div><div class="skip-name">Complex inner product on ℂⁿ</div><div class="skip-reason">Single appearance, atypical for ECE batch</div></div></div>
+    <div class="skip-card"><div class="skip-icon">⏭</div><div><div class="skip-name">T: P₂ → P₃ (derivative transformations)</div><div class="skip-reason">Single appearance, May 2025 only</div></div></div>
+    <div class="skip-card"><div class="skip-icon">⏭</div><div><div class="skip-name">F⁴/F⁵ abstract vector space proofs</div><div class="skip-reason">Single appearance, IT/CS batch paper (May 2025)</div></div></div>
+    <div class="skip-card"><div class="skip-icon">⏭</div><div><div class="skip-name">Gauss-Jordan inverse (detailed)</div><div class="skip-reason">Only 2M Part A — not a full problem</div></div></div>
+    <div class="skip-card"><div class="skip-icon">⏭</div><div><div class="skip-name">Pseudo-inverse from SVD</div><div class="skip-reason">Single Part A appearance, no full question yet</div></div></div>
+    <div class="skip-card"><div class="skip-icon">⏭</div><div><div class="skip-name">Change-of-basis matrix [T]ᵧᵦ (detailed)</div><div class="skip-reason">5M once only — skip if pressed</div></div></div>
+  </div>
+
+  <div class="section-title"><span class="icon">📋</span> Part A — Predicted 2M Questions (All 10)</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Q</th><th>Predicted Question</th><th>Unit</th><th>Confidence</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>If x+z = y+z in V, prove x = y. OR Statement: "If ax=ay, is x=y?" true/false.</td><td>I</td><td style="color:var(--high)">90%</td></tr>
+        <tr><td>2</td><td>True/False: {u₁,u₃,u₃,0} is linearly dependent / empty set linearly independent.</td><td>I</td><td style="color:var(--high)">88%</td></tr>
+        <tr><td>3</td><td>Is T: ℝ² → ℝ defined by T(a,b) = ab linear? OR T(A)=det(A) linear?</td><td>II</td><td style="color:var(--high)">85%</td></tr>
+        <tr><td>4</td><td>Write the matrix of T: ℝ⁴ → ℝ² defined by T(a₁,a₂,a₃,a₄) = (a₁+a₄, a₂+a₃).</td><td>II</td><td style="color:var(--accent4)">80%</td></tr>
+        <tr><td>5</td><td>If x,y orthogonal in inner product space V, prove ‖x+y‖² = ‖x‖² + ‖y‖².</td><td>III</td><td style="color:var(--high)">90%</td></tr>
+        <tr><td>6</td><td>Does ⟨A,B⟩ = trace(A+B) define an inner product on M₂×₂(ℝ)?</td><td>III</td><td style="color:var(--accent4)">78%</td></tr>
+        <tr><td>7</td><td>Write SOR iteration scheme for 24x+13y=50; 2x+10y=22, w=1.25. Perform 1 iteration.</td><td>IV</td><td style="color:var(--high)">85%</td></tr>
+        <tr><td>8</td><td>Find inverse of A = [[1,−1],[1,1]] using Gauss-Jordan. OR Explain Cholesky decomposition.</td><td>IV</td><td style="color:var(--accent4)">80%</td></tr>
+        <tr><td>9</td><td>How to find numerically smallest eigenvalue using inverse power method?</td><td>V</td><td style="color:var(--high)">88%</td></tr>
+        <tr><td>10</td><td>What is a singular value of a real matrix A? OR Find singular values of diag(−2,1,1).</td><td>V</td><td style="color:var(--high)">90%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</div>
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// Animate probability bars on tab switch
+function animateBars() {
+  document.querySelectorAll('.prob-fill').forEach(bar => {
+    const w = bar.style.width;
+    bar.style.width = '0';
+    setTimeout(() => { bar.style.width = w; }, 50);
+  });
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => setTimeout(animateBars, 100));
+});
+
+// Initial animation
+setTimeout(animateBars, 300);
+</script>
+</body>
+</html>
