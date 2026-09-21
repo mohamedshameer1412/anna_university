@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EC23601 Wireless Communication — Exam Predictor</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.0.0/dist/tabler-icons.min.css">
+<style>
+  :root {
+    --bg: #0f1117;
+    --bg2: #161822;
+    --bg3: #1e2030;
+    --bg4: #252840;
+    --border: rgba(255,255,255,0.08);
+    --border-strong: rgba(255,255,255,0.15);
+    --text-primary: #e8e9f0;
+    --text-secondary: #9fa3b8;
+    --text-muted: #6b6f84;
+    --accent: #6c7ef8;
+    --accent-bg: rgba(108,126,248,0.12);
+    --accent-border: rgba(108,126,248,0.3);
+    --success: #3dcb7f;
+    --success-bg: rgba(61,203,127,0.1);
+    --warning: #f5a623;
+    --warning-bg: rgba(245,166,35,0.1);
+    --danger: #f05c7a;
+    --danger-bg: rgba(240,92,122,0.1);
+    --purple: #a78bfa;
+    --purple-bg: rgba(167,139,250,0.1);
+    --teal: #2dd4bf;
+    --teal-bg: rgba(45,212,191,0.1);
+    --radius: 10px;
+    --radius-lg: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .header {
+    background: linear-gradient(135deg, #1a1d3a 0%, #0f1117 100%);
+    border-bottom: 1px solid var(--border-strong);
+    padding: 28px 32px 22px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .header-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .header-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-bg); border: 1px solid var(--accent-border); color: var(--accent); font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; }
+  .header h1 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .header p { font-size: 13px; color: var(--text-secondary); }
+  .header-meta { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 4px; }
+  .meta-chip { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-muted); }
+  .meta-chip i { font-size: 13px; }
+
+  .nav-tabs {
+    display: flex; gap: 4px; padding: 16px 32px 0; background: var(--bg);
+    border-bottom: 1px solid var(--border); overflow-x: auto; flex-wrap: nowrap;
+  }
+  .nav-tab {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: var(--radius) var(--radius) 0 0;
+    cursor: pointer; font-size: 13px; font-weight: 500;
+    color: var(--text-secondary); border: 1px solid transparent;
+    border-bottom: none; white-space: nowrap; transition: all 0.15s;
+    background: transparent;
+  }
+  .nav-tab:hover { color: var(--text-primary); background: var(--bg3); }
+  .nav-tab.active {
+    color: var(--accent); background: var(--bg2);
+    border-color: var(--border-strong); border-bottom-color: var(--bg2);
+    margin-bottom: -1px;
+  }
+  .nav-tab .unit-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; background: var(--accent-bg); color: var(--accent);
+  }
+  .nav-tab.active .unit-num { background: var(--accent); color: #fff; }
+
+  .content { padding: 24px 32px; max-width: 1200px; margin: 0 auto; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Overview cards */
+  .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .stat-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 16px;
+  }
+  .stat-card .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .stat-card .value { font-size: 28px; font-weight: 700; line-height: 1; }
+  .stat-card .sub { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+  .stat-card.accent { border-color: var(--accent-border); }
+  .stat-card.accent .value { color: var(--accent); }
+  .stat-card.success { border-color: rgba(61,203,127,0.3); }
+  .stat-card.success .value { color: var(--success); }
+  .stat-card.warning { border-color: rgba(245,166,35,0.3); }
+  .stat-card.warning .value { color: var(--warning); }
+  .stat-card.danger { border-color: rgba(240,92,122,0.3); }
+  .stat-card.danger .value { color: var(--danger); }
+
+  /* Pareto banner */
+  .pareto-banner {
+    background: linear-gradient(135deg, rgba(108,126,248,0.15) 0%, rgba(167,139,250,0.08) 100%);
+    border: 1px solid var(--accent-border); border-radius: var(--radius-lg);
+    padding: 18px 20px; margin-bottom: 24px;
+  }
+  .pareto-banner h3 { font-size: 14px; font-weight: 600; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .pareto-topics { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pareto-tag {
+    display: flex; align-items: center; gap: 5px;
+    background: var(--bg2); border: 1px solid var(--border-strong);
+    padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 500;
+  }
+  .pareto-tag .pct { color: var(--accent); font-weight: 700; }
+
+  .section-title {
+    font-size: 16px; font-weight: 600; color: var(--text-primary);
+    margin-bottom: 14px; margin-top: 28px; display: flex; align-items: center; gap: 8px;
+  }
+  .section-title:first-child { margin-top: 0; }
+
+  /* Topic cards */
+  .topic-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 18px; margin-bottom: 12px;
+    transition: border-color 0.15s;
+  }
+  .topic-card:hover { border-color: var(--border-strong); }
+  .topic-card.hot { border-left: 3px solid var(--danger); }
+  .topic-card.warm { border-left: 3px solid var(--warning); }
+  .topic-card.cool { border-left: 3px solid var(--teal); }
+  .topic-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .topic-name { font-size: 15px; font-weight: 600; color: var(--text-primary); }
+  .topic-badges { display: flex; gap: 6px; flex-wrap: wrap; flex-shrink: 0; }
+  .badge {
+    font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px;
+    letter-spacing: 0.3px; white-space: nowrap;
+  }
+  .badge-hot { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(240,92,122,0.3); }
+  .badge-warm { background: var(--warning-bg); color: var(--warning); border: 1px solid rgba(245,166,35,0.3); }
+  .badge-cool { background: var(--teal-bg); color: var(--teal); border: 1px solid rgba(45,212,191,0.3); }
+  .badge-easy { background: var(--success-bg); color: var(--success); border: 1px solid rgba(61,203,127,0.3); }
+  .badge-medium { background: var(--warning-bg); color: var(--warning); border: 1px solid rgba(245,166,35,0.3); }
+  .badge-hard { background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(240,92,122,0.3); }
+  .badge-accent { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent-border); }
+  .badge-purple { background: var(--purple-bg); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+
+  .prob-bar-wrap { margin-bottom: 10px; }
+  .prob-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+  .prob-label span:first-child { font-size: 12px; color: var(--text-muted); }
+  .prob-label span:last-child { font-size: 13px; font-weight: 700; }
+  .prob-bar { height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+  .prob-fill { height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+  .fill-hot { background: linear-gradient(90deg, #f05c7a, #ff8fa3); }
+  .fill-warm { background: linear-gradient(90deg, #f5a623, #ffd07b); }
+  .fill-cool { background: linear-gradient(90deg, #2dd4bf, #6ee7d8); }
+
+  .meta-row { display: flex; gap: 16px; flex-wrap: wrap; }
+  .meta-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-secondary); }
+  .meta-item i { font-size: 13px; color: var(--text-muted); }
+  .reason { font-size: 12px; color: var(--text-secondary); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); line-height: 1.5; }
+  .reason strong { color: var(--text-primary); }
+
+  /* Question lists */
+  .q-list { list-style: none; }
+  .q-list li {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 12px 14px; background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); margin-bottom: 8px;
+    transition: border-color 0.15s;
+  }
+  .q-list li:hover { border-color: var(--accent-border); }
+  .q-num {
+    min-width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+    background: var(--accent-bg); color: var(--accent);
+  }
+  .q-num.marks-16 { background: var(--danger-bg); color: var(--danger); }
+  .q-num.marks-8 { background: var(--warning-bg); color: var(--warning); }
+  .q-text { font-size: 13px; color: var(--text-primary); line-height: 1.5; }
+  .q-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; }
+
+  /* Priority tiers */
+  .priority-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+  @media(max-width: 600px) { .priority-grid { grid-template-columns: 1fr; } }
+  .priority-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 16px;
+  }
+  .priority-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .priority-card.high { border-color: rgba(240,92,122,0.3); }
+  .priority-card.high h4 { color: var(--danger); }
+  .priority-card.low { border-color: rgba(107,111,132,0.4); }
+  .priority-card.low h4 { color: var(--text-muted); }
+  .priority-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); padding: 5px 0; border-bottom: 1px solid var(--border); }
+  .priority-item:last-child { border-bottom: none; }
+  .priority-item i { font-size: 13px; }
+
+  /* Fastest units */
+  .unit-rank { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 24px; }
+  .unit-rank-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 14px; text-align: center;
+  }
+  .unit-rank-card .rank { font-size: 24px; font-weight: 800; color: var(--accent); }
+  .unit-rank-card .uname { font-size: 12px; color: var(--text-secondary); margin: 4px 0; }
+  .unit-rank-card .effort { font-size: 11px; color: var(--text-muted); }
+
+  /* Comparison chart */
+  .chart-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 24px; }
+  .chart-title { font-size: 13px; font-weight: 600; color: var(--text-secondary); margin-bottom: 16px; }
+  .bar-chart-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .bar-label { width: 100px; font-size: 12px; color: var(--text-secondary); text-align: right; flex-shrink: 0; }
+  .bar-track { flex: 1; height: 20px; background: var(--bg3); border-radius: 4px; overflow: hidden; position: relative; }
+  .bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; }
+  .bar-fill span { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9); }
+
+  /* filter buttons */
+  .filter-row { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+  .filter-btn {
+    padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;
+    cursor: pointer; border: 1px solid var(--border-strong); background: var(--bg3);
+    color: var(--text-secondary); transition: all 0.15s;
+  }
+  .filter-btn:hover { color: var(--text-primary); border-color: var(--accent-border); }
+  .filter-btn.active { background: var(--accent-bg); color: var(--accent); border-color: var(--accent-border); }
+
+  .divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
+
+  .tip-box {
+    background: var(--success-bg); border: 1px solid rgba(61,203,127,0.25);
+    border-radius: var(--radius); padding: 12px 14px; margin-bottom: 16px;
+    font-size: 12px; color: #6ee7a4; display: flex; align-items: flex-start; gap: 8px;
+  }
+  .tip-box i { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="header-badge"><i class="ti ti-target"></i> Exam Predictor</div>
+      <h1>EC23601 — Wireless Communication</h1>
+      <p>Anna University · VI Sem ECE · Regulation 2023 · End Semester Analysis</p>
+      <div class="header-meta">
+        <span class="meta-chip"><i class="ti ti-file-text"></i> 4 QPs Analysed</span>
+        <span class="meta-chip"><i class="ti ti-calendar"></i> Pattern: 2024–2026</span>
+        <span class="meta-chip"><i class="ti ti-chart-bar"></i> 100 Marks · 3 Hours</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="nav-tabs" id="navTabs">
+  <div class="nav-tab active" onclick="switchTab('overview')"><span class="unit-num">★</span> Overview</div>
+  <div class="nav-tab" onclick="switchTab('unit1')"><span class="unit-num">1</span> Wireless Channels</div>
+  <div class="nav-tab" onclick="switchTab('unit2')"><span class="unit-num">2</span> Cellular Concepts</div>
+  <div class="nav-tab" onclick="switchTab('unit3')"><span class="unit-num">3</span> Signalling Waveforms</div>
+  <div class="nav-tab" onclick="switchTab('unit4')"><span class="unit-num">4</span> Equalization & Diversity</div>
+  <div class="nav-tab" onclick="switchTab('unit5')"><span class="unit-num">5</span> MIMO Systems</div>
+</div>
+
+<div class="content">
+
+<!-- ═══════════════ OVERVIEW ═══════════════ -->
+<div class="panel active" id="panel-overview">
+
+  <div class="overview-grid">
+    <div class="stat-card accent">
+      <div class="label">Highest Repeat Rate</div>
+      <div class="value">Unit 1</div>
+      <div class="sub">Wireless Channels · Fading + Path Loss</div>
+    </div>
+    <div class="stat-card success">
+      <div class="label">Fastest to Prepare</div>
+      <div class="value">Unit 5</div>
+      <div class="sub">MIMO · 3–4 hrs, high marks yield</div>
+    </div>
+    <div class="stat-card warning">
+      <div class="label">Hardest Unit</div>
+      <div class="value">Unit 4</div>
+      <div class="sub">Heavy derivations + numericals</div>
+    </div>
+    <div class="stat-card danger">
+      <div class="label">Safest Scorer</div>
+      <div class="value">Unit 3</div>
+      <div class="sub">OQPSK + OFDM — highly predictable</div>
+    </div>
+  </div>
+
+  <div class="pareto-banner">
+    <h3><i class="ti ti-trophy"></i> Top 20% Topics → 80% Marks (Pareto Priority List)</h3>
+    <div class="pareto-topics">
+      <div class="pareto-tag"><span class="pct">~95%</span> 2-Ray Ground Reflection Model</div>
+      <div class="pareto-tag"><span class="pct">~93%</span> Small Scale Fading + Delay Spread</div>
+      <div class="pareto-tag"><span class="pct">~90%</span> OQPSK Constellation + Waveform</div>
+      <div class="pareto-tag"><span class="pct">~90%</span> LMS Adaptive Equalizer Derivation</div>
+      <div class="pareto-tag"><span class="pct">~88%</span> Handoff Strategies + Erlang Calc</div>
+      <div class="pareto-tag"><span class="pct">~85%</span> OFDM Design + PAPR Reduction</div>
+      <div class="pareto-tag"><span class="pct">~85%</span> Receiver Diversity + MRC</div>
+      <div class="pareto-tag"><span class="pct">~83%</span> Alamouti STBC (MIMO)</div>
+      <div class="pareto-tag"><span class="pct">~80%</span> MIMO Capacity + SVD</div>
+      <div class="pareto-tag"><span class="pct">~78%</span> Cluster Size + SIR Calculations</div>
+    </div>
+  </div>
+
+  <div class="section-title"><i class="ti ti-rocket"></i> Unit Preparation Ranking (Effort vs. Marks)</div>
+  <div class="unit-rank">
+    <div class="unit-rank-card">
+      <div class="rank" style="color: var(--success);">#1</div>
+      <div class="uname">Unit 5 — MIMO</div>
+      <div class="effort">3–4 hrs · 15 marks · High ROI</div>
+    </div>
+    <div class="unit-rank-card">
+      <div class="rank" style="color: var(--accent);">#2</div>
+      <div class="uname">Unit 3 — Waveforms</div>
+      <div class="effort">4–5 hrs · 13 marks · Very Predictable</div>
+    </div>
+    <div class="unit-rank-card">
+      <div class="rank" style="color: var(--teal);">#3</div>
+      <div class="uname">Unit 1 — Channels</div>
+      <div class="effort">5–6 hrs · 20 marks · Most Repeated</div>
+    </div>
+    <div class="unit-rank-card">
+      <div class="rank" style="color: var(--warning);">#4</div>
+      <div class="uname">Unit 2 — Cellular</div>
+      <div class="effort">4–5 hrs · 13 marks · Numericale-heavy</div>
+    </div>
+    <div class="unit-rank-card">
+      <div class="rank" style="color: var(--danger);">#5</div>
+      <div class="uname">Unit 4 — Equaliz.</div>
+      <div class="effort">6–7 hrs · 13 marks · Hardest derivs</div>
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-title">Topic appearance frequency across all 4 question papers (Part B + C)</div>
+    <div class="bar-chart-row">
+      <div class="bar-label">2-Ray Model</div>
+      <div class="bar-track"><div class="bar-fill" style="width:95%; background: linear-gradient(90deg,#f05c7a,#ff8fa3);"><span>4/4 papers</span></div></div>
+    </div>
+    <div class="bar-chart-row">
+      <div class="bar-label">OQPSK</div>
+      <div class="bar-track"><div class="bar-fill" style="width:95%; background: linear-gradient(90deg,#f05c7a,#ff8fa3);"><span>4/4 papers</span></div></div>
+    </div>
+    <div class="bar-chart-row">
+      <div class="bar-label">LMS Equalizer</div>
+      <div class="bar-track"><div class="bar-fill" style="width:90%; background: linear-gradient(90deg,#f5a623,#ffd07b);"><span>3–4 papers</span></div></div>
+    </div>
+    <div class="bar-chart-row">
+      <div class="bar-label">Handoff Calc</div>
+      <div class="bar-track"><div class="bar-fill" style="width:90%; background: linear-gradient(90deg,#f5a623,#ffd07b);"><span>3–4 papers</span></div></div>
+    </div>
+    <div class="bar-chart-row">
+      <div class="bar-label">Diversity + MRC</div>
+      <div class="bar-track"><div class="bar-fill" style="width:88%; background: linear-gradient(90deg,#f5a623,#ffd07b);"><span>3–4 papers</span></div></div>
+    </div>
+    <div class="bar-chart-row">
+      <div class="bar-label">OFDM Design</div>
+      <div class="bar-track"><div class="bar-fill" style="width:85%; background: linear-gradient(90deg,#6c7ef8,#a78bfa);"><span>3/4 papers</span></div></div>
+    </div>
+    <div class="bar-chart-row">
+      <div class="bar-label">Alamouti STBC</div>
+      <div class="bar-track"><div class="bar-fill" style="width:83%; background: linear-gradient(90deg,#6c7ef8,#a78bfa);"><span>3/4 papers</span></div></div>
+    </div>
+    <div class="bar-chart-row">
+      <div class="bar-label">Power Delay Profile</div>
+      <div class="bar-track"><div class="bar-fill" style="width:82%; background: linear-gradient(90deg,#6c7ef8,#a78bfa);"><span>3/4 papers</span></div></div>
+    </div>
+    <div class="bar-chart-row">
+      <div class="bar-label">Cluster Size + SIR</div>
+      <div class="bar-track"><div class="bar-fill" style="width:78%; background: linear-gradient(90deg,#2dd4bf,#6ee7d8);"><span>3/4 papers</span></div></div>
+    </div>
+    <div class="bar-chart-row">
+      <div class="bar-label">MIMO Capacity</div>
+      <div class="bar-track"><div class="bar-fill" style="width:75%; background: linear-gradient(90deg,#2dd4bf,#6ee7d8);"><span>2–3 papers</span></div></div>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <i class="ti ti-bulb"></i>
+    <span><strong>Exam Pattern Insight:</strong> The end-sem paper is 100 marks (3 hrs). Part A = 10×2=20, Part B = 5×13=65, Part C = 1×15=15. The ESE (wc_question.pdf) confirms the actual pattern. Unit 1 and 2 dominate Part B Q11–12; Unit 3 appears in Q13; Unit 4 in Q14; Unit 5 in Q15. Part C (Q16) is compulsory and is always Unit 5 MIMO or Unit 4. Focus accordingly.</span>
+  </div>
+
+</div>
+
+<!-- ═══════════════ UNIT 1 ═══════════════ -->
+<div class="panel" id="panel-unit1">
+  <div class="section-title"><i class="ti ti-wave-sine"></i> Unit I — Wireless Channels</div>
+
+  <div class="filter-row">
+    <div class="filter-btn active" onclick="filterTopics('u1','all',this)">All Topics</div>
+    <div class="filter-btn" onclick="filterTopics('u1','hot',this)">🔴 High Priority</div>
+    <div class="filter-btn" onclick="filterTopics('u1','warm',this)">🟡 Medium Priority</div>
+  </div>
+
+  <div id="u1-topics">
+    <div class="topic-card hot" data-tier="hot">
+      <div class="topic-header">
+        <div class="topic-name">2-Ray Ground Reflection Model & Large Scale Fading</div>
+        <div class="topic-badges"><span class="badge badge-hot">HOT 🔥</span><span class="badge badge-medium">Medium</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--danger)">95%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-hot" style="width:95%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 2.5 hrs to master</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Formula + Derivation heavy</div>
+        <div class="meta-item"><i class="ti ti-notes"></i> 13 marks typical</div>
+      </div>
+      <div class="reason"><strong>Evidence:</strong> Appeared in ALL 4 QPs (Assessment I, Assessment II, End Sem — both institutions). Derives Pr ∝ 1/d⁴ is a must-know. Always paired with knife-edge diffraction calculation numerical.</div>
+    </div>
+
+    <div class="topic-card hot" data-tier="hot">
+      <div class="topic-header">
+        <div class="topic-name">Small Scale Fading — Delay Spread, Coherence Bandwidth, Doppler, Rayleigh/Rician</div>
+        <div class="topic-badges"><span class="badge badge-hot">HOT 🔥</span><span class="badge badge-medium">Medium</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--danger)">93%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-hot" style="width:93%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 2 hrs</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Concept + Numericals</div>
+        <div class="meta-item"><i class="ti ti-notes"></i> Part A + B</div>
+      </div>
+      <div class="reason"><strong>Evidence:</strong> Power Delay Profile numerical (rms delay spread, 90% coherence bandwidth, fading type identification) appeared in 3 out of 4 papers. Fading classification (flat/selective, fast/slow) is a guaranteed Part A question.</div>
+    </div>
+
+    <div class="topic-card hot" data-tier="hot">
+      <div class="topic-header">
+        <div class="topic-name">Power Delay Profile Numerical (rms delay spread + coherence BW)</div>
+        <div class="topic-badges"><span class="badge badge-hot">HOT 🔥</span><span class="badge badge-hard">Hard</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--danger)">90%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-hot" style="width:90%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 1.5 hrs</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Problem-solving heavy</div>
+        <div class="meta-item"><i class="ti ti-notes"></i> 7–12 marks</div>
+      </div>
+      <div class="reason"><strong>Evidence:</strong> Identical numerical (power profile at 800/900 MHz, find rms delay, 90% BW, fading type) appeared in end-sem ESE, Assessment I and II from both institutions.</div>
+    </div>
+
+    <div class="topic-card warm" data-tier="warm">
+      <div class="topic-header">
+        <div class="topic-name">Free Space Path Loss (Friis Formula) & Link Budget</div>
+        <div class="topic-badges"><span class="badge badge-warm">MEDIUM</span><span class="badge badge-easy">Easy</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--warning)">72%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-warm" style="width:72%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 1 hr</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Formula heavy</div>
+      </div>
+      <div class="reason">Typically appears as a Part A question or paired with 2-ray model. Not a standalone 13-mark question but forms the foundation.</div>
+    </div>
+
+    <div class="topic-card warm" data-tier="warm">
+      <div class="topic-header">
+        <div class="topic-name">Doppler Shift Calculations & Fading Classification Table</div>
+        <div class="topic-badges"><span class="badge badge-warm">MEDIUM</span><span class="badge badge-easy">Easy</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--warning)">78%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-warm" style="width:78%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 1 hr</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Memory + Formula</div>
+      </div>
+      <div class="reason">Doppler shift numerical (fc=900MHz, velocity=70km/hr) appeared in Assessment I in identical form from both colleges. High Part A probability.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title"><i class="ti ti-list-check"></i> Most Probable Questions</div>
+
+  <div class="section-title" style="font-size:13px; color:var(--danger); margin-top:0">13-Mark Questions (Part B)</div>
+  <ul class="q-list">
+    <li><span class="q-num marks-16">13</span><div><div class="q-text">Define large scale fading. Derive the power received at distance d using the 2-ray ground reflection model. Prove Pr ∝ 1/d⁴. [REPEAT — appeared in Assessment I + End Sem verbatim]</div><div class="q-tags"><span class="badge badge-hot">Appeared 4×</span><span class="badge badge-accent">Derivation</span></div></div></li>
+    <li><span class="q-num marks-16">13</span><div><div class="q-text">A local spatial average power delay profile is given (table with τ and P(τ) values). Determine: (a) rms delay spread, (b) 90% coherence bandwidth, (c) type of fading for 1G/2G/3G/4G signals, (d) fast or slow fading for mobile at 30 km/hr.</div><div class="q-tags"><span class="badge badge-hot">Appeared 3×</span><span class="badge badge-accent">Numerical</span></div></div></li>
+    <li><span class="q-num marks-16">6+7</span><div><div class="q-text">(i) Classify small scale fading channels and explain characteristics [with diagram of σ_τ vs T_c axes]. (ii) Power delay profile numerical at 800 MHz — compute rms delay spread and coherence bandwidth.</div><div class="q-tags"><span class="badge badge-warm">Appeared 3×</span></div></div></li>
+    <li><span class="q-num marks-16">6+7</span><div><div class="q-text">Knife-edge diffraction problem: Given geometry (heights, distances, frequency), compute received power. Compare with free space. What is path loss due to diffraction? [Gd formula table provided]</div><div class="q-tags"><span class="badge badge-warm">Appeared 2×</span><span class="badge badge-accent">Numerical</span></div></div></li>
+  </ul>
+
+  <div class="section-title" style="font-size:13px; color:var(--warning); margin-top:16px">2-Mark Questions (Part A) — Near-Certain</div>
+  <ul class="q-list">
+    <li><span class="q-num marks-8">2</span><div><div class="q-text">Define small scale fading and list the factors that cause it.</div><div class="q-tags"><span class="badge badge-hot">Appeared in every paper</span></div></div></li>
+    <li><span class="q-num marks-8">2</span><div><div class="q-text">In the US cellular system, fc = 900 MHz, velocity = 70 km/hr. Calculate received carrier frequency when mobile moves (a) toward and (b) away from transmitter.</div><div class="q-tags"><span class="badge badge-hot">Appeared verbatim 2×</span></div></div></li>
+    <li><span class="q-num marks-8">2</span><div><div class="q-text">Classify fading channels based on coherence time and delay spread.</div><div class="q-tags"><span class="badge badge-warm">High probability</span></div></div></li>
+    <li><span class="q-num marks-8">2</span><div><div class="q-text">Transmit signal at 10 kbps, delay spread = 10 μs. What type of fading does the signal undergo?</div><div class="q-tags"><span class="badge badge-warm">Appeared 2×</span></div></div></li>
+  </ul>
+
+  <div class="divider"></div>
+  <div class="priority-grid">
+    <div class="priority-card high">
+      <h4><i class="ti ti-flame"></i> High Priority — Study First</h4>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> 2-ray model derivation (full proof)</div>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> Power delay profile numericals</div>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> Fading classification (4 types)</div>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> Rayleigh vs Rician channels</div>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> Doppler shift formula + numerical</div>
+    </div>
+    <div class="priority-card low">
+      <h4><i class="ti ti-minus" style="color:var(--text-muted)"></i> Lower Priority — Skip if Time-Poor</h4>
+      <div class="priority-item"><i class="ti ti-x" style="color:var(--text-muted)"></i> Log Normal Shadowing detailed derivation</div>
+      <div class="priority-item"><i class="ti ti-x" style="color:var(--text-muted)"></i> Level Crossing Rate + Average Fade Duration</div>
+      <div class="priority-item"><i class="ti ti-x" style="color:var(--text-muted)"></i> Scattering model details</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ UNIT 2 ═══════════════ -->
+<div class="panel" id="panel-unit2">
+  <div class="section-title"><i class="ti ti-cell-signal-5"></i> Unit II — Cellular Concepts</div>
+
+  <div id="u2-topics">
+    <div class="topic-card hot" data-tier="hot">
+      <div class="topic-header">
+        <div class="topic-name">Handoff Strategies (Hard & Soft Handoff) + Handoff Margin Numerical</div>
+        <div class="topic-badges"><span class="badge badge-hot">HOT 🔥</span><span class="badge badge-medium">Medium</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--danger)">88%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-hot" style="width:88%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 2 hrs</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Concept + Numerical</div>
+        <div class="meta-item"><i class="ti ti-notes"></i> 8–12 marks</div>
+      </div>
+      <div class="reason"><strong>Evidence:</strong> The exact same handoff margin numerical (mobile at 60 km/hr between BS1–BS2, 2 km apart, path loss exponent 2.9, min signal = -88 dBm, handoff time = 4.5s) appeared verbatim in Assessment I and End Sem from both colleges. Guaranteed to appear.</div>
+    </div>
+
+    <div class="topic-card hot" data-tier="hot">
+      <div class="topic-header">
+        <div class="topic-name">Trunking Theory, Erlang B System, Grade of Service Calculations</div>
+        <div class="topic-badges"><span class="badge badge-hot">HOT 🔥</span><span class="badge badge-medium">Medium</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--danger)">85%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-hot" style="width:85%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 2 hrs</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Problem-solving heavy</div>
+      </div>
+      <div class="reason">Part A numericals on Erlang B, user count, channel capacity appeared in 3 papers. The urban area problem (System A: 398 cells × 20 ch, System B: 95 cells × 70 ch, 0.5% blocking) appeared twice.</div>
+    </div>
+
+    <div class="topic-card hot" data-tier="hot">
+      <div class="topic-header">
+        <div class="topic-name">Cluster Size, Frequency Reuse, SIR / SINR Calculations + Sectoring</div>
+        <div class="topic-badges"><span class="badge badge-hot">HOT 🔥</span><span class="badge badge-hard">Hard</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--danger)">87%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-hot" style="width:87%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 2 hrs</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Numericals</div>
+      </div>
+      <div class="reason">Part C (12-mark compulsory) featured the cluster size comparison (n=2 vs n=4, SIR = 16 dB) and 3-sector vs 6-sector analysis across 3 papers. This is a compulsory Part C pattern.</div>
+    </div>
+
+    <div class="topic-card warm" data-tier="warm">
+      <div class="topic-header">
+        <div class="topic-name">FDMA, TDMA, CDMA Capacity Equations</div>
+        <div class="topic-badges"><span class="badge badge-warm">MEDIUM</span><span class="badge badge-easy">Easy</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--warning)">70%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-warm" style="width:70%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 1 hr</div>
+        <div class="meta-item"><i class="ti ti-book"></i> Memory heavy</div>
+      </div>
+      <div class="reason">Appeared as 4-mark sub-question. Equations for each MA technique must be memorized.</div>
+    </div>
+
+    <div class="topic-card warm" data-tier="warm">
+      <div class="topic-header">
+        <div class="topic-name">Cell Splitting + Cell Sectoring (Capacity Improvement)</div>
+        <div class="topic-badges"><span class="badge badge-warm">MEDIUM</span><span class="badge badge-medium">Medium</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--warning)">73%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-warm" style="width:73%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 1.5 hrs</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Formula + Concept</div>
+      </div>
+      <div class="reason">Cell splitting numerical (16 sq km → ¼ size, coverage 2400 sq km) appeared twice. Must know capacity increase formula.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title"><i class="ti ti-list-check"></i> Most Probable Questions</div>
+
+  <div class="section-title" style="font-size:13px; color:var(--danger); margin-top:0">13-Mark Questions (Part B)</div>
+  <ul class="q-list">
+    <li><span class="q-num marks-16">6+7</span><div><div class="q-text">(a) Pros/cons of Hard vs Soft Handoff + Optimum Handoff Margin. (b) Mobile at 60 km/hr between BS1 & BS2 (2 km apart), path loss exp = 2.9, P₀ = 0 dBm at d₀ = 1m, Pmin = -88 dBm, handoff time = 4.5s. Determine minimum handoff margin Δ. [EXACT REPEAT — appeared verbatim in 3 papers]</div><div class="q-tags"><span class="badge badge-hot">Appeared 3× Verbatim</span></div></div></li>
+    <li><span class="q-num marks-16">6+7</span><div><div class="q-text">(a) Derive system capacity based on SIR. (b) Urban area: 2 million residents. System A: 398 cells × 20 ch. System B: 95 cells × 70 ch. Find number of channels at 0.5% blocking (Erlang B table provided), max capacity, market penetration.</div><div class="q-tags"><span class="badge badge-hot">Appeared 2× Verbatim</span></div></div></li>
+    <li><span class="q-num marks-16">13</span><div><div class="q-text">Capacity equation for FDMA, TDMA, CDMA. Dense urban area: path loss exp = 4.5, SIR = 13 dB, cell size 16 sq km → reduced to ¼. Find reuse factor, capacity, and increase. [2 papers]</div><div class="q-tags"><span class="badge badge-warm">Appeared 2×</span></div></div></li>
+  </ul>
+
+  <div class="section-title" style="font-size:13px; color:var(--warning); margin-top:16px">15-Mark Question (Part C — Compulsory Pattern)</div>
+  <ul class="q-list">
+    <li><span class="q-num marks-16">4+8</span><div><div class="q-text">(a) Compare cluster size for n=2 and n=4 at worst-case SIR = 16 dB (omnidirectional antenna). Inference? (b) With n=4, compare 3-sector vs 6-sector case. Total duplex channels = 420, GoS = 2%, avg traffic = 0.04 Erlang/user, call holding time = 2 min. Find average call arrival rate. [Appeared EXACTLY in Part C of 2 papers]</div><div class="q-tags"><span class="badge badge-hot">Part C Pattern — Compulsory</span></div></div></li>
+  </ul>
+
+  <div class="divider"></div>
+  <div class="priority-grid">
+    <div class="priority-card high">
+      <h4><i class="ti ti-flame"></i> High Priority</h4>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> Handoff margin numerical (memorize formula)</div>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> Erlang B table + GoS calculations</div>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> N = i²+ij+j² cluster size formula</div>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> SIR for omnidirectional vs sectored</div>
+    </div>
+    <div class="priority-card low">
+      <h4><i class="ti ti-minus"></i> Lower Priority</h4>
+      <div class="priority-item"><i class="ti ti-x" style="color:var(--text-muted)"></i> Detailed 1G/2G/3G/4G/5G history</div>
+      <div class="priority-item"><i class="ti ti-x" style="color:var(--text-muted)"></i> Channel assignment strategies (theory only)</div>
+      <div class="priority-item"><i class="ti ti-x" style="color:var(--text-muted)"></i> Micro-cell zone expansion theory</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ UNIT 3 ═══════════════ -->
+<div class="panel" id="panel-unit3">
+  <div class="section-title"><i class="ti ti-antenna"></i> Unit III — Signalling Waveforms</div>
+
+  <div class="tip-box">
+    <i class="ti ti-star"></i>
+    <span><strong>Best Marks-to-Effort Unit.</strong> OQPSK is a guaranteed 13-mark Part B question that appears IDENTICALLY across papers. 2–3 hours of focused prep can secure 13+ marks here.</span>
+  </div>
+
+  <div id="u3-topics">
+    <div class="topic-card hot" data-tier="hot">
+      <div class="topic-header">
+        <div class="topic-name">OQPSK (Offset QPSK) — Constellation, Waveform & Phase Transitions</div>
+        <div class="topic-badges"><span class="badge badge-hot">MOST PREDICTABLE 🎯</span><span class="badge badge-medium">Medium</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--danger)">97%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-hot" style="width:97%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 2 hrs</div>
+        <div class="meta-item"><i class="ti ti-pencil"></i> Diagram + Concept heavy</div>
+        <div class="meta-item"><i class="ti ti-notes"></i> 12–13 marks</div>
+      </div>
+      <div class="reason"><strong>Evidence:</strong> This question appeared with IDENTICAL wording in ALL 4 papers: "Consider the transmission of OQPSK. (a) Sketch constellation diagram. (b) Given binary sequence 11011011 [or 10011011], sketch I and Q waveforms. (c) Determine phase transitions." This is a near-certain 13-mark question.</div>
+    </div>
+
+    <div class="topic-card hot" data-tier="hot">
+      <div class="topic-header">
+        <div class="topic-name">OFDM System Design + Cyclic Prefix + PAPR Reduction</div>
+        <div class="topic-badges"><span class="badge badge-hot">HOT 🔥</span><span class="badge badge-hard">Hard</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--danger)">90%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-hot" style="width:90%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 2.5 hrs</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Design Numerical + Concept</div>
+        <div class="meta-item"><i class="ti ti-notes"></i> 6+6 or 13 marks</div>
+      </div>
+      <div class="reason">OFDM design numerical appeared in Part C of end-sem and Assessment II: "20 MHz bandwidth, 1300 MHz, delay spread = 2 μs, Bc = 1/Tm. Find (a) multicarrier needed? (b) number of subcarriers and symbol duration (c) data rate with QPSK and rate-3/4 coding." PAPR reduction techniques (Clipping, PTS, SLM) appear as theory sub-questions.</div>
+    </div>
+
+    <div class="topic-card hot" data-tier="hot">
+      <div class="topic-header">
+        <div class="topic-name">PAR/PAPR Calculation for QPSK & QAM + PAPR Reduction Techniques</div>
+        <div class="topic-badges"><span class="badge badge-hot">HOT 🔥</span><span class="badge badge-medium">Medium</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--danger)">82%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-hot" style="width:82%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 1.5 hrs</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Problem-solving</div>
+      </div>
+      <div class="reason">PAR in dB calculation for QPSK + 16 QAM modulated transmit signal appeared in Assessment II. Combined with PAPR reduction explanation for OFDM (2 techniques).</div>
+    </div>
+
+    <div class="topic-card warm" data-tier="warm">
+      <div class="topic-header">
+        <div class="topic-name">π/4-DQPSK — Signal Transition Diagram + Ik, Qk Computation</div>
+        <div class="topic-badges"><span class="badge badge-warm">MEDIUM</span><span class="badge badge-medium">Medium</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--warning)">72%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-warm" style="width:72%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 1.5 hrs</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Numerical</div>
+      </div>
+      <div class="reason">Draw π/4 QPSK signal transition and compute Ik, Qk for data "1 0 1 0 1 1" appeared in end-sem Part B. Also a Part A question on signal transition diagram for π/4 QPSK and OQPSK.</div>
+    </div>
+
+    <div class="topic-card warm" data-tier="warm">
+      <div class="topic-header">
+        <div class="topic-name">QPSK vs OQPSK Comparison + BER & Spectral Efficiency Matching</div>
+        <div class="topic-badges"><span class="badge badge-warm">MEDIUM</span><span class="badge badge-easy">Easy</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--warning)">78%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-warm" style="width:78%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 1 hr</div>
+        <div class="meta-item"><i class="ti ti-book"></i> Memory + Concept</div>
+      </div>
+      <div class="reason">Matching question (QPSK/16PSK/64QAM/BPSK with BER formulas and spectral efficiency) appeared in Assessment II Part A. Also: signal constellation comparison Part A question.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title"><i class="ti ti-list-check"></i> Most Probable Questions</div>
+
+  <ul class="q-list">
+    <li><span class="q-num marks-16">13</span><div><div class="q-text">Consider transmission of OQPSK signal. (a) Sketch OQPSK constellation, label bits for each constellation point. (b) Binary sequence 11011011 → sketch I and Q waveforms. (c) Determine phase transitions of OQPSK waveform for sequence in (b). [APPEARED VERBATIM in all ESE papers]</div><div class="q-tags"><span class="badge badge-hot">Most Repeated Question in Course</span></div></div></li>
+    <li><span class="q-num marks-16">6+6</span><div><div class="q-text">(a) Compute PAR (in dB) of transmit signal for (i) QPSK Modulated (ii) 16 QAM Modulated — X[k] equally likely. (b) Explain 2 PAPR reduction techniques for OFDM.</div><div class="q-tags"><span class="badge badge-warm">Appeared 2×</span></div></div></li>
+    <li><span class="q-num marks-16">6+6</span><div><div class="q-text">Design OFDM system: 20 MHz BW, 1300 MHz carrier, Tm = 2 μs, Bc = 1/Tm. Find: (a) multicarrier needed? (b) number of subcarriers and symbol duration. (c) Data rate with QPSK + rate 3/4 coding.</div><div class="q-tags"><span class="badge badge-hot">Part C Pattern</span></div></div></li>
+    <li><span class="q-num marks-16">6+7</span><div><div class="q-text">(i) Explain OFDM using DFT operations with block diagram. (ii) Explain how cyclic prefix converts frequency-selective fading to flat fading + how windowing reduces out-of-band radiation.</div><div class="q-tags"><span class="badge badge-warm">Appeared 2×</span></div></div></li>
+  </ul>
+
+  <div class="divider"></div>
+  <div class="priority-grid">
+    <div class="priority-card high">
+      <h4><i class="ti ti-flame"></i> High Priority</h4>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> OQPSK constellation + waveform (MUST)</div>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> OFDM design numerical (memorize steps)</div>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> PAR/PAPR calculation method</div>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> 2 PAPR reduction techniques (Clipping + SLM)</div>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> π/4 DQPSK signal transition + Ik/Qk</div>
+    </div>
+    <div class="priority-card low">
+      <h4><i class="ti ti-minus"></i> Lower Priority</h4>
+      <div class="priority-item"><i class="ti ti-x" style="color:var(--text-muted)"></i> QAM principle detailed derivation</div>
+      <div class="priority-item"><i class="ti ti-x" style="color:var(--text-muted)"></i> BER in fading channels (theory only)</div>
+      <div class="priority-item"><i class="ti ti-x" style="color:var(--text-muted)"></i> PTS technique detailed math</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ UNIT 4 ═══════════════ -->
+<div class="panel" id="panel-unit4">
+  <div class="section-title"><i class="ti ti-adjustments-horizontal"></i> Unit IV — Equalization & Diversity</div>
+
+  <div id="u4-topics">
+    <div class="topic-card hot" data-tier="hot">
+      <div class="topic-header">
+        <div class="topic-name">LMS (Least Mean Square) Adaptive Equalizer — Derivation + Factors</div>
+        <div class="topic-badges"><span class="badge badge-hot">HOT 🔥</span><span class="badge badge-hard">Hard</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--danger)">92%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-hot" style="width:92%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 3 hrs to master</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Derivation + Concept heavy</div>
+        <div class="meta-item"><i class="ti ti-notes"></i> 12–13 marks</div>
+      </div>
+      <div class="reason"><strong>Evidence:</strong> "Explain factors to determine algorithm for adaptive equalizer. Derive LMS algorithm" appeared in Assessment II and End Sem Part B as the full 12-mark question. Also "explain principle and derive LMS for adaptive equalizer" — 7 marks in end-sem.</div>
+    </div>
+
+    <div class="topic-card hot" data-tier="hot">
+      <div class="topic-header">
+        <div class="topic-name">Zero Forcing Equalizer — Tap Coefficients from Demodulator Output</div>
+        <div class="topic-badges"><span class="badge badge-hot">HOT 🔥</span><span class="badge badge-hard">Hard</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--danger)">88%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-hot" style="width:88%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 2 hrs</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Problem-solving heavy</div>
+        <div class="meta-item"><i class="ti ti-notes"></i> 6 marks (Part C)</div>
+      </div>
+      <div class="reason">The EXACT same ZF equalizer numerical (rk values: -0.5 at k=-2, 0.1 at k=-1, 1 at k=0, -0.2 at k=1, 0.05 at k=2, find 3-tap ZF coefficients) appeared in BOTH Assessment II AND End Sem Part C. MUST solve this specific problem.</div>
+    </div>
+
+    <div class="topic-card hot" data-tier="hot">
+      <div class="topic-header">
+        <div class="topic-name">Receiver Diversity — Selection Diversity, MRC, EGC + Performance Analysis</div>
+        <div class="topic-badges"><span class="badge badge-hot">HOT 🔥</span><span class="badge badge-medium">Medium</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--danger)">90%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-hot" style="width:90%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 2 hrs</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Concept + Numerical</div>
+        <div class="meta-item"><i class="ti ti-notes"></i> 12–13 marks</div>
+      </div>
+      <div class="reason">Appeared as OR option in Assessment II: "Write in detail about receiver diversity and various combining techniques and their performance." End-sem: "Time diversity + frequency diversity + MRC combiner with gain derivation" (6+7 marks).</div>
+    </div>
+
+    <div class="topic-card hot" data-tier="hot">
+      <div class="topic-header">
+        <div class="topic-name">Branch Selection Diversity Numerical (Rayleigh fading, SNR probability)</div>
+        <div class="topic-badges"><span class="badge badge-warm">HIGH</span><span class="badge badge-medium">Medium</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--danger)">87%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-hot" style="width:87%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 1.5 hrs</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Numerical</div>
+      </div>
+      <div class="reason">Problem: 4-branch (or 5-branch) selection diversity, Rayleigh fading, avg SNR = 20 dB, find probability SNR drops below 10 dB. Compare with single receiver. Appeared in both institutions' Assessment II and End Sem Part A.</div>
+    </div>
+
+    <div class="topic-card warm" data-tier="warm">
+      <div class="topic-header">
+        <div class="topic-name">Equalization vs Diversity Differentiation + Non-Linear Equalizers (DFE)</div>
+        <div class="topic-badges"><span class="badge badge-warm">MEDIUM</span><span class="badge badge-easy">Easy</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--warning)">68%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-warm" style="width:68%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 1 hr</div>
+        <div class="meta-item"><i class="ti ti-book"></i> Memory + Concept</div>
+      </div>
+      <div class="reason">Appeared as Part A 2-mark and Assertion-Reason question. DFE structure as non-linear equalizer.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title"><i class="ti ti-list-check"></i> Most Probable Questions</div>
+
+  <ul class="q-list">
+    <li><span class="q-num marks-16">13</span><div><div class="q-text">Explain in detail the various factors to determine the algorithm for adaptive equalizer. Also derive the Least Mean Square (LMS) Algorithm for adaptive equalizer. [APPEARED VERBATIM in 2 papers as full 12-mark]</div><div class="q-tags"><span class="badge badge-hot">Appeared 3×</span><span class="badge badge-accent">Full Derivation</span></div></div></li>
+    <li><span class="q-num marks-16">13</span><div><div class="q-text">Write in detail about receiver diversity and the various combining techniques (Selection Diversity, MRC, EGC) and their performance. Compare all techniques.</div><div class="q-tags"><span class="badge badge-hot">Appeared 2×</span></div></div></li>
+    <li><span class="q-num marks-16">6+7</span><div><div class="q-text">(i) With diagrams explain time diversity and frequency diversity. (ii) Explain MRC combiner operation and derive the MRC gain formula.</div><div class="q-tags"><span class="badge badge-warm">Appeared in ESE</span></div></div></li>
+    <li><span class="q-num marks-8">6</span><div><div class="q-text">PART C: Raised cosine channel output rk: {-0.5, 0.1, 1, -0.2, 0.05, 0} for k={-2,-1,0,1,2,others}. Determine 3-tap linear equalizer tap coefficients using Zero Forcing criterion. [EXACT SAME NUMERICAL in Assessment II + ESE Part C]</div><div class="q-tags"><span class="badge badge-hot">Exact Repeat Numerical</span></div></div></li>
+    <li><span class="q-num marks-8">2</span><div><div class="q-text">4-branch selection diversity, Rayleigh fading, avg SNR = 20 dB. Find P(SNR < 10 dB). Compare with single receiver without diversity.</div><div class="q-tags"><span class="badge badge-hot">Appeared 3×</span></div></div></li>
+  </ul>
+
+  <div class="divider"></div>
+  <div class="priority-grid">
+    <div class="priority-card high">
+      <h4><i class="ti ti-flame"></i> High Priority</h4>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> LMS derivation — step by step (MUST)</div>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> ZF tap coefficient numerical (exact problem)</div>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> Selection diversity SNR probability formula</div>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> MRC gain derivation</div>
+    </div>
+    <div class="priority-card low">
+      <h4><i class="ti ti-minus"></i> Lower Priority</h4>
+      <div class="priority-item"><i class="ti ti-x" style="color:var(--text-muted)"></i> MLSE detailed theory</div>
+      <div class="priority-item"><i class="ti ti-x" style="color:var(--text-muted)"></i> Rake receiver detailed structure</div>
+      <div class="priority-item"><i class="ti ti-x" style="color:var(--text-muted)"></i> EGC derivation (know concept only)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ UNIT 5 ═══════════════ -->
+<div class="panel" id="panel-unit5">
+  <div class="section-title"><i class="ti ti-antenna-bars-5"></i> Unit V — MIMO Systems</div>
+
+  <div class="tip-box">
+    <i class="ti ti-bolt"></i>
+    <span><strong>High ROI Unit.</strong> Unit 5 appears as the compulsory Part C question (15 marks) in the end-sem. 3–4 hrs of preparation can guarantee 15 marks. Alamouti + MIMO Capacity + SVD are the three pillars.</span>
+  </div>
+
+  <div id="u5-topics">
+    <div class="topic-card hot" data-tier="hot">
+      <div class="topic-header">
+        <div class="topic-name">Alamouti STBC (Space-Time Block Code) — 2×1 MIMO Transmitter & Receiver</div>
+        <div class="topic-badges"><span class="badge badge-hot">HOT 🔥</span><span class="badge badge-hard">Hard</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--danger)">90%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-hot" style="width:90%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 2 hrs</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Derivation + Concept heavy</div>
+        <div class="meta-item"><i class="ti ti-notes"></i> 13 marks (Part B Q15)</div>
+      </div>
+      <div class="reason">Appeared in End Sem Q15(a): "Using equations explain transmitter and receiver of Alamouti code for 2×1 MIMO." High-mark full 13-mark question. Must know full derivation of Alamouti encoding matrix and combined SNR at receiver.</div>
+    </div>
+
+    <div class="topic-card hot" data-tier="hot">
+      <div class="topic-header">
+        <div class="topic-name">MIMO Capacity — SVD Decomposition, Water Filling, Multiplexing Gain</div>
+        <div class="topic-badges"><span class="badge badge-hot">HOT 🔥</span><span class="badge badge-hard">Hard</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--danger)">88%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-hot" style="width:88%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 2.5 hrs</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Numerical + Derivation</div>
+        <div class="meta-item"><i class="ti ti-notes"></i> 13 marks</div>
+      </div>
+      <div class="reason">End-sem Q15(b): "Find optimal power allocation and capacity for MIMO system, total power = 10 dB, noise = 0.1W, BW = 10 kHz, singular values σ1=1.4, σ2=0.5359, σ3=0.3358." Part A Q10: "Find singular values and multiplexing gain for given H matrix." SVD is also tested in Part A.</div>
+    </div>
+
+    <div class="topic-card hot" data-tier="hot">
+      <div class="topic-header">
+        <div class="topic-name">MIMO Channel Conversion to Parallel SISO + Capacity Equation</div>
+        <div class="topic-badges"><span class="badge badge-hot">HOT 🔥</span><span class="badge badge-hard">Hard</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--danger)">87%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-hot" style="width:87%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 2 hrs</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Numerical (SVD of 3×3 H matrix)</div>
+        <div class="meta-item"><i class="ti ti-notes"></i> 7 marks (Part C)</div>
+      </div>
+      <div class="reason">Part C Q16(i) in ESE: "For given 3×3 MIMO channel H matrix, convert to parallel SISO and give capacity equation." The matrix is provided. Must know SVD decomposition numerically.</div>
+    </div>
+
+    <div class="topic-card warm" data-tier="warm">
+      <div class="topic-header">
+        <div class="topic-name">MIMO Array Gain, Spatial Multiplexing, Diversity-Multiplexing Tradeoff</div>
+        <div class="topic-badges"><span class="badge badge-warm">MEDIUM</span><span class="badge badge-medium">Medium</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--warning)">75%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-warm" style="width:75%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 1 hr</div>
+        <div class="meta-item"><i class="ti ti-book"></i> Concept heavy</div>
+      </div>
+      <div class="reason">Part A Assertion-Reason question on MIMO array gain appeared in ESE. "In MIMO, array gain refers to increase in average SNR using multiple antennas." Must understand gain vs. multiplexing tradeoff conceptually.</div>
+    </div>
+
+    <div class="topic-card warm" data-tier="warm">
+      <div class="topic-header">
+        <div class="topic-name">Multicarrier System Design for MIMO (OFDM + MIMO integration)</div>
+        <div class="topic-badges"><span class="badge badge-warm">MEDIUM</span><span class="badge badge-medium">Medium</span></div>
+      </div>
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Exam Probability</span><span style="color:var(--warning)">70%</span></div>
+        <div class="prob-bar"><div class="prob-fill fill-warm" style="width:70%"></div></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><i class="ti ti-clock"></i> 1 hr</div>
+        <div class="meta-item"><i class="ti ti-calculator"></i> Design numerical</div>
+      </div>
+      <div class="reason">Part C Q16(ii): "Design suitable multicarrier system for delay spread = 2 μs, BW = 15 MHz, 1800 MHz." This links Unit 3 OFDM design with Unit 5. Same numerical method as OFDM design problem.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="section-title"><i class="ti ti-list-check"></i> Most Probable Questions</div>
+
+  <ul class="q-list">
+    <li><span class="q-num marks-16">13</span><div><div class="q-text">Using suitable equations, explain the transmitter and receiver of Alamouti code for a 2×1 MIMO system. Derive the combined SNR at the receiver. [Q15(a) End Sem — 13 marks]</div><div class="q-tags"><span class="badge badge-hot">Part B Compulsory</span></div></div></li>
+    <li><span class="q-num marks-16">13</span><div><div class="q-text">Find optimal power allocation and capacity for MIMO system. Total power = 10 dB, noise power = 0.1W, signal BW = 10 kHz, singular values σ1=1.4, σ2=0.5359, σ3=0.3358. [Q15(b) End Sem]</div><div class="q-tags"><span class="badge badge-hot">Numerical Repeat</span></div></div></li>
+    <li><span class="q-num marks-16">7+8</span><div><div class="q-text">Part C (Compulsory): (i) For given 3×3 MIMO channel H matrix, convert to parallel SISO and give capacity equation. (ii) Design multicarrier system: delay spread = 2 μs, BW = 15 MHz at 1800 MHz. [Q16 End Sem]</div><div class="q-tags"><span class="badge badge-hot">Part C Pattern 2026</span></div></div></li>
+    <li><span class="q-num marks-8">2</span><div><div class="q-text">Part A: Find singular values and multiplexing gain for H = [[1,-2],[1,1]]. [Appeared in end-sem Part A Q10]</div><div class="q-tags"><span class="badge badge-warm">Part A numerical</span></div></div></li>
+  </ul>
+
+  <div class="divider"></div>
+  <div class="priority-grid">
+    <div class="priority-card high">
+      <h4><i class="ti ti-flame"></i> High Priority</h4>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> Alamouti encoding matrix + full receiver derivation</div>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> SVD decomposition (2×2 and 3×3 matrices)</div>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> Water filling algorithm + capacity formula</div>
+      <div class="priority-item"><i class="ti ti-check" style="color:var(--danger)"></i> MIMO capacity equations (known CSI vs unknown)</div>
+    </div>
+    <div class="priority-card low">
+      <h4><i class="ti ti-minus"></i> Lower Priority</h4>
+      <div class="priority-item"><i class="ti ti-x" style="color:var(--text-muted)"></i> SVD Precoding detailed theory</div>
+      <div class="priority-item"><i class="ti ti-x" style="color:var(--text-muted)"></i> Ergodic capacity derivations</div>
+      <div class="priority-item"><i class="ti ti-x" style="color:var(--text-muted)"></i> Capacity with outage detailed analysis</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  const tabs = document.querySelectorAll('.nav-tab');
+  const order = ['overview','unit1','unit2','unit3','unit4','unit5'];
+  tabs[order.indexOf(id)].classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function filterTopics(unitId, tier, btn) {
+  btn.closest('.filter-row').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const topics = document.querySelectorAll('#' + unitId + '-topics .topic-card');
+  topics.forEach(card => {
+    if (tier === 'all' || card.dataset.tier === tier) {
+      card.style.display = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const fills = document.querySelectorAll('.prob-fill');
+  setTimeout(() => {
+    fills.forEach(f => {
+      const w = f.style.width;
+      f.style.width = '0%';
+      setTimeout(() => { f.style.width = w; }, 100);
+    });
+  }, 200);
+});
+</script>
+</body>
+</html>
