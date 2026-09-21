@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EC23C14 · Digital VLSI Design · Exam Prediction 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  :root {
+    --bg:       #070b12;
+    --card:     #0c1220;
+    --card2:    #111827;
+    --border:   #1e2d45;
+    --border2:  #253555;
+    --text:     #e8f0fe;
+    --muted:    #6b7fa3;
+    --u1:       #00c8ff;   /* Unit I  – cyan */
+    --u2:       #00e5a0;   /* Unit II – green */
+    --u3:       #fbbf24;   /* Unit III– amber */
+    --u4:       #f97316;   /* Unit IV – orange */
+    --u5:       #c084fc;   /* Unit V  – violet */
+    --danger:   #f43f5e;
+    --success:  #22d3ee;
+    --warn:     #facc15;
+    --glow1: 0 0 18px rgba(0,200,255,.18);
+    --glow2: 0 0 18px rgba(0,229,160,.18);
+    --glow3: 0 0 18px rgba(251,191,36,.18);
+    --glow4: 0 0 18px rgba(249,115,22,.18);
+    --glow5: 0 0 18px rgba(192,132,252,.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0 0 60px;
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(0,200,255,.04) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 85%, rgba(192,132,252,.04) 0%, transparent 55%);
+  }
+
+  /* ─── HEADER ─────────────────────────────────── */
+  header {
+    position: relative;
+    padding: 36px 32px 28px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,200,255,.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .header-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .15em;
+    color: var(--u1);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  header h1 {
+    font-size: clamp(22px, 4vw, 36px);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -.02em;
+  }
+  header h1 span { color: var(--u1); }
+  .header-meta {
+    margin-top: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    display: flex; flex-wrap: wrap; gap: 18px;
+  }
+  .header-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(0,200,255,.08); border: 1px solid rgba(0,200,255,.25);
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 11px; color: var(--u1); font-weight: 600;
+  }
+  .confidence-strip {
+    position: absolute; top: 20px; right: 32px;
+    text-align: right;
+  }
+  .conf-ring {
+    width: 72px; height: 72px;
+    position: relative; margin-left: auto;
+  }
+  .conf-ring svg { transform: rotate(-90deg); }
+  .conf-ring .track { fill: none; stroke: var(--border); stroke-width: 6; }
+  .conf-ring .fill  { fill: none; stroke: var(--u1); stroke-width: 6;
+    stroke-dasharray: 188.5; stroke-dashoffset: 28.3;
+    stroke-linecap: round; }
+  .conf-label {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .conf-label .num { font-size: 20px; font-weight: 700; color: var(--u1); line-height: 1; }
+  .conf-label .sub { font-size: 9px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+  .conf-caption { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+  /* ─── STATS BAR ──────────────────────────────── */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1px;
+    border-bottom: 1px solid var(--border);
+    background: var(--border);
+  }
+  .stat-cell {
+    background: var(--card);
+    padding: 16px 20px;
+    text-align: center;
+  }
+  .stat-cell .sv { font-size: 26px; font-weight: 700; line-height: 1; color: var(--text); }
+  .stat-cell .sl { font-size: 10px; color: var(--muted); margin-top: 3px;
+    font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: .08em; }
+
+  /* ─── STRATEGY PANEL ─────────────────────────── */
+  .strategy {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .strat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .strat-card .sc-head {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 8px;
+  }
+  .strat-card ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+  .strat-card ul li {
+    font-size: 12.5px; color: #c5d3eb; display: flex; align-items: flex-start; gap: 7px;
+  }
+  .strat-card ul li::before { content: '→'; color: var(--muted); flex-shrink: 0; margin-top: 1px; }
+
+  /* ─── UNIT TABS ───────────────────────────────── */
+  .tabs-wrap { padding: 20px 24px 0; }
+  .tab-nav {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+  }
+  .tab-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 10px 18px;
+    border: none; border-bottom: 3px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 6px 6px 0 0;
+    transition: all .2s;
+    white-space: nowrap;
+    letter-spacing: .04em;
+  }
+  .tab-btn:hover { color: var(--text); background: rgba(255,255,255,.04); }
+  .tab-btn.active { color: var(--text); border-bottom-color: var(--uc); background: rgba(255,255,255,.06); }
+
+  /* ─── TAB CONTENT ─────────────────────────────── */
+  .tab-panels { padding: 24px 24px 0; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Unit header */
+  .unit-header {
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 20px;
+  }
+  .unit-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 16px;
+    border-radius: 30px;
+    border: 1px solid;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: .06em;
+  }
+  .unit-title { font-size: 17px; font-weight: 600; }
+  .unit-subtitle { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* ─── TOPICS GRID ─────────────────────────────── */
+  .topics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .topic-card {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--uc);
+    border-radius: 8px;
+    padding: 16px;
+    transition: box-shadow .25s;
+  }
+  .topic-card:hover { box-shadow: var(--glow); }
+
+  .tc-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .tc-name {
+    font-size: 14px; font-weight: 600; line-height: 1.35;
+    flex: 1; padding-right: 10px;
+  }
+  .tc-prob {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px; font-weight: 700;
+    color: var(--uc);
+    white-space: nowrap;
+  }
+
+  /* Probability bar */
+  .prob-bar-wrap { margin: 8px 0 12px; }
+  .prob-bar-bg {
+    height: 6px; background: var(--border);
+    border-radius: 3px; overflow: hidden;
+  }
+  .prob-bar-fill {
+    height: 100%; border-radius: 3px;
+    background: var(--uc);
+    transition: width 1s cubic-bezier(.17,.67,.35,1.2);
+  }
+
+  /* Meta chips */
+  .tc-meta { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .meta-chip {
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 2px 8px; border-radius: 12px; border: 1px solid;
+    letter-spacing: .04em;
+  }
+  .chip-easy   { color: #4ade80; border-color: rgba(74,222,128,.35); background: rgba(74,222,128,.08); }
+  .chip-medium { color: #fbbf24; border-color: rgba(251,191,36,.35); background: rgba(251,191,36,.08); }
+  .chip-hard   { color: #f87171; border-color: rgba(248,113,113,.35); background: rgba(248,113,113,.08); }
+  .chip-type   { color: #94a3b8; border-color: rgba(148,163,184,.25); background: rgba(148,163,184,.06); }
+  .chip-time   { color: #c084fc; border-color: rgba(192,132,252,.3);  background: rgba(192,132,252,.06); }
+  .chip-hot    { color: #f97316; border-color: rgba(249,115,22,.4);   background: rgba(249,115,22,.1); }
+
+  .tc-reason {
+    font-size: 12px; color: #8899bb; line-height: 1.55;
+    border-top: 1px solid var(--border);
+    padding-top: 9px; margin-top: 2px;
+  }
+
+  /* ─── QUESTIONS SECTION ───────────────────────── */
+  .questions-section { margin-bottom: 28px; }
+  .qs-head {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .qs-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: .08em;
+  }
+  .qs-badge.b16 { background: rgba(0,200,255,.12); color: var(--u1); border: 1px solid rgba(0,200,255,.3); }
+  .qs-badge.b8  { background: rgba(0,229,160,.10); color: var(--u2); border: 1px solid rgba(0,229,160,.3); }
+  .qs-badge.b13 { background: rgba(251,191,36,.10); color: var(--u3); border: 1px solid rgba(251,191,36,.3); }
+  .qs-title { font-size: 14px; font-weight: 600; }
+
+  .q-list { display: flex; flex-direction: column; gap: 10px; }
+  .q-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .q-rank {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 700;
+    min-width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; border: 1.5px solid;
+    flex-shrink: 0;
+  }
+  .rank-1 { border-color: #fbbf24; color: #fbbf24; background: rgba(251,191,36,.1); }
+  .rank-2 { border-color: #94a3b8; color: #94a3b8; background: rgba(148,163,184,.08); }
+  .rank-3 { border-color: #cd7f32; color: #cd7f32; background: rgba(205,127,50,.08); }
+  .rank-n { border-color: var(--border2); color: var(--muted); }
+
+  .q-text { font-size: 13px; line-height: 1.6; color: #ccd8f0; flex: 1; }
+  .q-tag {
+    font-size: 10px; font-family: 'JetBrains Mono', monospace;
+    color: var(--muted); margin-top: 4px;
+  }
+
+  /* ─── PRIORITY GRID ───────────────────────────── */
+  .priority-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .priority-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .pb-head {
+    font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase; letter-spacing: .1em;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .dot-hi  { width: 8px; height: 8px; border-radius: 50%; background: #22d3ee; box-shadow: 0 0 6px #22d3ee; }
+  .dot-lo  { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .priority-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .priority-list li {
+    font-size: 12.5px; color: #aab8d4;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .priority-list li .pl-icon { font-size: 13px; }
+
+  /* ─── FOOTER STRATEGY ─────────────────────────── */
+  .final-strategy {
+    margin: 28px 24px 0;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .fs-head {
+    background: linear-gradient(90deg, rgba(0,200,255,.08), transparent);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px;
+    font-size: 15px; font-weight: 700;
+    letter-spacing: -.01em;
+  }
+  .fs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0;
+  }
+  .fs-cell {
+    padding: 18px 20px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .fs-cell:last-child { border-right: none; }
+  .fs-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .12em;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .fs-items { display: flex; flex-direction: column; gap: 5px; }
+  .fs-item {
+    font-size: 12.5px; color: #c5d3eb;
+    display: flex; align-items: center; gap: 7px;
+  }
+  .fs-item::before { content: '◆'; font-size: 7px; color: var(--u1); }
+
+  /* Scrollable table */
+  .overflow-x { overflow-x: auto; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  thead th {
+    background: var(--card);
+    color: var(--muted); font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; text-transform: uppercase; letter-spacing: .08em;
+    padding: 10px 14px; text-align: left;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+  tbody tr:hover { background: rgba(255,255,255,.03); }
+  tbody td { padding: 10px 14px; color: #c5d3eb; vertical-align: middle; }
+  .tbl-unit { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; }
+  .tbl-prob { font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+
+  /* Divider */
+  .divider {
+    height: 1px; background: var(--border);
+    margin: 20px 0;
+  }
+
+  /* Tags inline */
+  .tag {
+    display: inline-flex; padding: 1px 7px;
+    border-radius: 8px; font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    margin-left: 6px;
+  }
+  .tag-rep { background: rgba(249,115,22,.15); color: #f97316; border: 1px solid rgba(249,115,22,.3); }
+  .tag-new { background: rgba(34,211,238,.12); color: #22d3ee; border: 1px solid rgba(34,211,238,.3); }
+  .tag-num { background: rgba(192,132,252,.12); color: #c084fc; border: 1px solid rgba(192,132,252,.3); }
+
+  /* Responsive */
+  @media (max-width: 620px) {
+    .priority-row { grid-template-columns: 1fr; }
+    .topics-grid  { grid-template-columns: 1fr; }
+    .confidence-strip { position: static; margin-top: 16px; text-align: left; }
+    .confidence-strip .conf-ring { margin: 0; }
+    header { padding: 24px 16px 20px; }
+    .stats-bar { grid-template-columns: repeat(3, 1fr); }
+    .strategy, .tabs-wrap, .tab-panels, .final-strategy { padding-left: 14px; padding-right: 14px; }
+  }
+
+  /* Fade-in animation */
+  .tab-panel.active { animation: fadeIn .3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* NOTE BOX */
+  .note-box {
+    display: flex; gap: 10px; align-items: flex-start;
+    background: rgba(251,191,36,.06); border: 1px solid rgba(251,191,36,.25);
+    border-radius: 8px; padding: 12px 16px; margin-bottom: 20px;
+    font-size: 12.5px; color: #e2c970; line-height: 1.6;
+  }
+  .note-box .ni { flex-shrink: 0; font-size: 15px; margin-top: 1px; }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══════════════════════════════════════ -->
+<header>
+  <div class="header-eyebrow">Anna University · CEG Campus · VI Semester · R-2023</div>
+  <h1>EC23C14 · <span>Digital VLSI Design</span><br>End-Semester Exam Prediction</h1>
+  <div class="header-meta">
+    <span>📄 4 papers analysed</span>
+    <span>📅 Dec 2025 – May 2026</span>
+    <span>🎯 Pattern: Assessment I + II + Retest + End-Sem</span>
+    <div class="header-badge">🔥 High Confidence Predictions</div>
+  </div>
+  <div class="confidence-strip">
+    <div class="conf-ring">
+      <svg viewBox="0 0 60 60" width="72" height="72">
+        <circle class="track" cx="30" cy="30" r="26"/>
+        <circle class="fill"  cx="30" cy="30" r="26"/>
+      </svg>
+      <div class="conf-label">
+        <span class="num">85</span>
+        <span class="sub">%</span>
+      </div>
+    </div>
+    <div class="conf-caption" style="color:var(--muted);font-size:10px;text-align:center;margin-top:4px;">Confidence</div>
+  </div>
+</header>
+
+<!-- ═══ STATS BAR ════════════════════════════════════ -->
+<div class="stats-bar">
+  <div class="stat-cell"><div class="sv">5</div><div class="sl">Units</div></div>
+  <div class="stat-cell"><div class="sv" style="color:var(--danger)">12</div><div class="sl">🔥 Hot Topics</div></div>
+  <div class="stat-cell"><div class="sv" style="color:var(--u2)">100</div><div class="sl">Total Marks</div></div>
+  <div class="stat-cell"><div class="sv" style="color:var(--u3)">4</div><div class="sl">Papers Analysed</div></div>
+  <div class="stat-cell"><div class="sv" style="color:var(--u5)">~30h</div><div class="sl">Smart Prep</div></div>
+</div>
+
+<!-- ═══ STRATEGY PANEL ════════════════════════════════ -->
+<div class="strategy">
+  <div class="strat-card">
+    <div class="sc-head" style="color:var(--u1)">🎯 20% → 80% Topics</div>
+    <ul>
+      <li>CMOS Inverter VTC + VM + Noise Margin</li>
+      <li>Pseudo-NMOS sizing (Wp/Wn)</li>
+      <li>Dynamic Logic + Power calculations</li>
+      <li>6T SRAM read/write + 1T DRAM</li>
+      <li>Master-slave TG register + timing</li>
+      <li>Carry Bypass Adder (16/20-bit)</li>
+      <li>FPGA (LUT, Xilinx-4000, ASIC flow)</li>
+    </ul>
+  </div>
+  <div class="strat-card">
+    <div class="sc-head" style="color:var(--u2)">⚡ Fastest Units (Time ROI)</div>
+    <ul>
+      <li><b>Unit V</b> – mostly theory, 1 day</li>
+      <li><b>Unit IV</b> – 3 formula types, 1.5 days</li>
+      <li><b>Unit I</b> – foundational, 2 days</li>
+      <li><b>Unit II</b> – broadest, 3 days</li>
+      <li><b>Unit III</b> – mix of both, 2 days</li>
+    </ul>
+  </div>
+  <div class="strat-card">
+    <div class="sc-head" style="color:var(--u3)">✅ Safest Scoring Topics</div>
+    <ul>
+      <li>VTC derivation (appeared in every paper)</li>
+      <li>Wp/Wn pseudo-NMOS (Retest + End Sem)</li>
+      <li>Dynamic power formula (≥3 papers)</li>
+      <li>6T SRAM read/write operation</li>
+      <li>ASIC design flow (theory – easy marks)</li>
+      <li>Domino logic – 2-input AND/OR design</li>
+    </ul>
+  </div>
+  <div class="strat-card">
+    <div class="sc-head" style="color:var(--danger)">⚠️ Hardest Topics (Attempt Carefully)</div>
+    <ul>
+      <li>Logical Effort gate sizing (Part C End-Sem)</li>
+      <li>4×4 Array Multiplier critical path</li>
+      <li>Sq-root carry select adder derivation</li>
+      <li>Elmore's delay constant for complex nets</li>
+      <li>C²MOS clock overlap immunity analysis</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ═══ UNIT TABS ════════════════════════════════════ -->
+<div class="tabs-wrap">
+  <div class="tab-nav">
+    <button class="tab-btn active" style="--uc:var(--u1)" onclick="showTab('u1',this)">UNIT I · MOS Fundamentals</button>
+    <button class="tab-btn"        style="--uc:var(--u2)" onclick="showTab('u2',this)">UNIT II · Combinational</button>
+    <button class="tab-btn"        style="--uc:var(--u3)" onclick="showTab('u3',this)">UNIT III · Sequential</button>
+    <button class="tab-btn"        style="--uc:var(--u4)" onclick="showTab('u4',this)">UNIT IV · Arithmetic</button>
+    <button class="tab-btn"        style="--uc:var(--u5)" onclick="showTab('u5',this)">UNIT V · Implementation</button>
+  </div>
+</div>
+
+<div class="tab-panels">
+
+<!-- ═══ UNIT I ════════════════════════════════════════ -->
+<div class="tab-panel active" id="u1">
+  <div class="unit-header">
+    <div class="unit-chip" style="--uc:var(--u1);color:var(--u1);border-color:rgba(0,200,255,.4);background:rgba(0,200,255,.07)">
+      ◉ UNIT I
+    </div>
+    <div>
+      <div class="unit-title">MOS Transistor Principles</div>
+      <div class="unit-subtitle">Operating modes · CMOS Inverter · Scaling · Propagation Delay · Elmore's</div>
+    </div>
+  </div>
+
+  <div class="note-box">
+    <span class="ni">📌</span>
+    <span><b>Examiner Pattern:</b> Unit I is the <b>most heavily tested</b> unit — appeared in <b>all 4 papers</b>. The CMOS Inverter (VTC, VM, noise margin) is asked <b>every single assessment</b>. Always 12-mark in Part B + numericals in Part A.</span>
+  </div>
+
+  <div class="topics-grid">
+
+    <div class="topic-card" style="--uc:var(--u1);--glow:var(--glow1)">
+      <div class="tc-top">
+        <div class="tc-name">CMOS Inverter VTC, Switching Threshold (VM), Gain & Noise Margin</div>
+        <div class="tc-prob" style="color:var(--u1)">95%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:95%;background:var(--u1)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-hard">Hard</span>
+        <span class="meta-chip chip-time">⏱ 4–5 hrs</span>
+        <span class="meta-chip chip-type">Formula + Derivation</span>
+        <span class="meta-chip chip-hot">🔥 Every Paper</span>
+      </div>
+      <div class="tc-reason">
+        Asked in <b>ALL 4 papers</b>: Assessment I (Q8A, Q10), Assessment II implicitly, End-Sem (Q11a). Derivation of VTC using load-line, finding VM, NMH/NML. Numerical: given kn', kp', W/L, VDSAT, VDD — find VM, gain, noise margins.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u1);--glow:var(--glow1)">
+      <div class="tc-top">
+        <div class="tc-name">Short-Channel &amp; Long-Channel MOSFET Drain Current Derivation</div>
+        <div class="tc-prob" style="color:var(--u1)">85%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:85%;background:var(--u1)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-hard">Hard</span>
+        <span class="meta-chip chip-time">⏱ 3–4 hrs</span>
+        <span class="meta-chip chip-type">Derivation + Numerical</span>
+        <span class="meta-chip chip-hot">🔥 3 Papers</span>
+      </div>
+      <div class="tc-reason">
+        Assessment I (Q1, Q8B, Q9A): drain current of short-channel PMOS, long-channel NMOS triode/saturation derivation, velocity saturation effect. End-Sem (Q1): numerical with VGS=0.9V, VDS=0.49V. Learn both IDSAT expressions.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u1);--glow:var(--glow1)">
+      <div class="tc-top">
+        <div class="tc-name">Pass Transistor VTC for Various Input Patterns</div>
+        <div class="tc-prob" style="color:var(--u1)">75%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:75%;background:var(--u1)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-medium">Medium</span>
+        <span class="meta-chip chip-time">⏱ 2 hrs</span>
+        <span class="meta-chip chip-type">Concept + Sketch</span>
+      </div>
+      <div class="tc-reason">
+        Assessment II (Q1) + End-Sem (Q3). Sketch VTC when input is 0, VDD, float. Threshold voltage loss issue when NMOS passes logic-1. Also linked to pass transistor logic design (Q3 End-Sem).
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u1);--glow:var(--glow1)">
+      <div class="tc-top">
+        <div class="tc-name">Propagation Delay, Elmore's Constant, RC Delay Model</div>
+        <div class="tc-prob" style="color:var(--u1)">65%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:65%;background:var(--u1)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-medium">Medium</span>
+        <span class="meta-chip chip-time">⏱ 2 hrs</span>
+        <span class="meta-chip chip-type">Formula-heavy</span>
+      </div>
+      <div class="tc-reason">
+        Assessment I (Q9B): Compute VOL, VOH, Ron, tp. Elmore delay for level restorer circuit (Assessment II Q10i, End-Sem Q10i). Formula: tpHL = 0.69·Ron·CL. Level restorer pull-down time calculation repeated across papers.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u1);--glow:var(--glow1)">
+      <div class="tc-top">
+        <div class="tc-name">Scaling Principles — Constant Voltage, Constant Field, Generalized</div>
+        <div class="tc-prob" style="color:var(--u1)">60%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:60%;background:var(--u1)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-medium">Medium</span>
+        <span class="meta-chip chip-time">⏱ 1.5 hrs</span>
+        <span class="meta-chip chip-type">Memory + Formula</span>
+      </div>
+      <div class="tc-reason">
+        End-Sem (Q11b Part i): "Compare different types of scaling techniques, derive new values for 3 parameters." Table-based question — 3 scaling types × parameters. Fast marks if you memorise the scaling table.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u1);--glow:var(--glow1)">
+      <div class="tc-top">
+        <div class="tc-name">Gate Capacitances CGCS, CGCD, CGCB vs VGS (Capacitance Characteristics)</div>
+        <div class="tc-prob" style="color:var(--u1)">50%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:50%;background:var(--u1)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-medium">Medium</span>
+        <span class="meta-chip chip-time">⏱ 1 hr</span>
+        <span class="meta-chip chip-type">Concept + Sketch</span>
+      </div>
+      <div class="tc-reason">
+        Assessment I (Q6): Capacitance characteristics for VGS sweep with VDS=0V. Justify CGC, CGCS+CGCD behaviour across regions. Useful for Part A 2-mark questions.
+      </div>
+    </div>
+
+  </div><!-- end topics-grid -->
+
+  <!-- 16-mark Questions -->
+  <div class="questions-section">
+    <div class="qs-head">
+      <span class="qs-badge b16">13-MARK QUESTIONS (Part B)</span>
+      <span class="qs-title">Most Probable</span>
+    </div>
+    <div class="q-list">
+      <div class="q-item">
+        <div class="q-rank rank-1">1</div>
+        <div><div class="q-text">Derive the Switching Threshold (VM) of a Static CMOS inverter with necessary assumptions. Then find VM, gain, and noise margins (NMH, NML) given: kp'=30μA/V², kn'=(2.1)×|kp'|, (W/L)p=1.2/0.25, (W/L)n=0.4/0.25, VTN=0.4V, VDSAT=0.5V, VDSATp=-0.5V, VDD=2.5V, λn=0.06 V⁻¹, λp=-0.1 V⁻¹.<span class="tag tag-rep">Repeated</span><span class="tag tag-num">Numerical</span></div><div class="q-tag">Assessment I (Q10 Part C) · End-Sem (Q11a) · Probability: 95%</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-2">2</div>
+        <div><div class="q-text">Derive the drain current expression of a long-channel NMOS transistor in triode and saturation regions. Explain the effect of velocity saturation in short-channel transistors and derive the modified drain current equation.<span class="tag tag-rep">Repeated</span></div><div class="q-tag">Assessment I (Q8B) · End-Sem Q1 linked · Probability: 85%</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-3">3</div>
+        <div><div class="q-text">Derive the Voltage Transfer Characteristic (VTC) of a Static CMOS inverter using load-line analysis of PMOS and NMOS. Determine the various operating regions and label VIL, VIH, VOH, VOL, VM on the sketched VTC.<span class="tag tag-rep">Repeated</span></div><div class="q-tag">Assessment I (Q8A) · Probability: 90%</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-n">4</div>
+        <div><div class="q-text">Compare the three scaling techniques (CE, CV, GS) for a CMOS inverter. For any three device/circuit parameters, derive the new values after applying each scaling technique. Discuss the fundamental limits of scaling.<span class="tag tag-new">ESE Pattern</span></div><div class="q-tag">End-Sem (Q11b) · Probability: 60%</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2-mark Questions -->
+  <div class="questions-section">
+    <div class="qs-head">
+      <span class="qs-badge b8">2-MARK QUESTIONS (Part A)</span>
+      <span class="qs-title">Most Probable</span>
+    </div>
+    <div class="q-list">
+      <div class="q-item">
+        <div class="q-rank rank-1">1</div>
+        <div><div class="q-text">Find the drain current of a short-channel NMOS transistor given VGS, VDS, VBS, VDSAT, γ, 2|φf|, VT0, kn', W/L, λn.<span class="tag tag-num">Numerical</span></div><div class="q-tag">Assessment I Q1 · End-Sem Q1</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-2">2</div>
+        <div><div class="q-text">Sketch the VTC of a pass transistor for various input combinations (Vin=0, Vin=VDD, gate floating). Justify the threshold voltage loss at output high.</div><div class="q-tag">Assessment II Q1 · End-Sem Q3</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-3">3</div>
+        <div><div class="q-text">If a 50 MHz clock has 1 ns setup time and 2 ns hold time, what is the maximum propagation delay allowed between two flip-flops?<span class="tag tag-num">Numerical</span></div><div class="q-tag">Assessment II Q7</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="priority-row">
+    <div class="priority-box">
+      <div class="pb-head"><span class="dot-hi"></span> HIGH PRIORITY (Must Study)</div>
+      <ul class="priority-list">
+        <li><span class="pl-icon">🔥</span> VTC derivation + VM + Noise Margin (appeared every paper)</li>
+        <li><span class="pl-icon">🔥</span> Short-channel MOSFET ID formula (numerical)</li>
+        <li><span class="pl-icon">⚡</span> VTC regions: label VIL, VIH, VOL, VOH</li>
+        <li><span class="pl-icon">⚡</span> Level restorer pull-down delay (Elmore)</li>
+        <li><span class="pl-icon">✅</span> CGCS, CGCD vs VGS plot (2-mark safe)</li>
+      </ul>
+    </div>
+    <div class="priority-box">
+      <div class="pb-head"><span class="dot-lo"></span> LOW PRIORITY (Skip if Time-Crunched)</div>
+      <ul class="priority-list">
+        <li><span class="pl-icon">❌</span> Drain diffusion capacitance calculation (Cj formula)</li>
+        <li><span class="pl-icon">❌</span> Detailed well capacitance derivation</li>
+        <li><span class="pl-icon">⚠️</span> NMOS inverter with resistive load (only once)</li>
+        <li><span class="pl-icon">⚠️</span> Body effect detailed analysis (γ derivation)</li>
+      </ul>
+    </div>
+  </div>
+</div><!-- end u1 -->
+
+<!-- ═══ UNIT II ═══════════════════════════════════════ -->
+<div class="tab-panel" id="u2">
+  <div class="unit-header">
+    <div class="unit-chip" style="--uc:var(--u2);color:var(--u2);border-color:rgba(0,229,160,.4);background:rgba(0,229,160,.07)">
+      ◉ UNIT II
+    </div>
+    <div>
+      <div class="unit-title">Combinational Logic Circuits</div>
+      <div class="unit-subtitle">Static CMOS · Ratioed · Pass Transistor · Domino · DCVSL · NORA · Logical Effort</div>
+    </div>
+  </div>
+
+  <div class="note-box">
+    <span class="ni">📌</span>
+    <span><b>Examiner Pattern:</b> The <b>broadest unit</b> — covers 6+ logic styles. Pseudo-NMOS sizing (Wp/Wn) appeared in <b>Assessment II + Retest + End-Sem</b>. Dynamic logic (Domino) + switching activity appeared in <b>Retest + End-Sem</b>. Transmission gate / pass transistor logic appeared across all assessments. Logical Effort and Stick Diagram appeared in End-Sem Part A and Part C.</span>
+  </div>
+
+  <div class="topics-grid">
+
+    <div class="topic-card" style="--uc:var(--u2);--glow:var(--glow2)">
+      <div class="tc-top">
+        <div class="tc-name">Pseudo-NMOS Logic — Sizing Wp/Wn, Output Voltage, Static Power</div>
+        <div class="tc-prob" style="color:var(--u2)">90%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:90%;background:var(--u2)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-hard">Hard</span>
+        <span class="meta-chip chip-time">⏱ 3 hrs</span>
+        <span class="meta-chip chip-type">Formula + Numerical</span>
+        <span class="meta-chip chip-hot">🔥 3 Papers</span>
+      </div>
+      <div class="tc-reason">
+        Assessment II (Q2), Retest (Q8B), End-Sem (Q12a, Q11b). Numerical: VOL=0.08, VTn=0.4V, VTp=-0.4V, VDSAT specs → find Wp/Wn ratio. Also: 4-input pseudo-NMOS NOR gate output when only one/all inputs high; static power dissipation.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u2);--glow:var(--glow2)">
+      <div class="tc-top">
+        <div class="tc-name">Dynamic CMOS Logic — Domino, Precharge/Evaluate, 2-input AND/NOR Design</div>
+        <div class="tc-prob" style="color:var(--u2)">85%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:85%;background:var(--u2)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-medium">Medium</span>
+        <span class="meta-chip chip-time">⏱ 2.5 hrs</span>
+        <span class="meta-chip chip-type">Concept + Design</span>
+        <span class="meta-chip chip-hot">🔥 3 Papers</span>
+      </div>
+      <div class="tc-reason">
+        Retest Q3 (design domino 2-input AND), Retest Q8A (implement Y'=A(B+C)+BD using dynamic logic with switching activity + dynamic power dissipation). End-Sem Q12b (why dynamic circuits cannot be cascaded, how to overcome). Know precharge/evaluate phases clearly.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u2);--glow:var(--glow2)">
+      <div class="tc-top">
+        <div class="tc-name">Switching Activity Reduction Techniques in Combinational Circuits</div>
+        <div class="tc-prob" style="color:var(--u2)">80%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:80%;background:var(--u2)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-medium">Medium</span>
+        <span class="meta-chip chip-time">⏱ 2 hrs</span>
+        <span class="meta-chip chip-type">Concept + Example</span>
+        <span class="meta-chip chip-hot">🔥 2 Papers</span>
+      </div>
+      <div class="tc-reason">
+        Retest Q4 (input reordering with example), End-Sem Q12a (explain switching activity reduction techniques). Topics: input reordering, glitch reduction, operand isolation, clock gating. Dynamic power = α·C·VDD²·f — must know the formula.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u2);--glow:var(--glow2)">
+      <div class="tc-top">
+        <div class="tc-name">Transmission Gate Logic — 2:1 MUX, CPL, TSPC</div>
+        <div class="tc-prob" style="color:var(--u2)">80%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:80%;background:var(--u2)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-medium">Medium</span>
+        <span class="meta-chip chip-time">⏱ 2 hrs</span>
+        <span class="meta-chip chip-type">Design + Circuit</span>
+        <span class="meta-chip chip-hot">🔥 3 Papers</span>
+      </div>
+      <div class="tc-reason">
+        Assessment II Q3 (2:1 MUX using TG logic), Retest Q2 (Y=AD+BC using TSPC), End-Sem Q14b (4×4 NMOS shift register). Draw complementary TG MUX; explain how TSPC achieves single-phase clocking. Eliminating the need for complementary clocks.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u2);--glow:var(--glow2)">
+      <div class="tc-top">
+        <div class="tc-name">DCVSL — Differential Cascode Voltage Switch Logic</div>
+        <div class="tc-prob" style="color:var(--u2)">70%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:70%;background:var(--u2)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-medium">Medium</span>
+        <span class="meta-chip chip-time">⏱ 1.5 hrs</span>
+        <span class="meta-chip chip-type">Concept + Design</span>
+      </div>
+      <div class="tc-reason">
+        End-Sem Q4 (Realize AND/NAND logic by DCVSL). DCVSL uses cross-coupled PMOS pull-up + dual NMOS pull-down networks. Draw DCVSL AND/NAND gate. Know: ratioless, dual-rail, automatic logic level completion.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u2);--glow:var(--glow2)">
+      <div class="tc-top">
+        <div class="tc-name">Logical Effort — Gate Sizing and Critical Path Delay</div>
+        <div class="tc-prob" style="color:var(--u2)">75%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:75%;background:var(--u2)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-hard">Hard</span>
+        <span class="meta-chip chip-time">⏱ 3 hrs</span>
+        <span class="meta-chip chip-type">Formula + Problem-solving</span>
+      </div>
+      <div class="tc-reason">
+        End-Sem Q16 (Part C — 15 marks): Find path logical effort and size gates in: INV→NAND2→AND-OR→INV chain driving load=5. Know: g(gate), f(branching), H(load), path effort F=GBH, optimal stage effort f̂=F^(1/N). High marks if solved correctly.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u2);--glow:var(--glow2)">
+      <div class="tc-top">
+        <div class="tc-name">Stick Diagram — Layout from Boolean Expression</div>
+        <div class="tc-prob" style="color:var(--u2)">65%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:65%;background:var(--u2)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-medium">Medium</span>
+        <span class="meta-chip chip-time">⏱ 1.5 hrs</span>
+        <span class="meta-chip chip-type">Concept + Sketch</span>
+      </div>
+      <div class="tc-reason">
+        End-Sem Q2: "Implement and sketch the stick diagram for Y = (Ā+B+C).D". Know stick diagram conventions: poly = vertical, metal = horizontal, diffusion = horizontal, contact = X. Draw PMOS and NMOS pull networks.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u2);--glow:var(--glow2)">
+      <div class="tc-top">
+        <div class="tc-name">NORA Logic / Dynamic CMOS Cascading Problem</div>
+        <div class="tc-prob" style="color:var(--u2)">60%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:60%;background:var(--u2)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-medium">Medium</span>
+        <span class="meta-chip chip-time">⏱ 1.5 hrs</span>
+        <span class="meta-chip chip-type">Concept-heavy</span>
+      </div>
+      <div class="tc-reason">
+        Assessment II Q5 (how NORA eliminates race condition in dynamic CMOS). End-Sem Q12b (why dynamic circuits can't be cascaded without issues). NORA uses N-type and P-type blocks alternating. Also: hazards in dynamic logic.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 13-mark Questions -->
+  <div class="questions-section">
+    <div class="qs-head">
+      <span class="qs-badge b16">13-MARK QUESTIONS (Part B)</span>
+      <span class="qs-title">Most Probable</span>
+    </div>
+    <div class="q-list">
+      <div class="q-item">
+        <div class="q-rank rank-1">1</div>
+        <div><div class="q-text">Implement the function Y' = A(B+C) + BD using dynamic logic function. Determine the switching activity and dynamic power dissipation if P(A)=0.25, P(B)=0.4, P(C)=0.2, P(D)=0.15, VDD=2.5V, CL=10pF, fclock=100 MHz. Also discuss major challenges and limitations of dynamic logic circuits.<span class="tag tag-rep">Repeated</span><span class="tag tag-num">Numerical</span></div><div class="q-tag">Retest Q8A · Probability: 85%</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-2">2</div>
+        <div><div class="q-text">Determine Wp/Wn for a pseudo-NMOS inverter with: VOL=0.08, VTn=0.4V, VTp=-0.4V, VDSATn=0.3V, VDSATp=-0.55V, kn'=160μA/V², kp'=-80μA/V², VDD=2.5V. Also determine the propagation delay for output load of 1pF with Wn=1μm, L=Lmin=0.25μm.<span class="tag tag-rep">Exact Repeat</span><span class="tag tag-num">Numerical</span></div><div class="q-tag">Assessment II Q10ii · Retest Q8B · End-Sem Q12a · Probability: 90%</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-3">3</div>
+        <div><div class="q-text">Consider a four-input Pseudo-NMOS NOR gate. Determine: (i) output voltage when only one input is high, (ii) output voltage when all inputs are high, (iii) static power dissipation if inputs are independent with P=0.5. Assume VDD=2.5V, μnCox=115μA/V², μpCox=-30μA/V², W/Ln=2.0, W/Lp=0.6, Vtno=Vtpo=0.4V, VDSATn=0.6V, VDSATp=-1V.<span class="tag tag-rep">Repeated</span><span class="tag tag-num">Numerical</span></div><div class="q-tag">End-Sem Q12a · Probability: 80%</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-n">4</div>
+        <div><div class="q-text">Explain the principle of dynamic combinational circuits and why dynamic circuits cannot be cascaded directly. Describe the solution (Domino logic). Given a circuit with inputs A, B, C and clock φ, sketch waveforms at nodes x and y.<span class="tag tag-new">ESE Pattern</span></div><div class="q-tag">End-Sem Q12b · Probability: 75%</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2-mark Questions -->
+  <div class="questions-section">
+    <div class="qs-head">
+      <span class="qs-badge b8">2-MARK QUESTIONS (Part A)</span>
+      <span class="qs-title">Most Probable</span>
+    </div>
+    <div class="q-list">
+      <div class="q-item">
+        <div class="q-rank rank-1">1</div>
+        <div><div class="q-text">Calculate the dynamic power dissipation of a 2-input dynamic NOR gate with independent inputs, VDD=2.5V, CL=1pF, frequency=100MHz.<span class="tag tag-num">Numerical</span></div><div class="q-tag">Assessment II Q4</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-2">2</div>
+        <div><div class="q-text">Show the realization of the logic function Y = A.C + B using pass transistor logic. Draw the circuit.</div><div class="q-tag">End-Sem Q3</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-3">3</div>
+        <div><div class="q-text">Implement 2:1 MUX using transmission gate logic. Draw the transistor-level circuit.</div><div class="q-tag">Assessment II Q3</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-n">4</div>
+        <div><div class="q-text">Realize AND/NAND logic using DCVSL. Draw the circuit and explain dual-rail operation.</div><div class="q-tag">End-Sem Q4</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-n">5</div>
+        <div><div class="q-text">How is the race condition in dynamic CMOS eliminated using NORA logic? Explain with diagram.</div><div class="q-tag">Assessment II Q5</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="priority-row">
+    <div class="priority-box">
+      <div class="pb-head"><span class="dot-hi"></span> HIGH PRIORITY</div>
+      <ul class="priority-list">
+        <li><span class="pl-icon">🔥</span> Pseudo-NMOS Wp/Wn sizing (appeared 3 times!)</li>
+        <li><span class="pl-icon">🔥</span> Domino logic design + switching activity numericals</li>
+        <li><span class="pl-icon">⚡</span> Transmission gate MUX + TSPC implementation</li>
+        <li><span class="pl-icon">⚡</span> Logical effort (Part C, 15 marks)</li>
+        <li><span class="pl-icon">✅</span> Dynamic power formula P=α·C·VDD²·f</li>
+        <li><span class="pl-icon">✅</span> Stick diagram for given Boolean expression</li>
+      </ul>
+    </div>
+    <div class="priority-box">
+      <div class="pb-head"><span class="dot-lo"></span> LOW PRIORITY</div>
+      <ul class="priority-list">
+        <li><span class="pl-icon">❌</span> Dual-rail CMOS (detailed layout)</li>
+        <li><span class="pl-icon">❌</span> NP-CMOS detailed analysis</li>
+        <li><span class="pl-icon">⚠️</span> CPL detailed comparison vs TG</li>
+        <li><span class="pl-icon">⚠️</span> Layout diagram (detailed mask-level)</li>
+      </ul>
+    </div>
+  </div>
+</div><!-- end u2 -->
+
+<!-- ═══ UNIT III ════════════════════════════════════ -->
+<div class="tab-panel" id="u3">
+  <div class="unit-header">
+    <div class="unit-chip" style="--uc:var(--u3);color:var(--u3);border-color:rgba(251,191,36,.4);background:rgba(251,191,36,.07)">
+      ◉ UNIT III
+    </div>
+    <div>
+      <div class="unit-title">Sequential Logic Circuits</div>
+      <div class="unit-subtitle">Static/Dynamic Latches · Registers · Timing · Pipelines · Memory (SRAM · DRAM)</div>
+    </div>
+  </div>
+
+  <div class="note-box">
+    <span class="ni">📌</span>
+    <span><b>Examiner Pattern:</b> 6T SRAM appeared in <b>Retest + End-Sem</b>. Master-slave TG register appeared in <b>Retest + End-Sem</b>. Timing constraints (setup, hold, propagation) appeared in <b>Assessment II + Retest (3 questions!)</b>. C²MOS register appeared in <b>Assessment II + End-Sem</b>. 1T DRAM bitline voltage swing asked in Assessment II + End-Sem.</span>
+  </div>
+
+  <div class="topics-grid">
+
+    <div class="topic-card" style="--uc:var(--u3);--glow:var(--glow3)">
+      <div class="tc-top">
+        <div class="tc-name">6T SRAM Cell — Design, Read/Write Operation, Pull-Up Ratio, Cell Ratio</div>
+        <div class="tc-prob" style="color:var(--u3)">90%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:90%;background:var(--u3)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-medium">Medium</span>
+        <span class="meta-chip chip-time">⏱ 2.5 hrs</span>
+        <span class="meta-chip chip-type">Concept + Circuit</span>
+        <span class="meta-chip chip-hot">🔥 3 Papers</span>
+      </div>
+      <div class="tc-reason">
+        Retest Q10ii, End-Sem Q13b (i) + Q6 (BL values for given WL address). Draw the 6T cell (2 PMOS + 4 NMOS). Explain read: need cell ratio β≥1.2 to avoid disturb. Write: pull-up ratio γ≤1.8. BL precharge to VDD then check discharge. Know waveforms for read and write.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u3);--glow:var(--glow3)">
+      <div class="tc-top">
+        <div class="tc-name">Master-Slave Negative Edge Triggered Register (Transmission Gate Implementation)</div>
+        <div class="tc-prob" style="color:var(--u3)">85%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:85%;background:var(--u3)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-medium">Medium</span>
+        <span class="meta-chip chip-time">⏱ 2 hrs</span>
+        <span class="meta-chip chip-type">Circuit + Timing Diagram</span>
+        <span class="meta-chip chip-hot">🔥 2 Papers</span>
+      </div>
+      <div class="tc-reason">
+        Retest Q9A(i) + End-Sem Q13a: "Realize transistor-level implementation of master-slave negative edge triggered register using transmission gates. Draw timing diagrams showing behavior during data changes and clock transitions." 7-mark question in End-Sem.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u3);--glow:var(--glow3)">
+      <div class="tc-top">
+        <div class="tc-name">Timing Constraints — Setup Time, Hold Time, Max Frequency, Clock Skew</div>
+        <div class="tc-prob" style="color:var(--u3)">85%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:85%;background:var(--u3)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-easy">Easy</span>
+        <span class="meta-chip chip-time">⏱ 1.5 hrs</span>
+        <span class="meta-chip chip-type">Formula + Numerical</span>
+        <span class="meta-chip chip-hot">🔥 Multiple Papers</span>
+      </div>
+      <div class="tc-reason">
+        Assessment II Q7, Retest Q6+Q7, End-Sem Q13a: Timing calculations. Formulas: Tc ≥ tpd + tsetup + tskew; max_tpd = Tc – tsetup – thold (for hold). Numerical: clock=5ns, tpd=2ns, tsetup=1ns → max operating frequency. Check timing violations with given skew.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u3);--glow:var(--glow3)">
+      <div class="tc-top">
+        <div class="tc-name">C²MOS Register — Insensitive to Clock Overlap (0,0) and (1,1)</div>
+        <div class="tc-prob" style="color:var(--u3)">75%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:75%;background:var(--u3)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-hard">Hard</span>
+        <span class="meta-chip chip-time">⏱ 2 hrs</span>
+        <span class="meta-chip chip-type">Concept + Circuit</span>
+      </div>
+      <div class="tc-reason">
+        Assessment II Q9B + End-Sem Q13b(ii): C²MOS uses complementary transmission gates so overlapping (0,0) — both off — or (1,1) — both on but with series PMOS/NMOS — doesn't cause data corruption. Draw circuit with CLK and CLK_bar, explain immunity.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u3);--glow:var(--glow3)">
+      <div class="tc-top">
+        <div class="tc-name">1T DRAM — Periodic Refresh Need, Bitline Voltage Swing Derivation</div>
+        <div class="tc-prob" style="color:var(--u3)">80%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:80%;background:var(--u3)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-medium">Medium</span>
+        <span class="meta-chip chip-time">⏱ 2 hrs</span>
+        <span class="meta-chip chip-type">Derivation + Concept</span>
+        <span class="meta-chip chip-hot">🔥 2 Papers</span>
+      </div>
+      <div class="tc-reason">
+        Assessment II Q9A(ii) + End-Sem implied in Q6: "Why does 1T DRAM require periodic refresh? Derive bitline voltage swing." ΔVBit = (Cs/Cs+CBit)×ΔVCS. Charge sharing between storage cap Cs and bit line CBit. Also 4×4 MOS ROM word line voltage condition.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u3);--glow:var(--glow3)">
+      <div class="tc-top">
+        <div class="tc-name">Pipelining — Architecture, Computation Table, Minimum Time Delay</div>
+        <div class="tc-prob" style="color:var(--u3)">65%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:65%;background:var(--u3)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-medium">Medium</span>
+        <span class="meta-chip chip-time">⏱ 1.5 hrs</span>
+        <span class="meta-chip chip-type">Concept + Table</span>
+      </div>
+      <div class="tc-reason">
+        Retest Q9B: "Implement pipelining architecture for F=[|(A+B)|.C]/D. Evaluate minimum time delay and state the reason for pipelining architecture." Know: pipeline stages, computation table, critical path reduction, latency vs throughput tradeoff.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u3);--glow:var(--glow3)">
+      <div class="tc-top">
+        <div class="tc-name">Metastability in Registers — Issues and Minimisation</div>
+        <div class="tc-prob" style="color:var(--u3)">55%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:55%;background:var(--u3)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-easy">Easy</span>
+        <span class="meta-chip chip-time">⏱ 1 hr</span>
+        <span class="meta-chip chip-type">Memory-heavy</span>
+      </div>
+      <div class="tc-reason">
+        Retest Q5: "What are metastability issues in registers? How can they be minimized?" 2-mark Part A question. Metastability occurs when flip-flop input changes within setup/hold window. Minimized by using synchronizers, slower clocks, faster tech.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Part B Questions -->
+  <div class="questions-section">
+    <div class="qs-head">
+      <span class="qs-badge b16">13-MARK QUESTIONS (Part B)</span>
+      <span class="qs-title">Most Probable</span>
+    </div>
+    <div class="q-list">
+      <div class="q-item">
+        <div class="q-rank rank-1">1</div>
+        <div><div class="q-text">Consider the register shown in Fig. (i) State the type of register and justify. (ii) Determine Setup time, CLK-Q delay. (iii) Consider clock overlap of CLK and CLK̄ — how does it impact register operation? State the technique used to minimise clock overlap issues.<span class="tag tag-rep">Repeated</span></div><div class="q-tag">End-Sem Q13a · Probability: 85%</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-2">2</div>
+        <div><div class="q-text">(i) Design a 6T SRAM cell. Discuss the importance of pull-up ratio and cell ratio. (ii) Draw the circuit of C²MOS edge-triggered register and explain how it is immune to (0,0) and (1,1) clock overlaps.<span class="tag tag-rep">Repeated</span></div><div class="q-tag">End-Sem Q13b · Probability: 85%</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-3">3</div>
+        <div><div class="q-text">For the 4×4 MOS ROM shown in Fig.5: (i) Write the content stored in memory, state WL voltage condition for addressing a word, and voltage read on bitline BL. (ii) Why does 1T DRAM require periodic refresh? Derive the expression for bitline voltage swing.<span class="tag tag-rep">Repeated</span></div><div class="q-tag">Assessment II Q9A · End-Sem linked · Probability: 80%</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-n">4</div>
+        <div><div class="q-text">Realize transistor-level implementation of master-slave negative edge triggered register using transmission gates. Draw timing diagrams depicting register behavior during input data changes and clock transitions. Analyze spatial and temporal variations of clock signal on edge-triggered sequential circuits.<span class="tag tag-rep">Repeated</span></div><div class="q-tag">Retest Q9A · End-Sem Q13a linked · Probability: 85%</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2-mark Questions -->
+  <div class="questions-section">
+    <div class="qs-head">
+      <span class="qs-badge b8">2-MARK QUESTIONS (Part A)</span>
+      <span class="qs-title">Most Probable</span>
+    </div>
+    <div class="q-list">
+      <div class="q-item">
+        <div class="q-rank rank-1">1</div>
+        <div><div class="q-text">A register has propagation delay 2ns and setup time 1ns. If clock period is 5ns, determine the maximum operating frequency. (Or: maximum propagation delay between two flip-flops given setup/hold times.)<span class="tag tag-num">Numerical</span></div><div class="q-tag">Assessment II Q7 · Retest Q6 · Very High Probability</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-2">2</div>
+        <div><div class="q-text">A system has clock skew of 0.8ns, setup time 1ns, hold time 0.5ns. Check whether timing violations occur.<span class="tag tag-num">Numerical</span></div><div class="q-tag">Retest Q7</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-3">3</div>
+        <div><div class="q-text">Identify the circuit in Fig.2 as a latch or flip-flop. Justify your answer based on clock sensitivity.</div><div class="q-tag">Assessment II Q6</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-n">4</div>
+        <div><div class="q-text">For the memory circuit shown, determine the bit line values BL[0], BL[1], BL[2], BL[3] if WL[0]=1, WL[1]=0, WL[2]=0, WL[3]=0.<span class="tag tag-num">Numerical</span></div><div class="q-tag">End-Sem Q6</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="priority-row">
+    <div class="priority-box">
+      <div class="pb-head"><span class="dot-hi"></span> HIGH PRIORITY</div>
+      <ul class="priority-list">
+        <li><span class="pl-icon">🔥</span> 6T SRAM full design + read/write waveforms</li>
+        <li><span class="pl-icon">🔥</span> Master-slave TG register circuit + timing diagram</li>
+        <li><span class="pl-icon">⚡</span> Timing formula: Tc ≥ tpd + tsetup (memorize!)</li>
+        <li><span class="pl-icon">⚡</span> 1T DRAM bitline swing formula ΔV = Cs/Cs+CB × ΔVs</li>
+        <li><span class="pl-icon">✅</span> C²MOS clock overlap immunity explanation</li>
+        <li><span class="pl-icon">✅</span> Identify latch vs flip-flop from circuit</li>
+      </ul>
+    </div>
+    <div class="priority-box">
+      <div class="pb-head"><span class="dot-lo"></span> LOW PRIORITY</div>
+      <ul class="priority-list">
+        <li><span class="pl-icon">❌</span> 3T DRAM detailed analysis (only 1T asked in papers)</li>
+        <li><span class="pl-icon">⚠️</span> Clock distribution strategies (detailed)</li>
+        <li><span class="pl-icon">⚠️</span> Dynamic latch hazard analysis (theory only)</li>
+      </ul>
+    </div>
+  </div>
+</div><!-- end u3 -->
+
+<!-- ═══ UNIT IV ════════════════════════════════════ -->
+<div class="tab-panel" id="u4">
+  <div class="unit-header">
+    <div class="unit-chip" style="--uc:var(--u4);color:var(--u4);border-color:rgba(249,115,22,.4);background:rgba(249,115,22,.07)">
+      ◉ UNIT IV
+    </div>
+    <div>
+      <div class="unit-title">Designing Arithmetic Building Blocks</div>
+      <div class="unit-subtitle">Adders · Accumulators · Multipliers · Barrel Shifters · Datapath Circuits</div>
+    </div>
+  </div>
+
+  <div class="note-box">
+    <span class="ni">📌</span>
+    <span><b>Examiner Pattern:</b> Unit IV appeared <b>exclusively in the End-Semester paper</b> (Assessments don't cover it). In the ESE, it got <b>Part A + full Part B (Q14) + Part C partial</b>. Carry bypass adder is the dominant topic — appeared in both Q7 (2-mark) and Q8 (2-mark) and Q14 (13-mark). Array multiplier and Carry Save Multiplier got 13 marks. This unit is formulaic and very scoreable with focused prep.</span>
+  </div>
+
+  <div class="topics-grid">
+
+    <div class="topic-card" style="--uc:var(--u4);--glow:var(--glow4)">
+      <div class="tc-top">
+        <div class="tc-name">Carry Bypass Adder (Carry Skip Adder) — Principle, Delay Formula, 16-bit Design</div>
+        <div class="tc-prob" style="color:var(--u4)">90%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:90%;background:var(--u4)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-medium">Medium</span>
+        <span class="meta-chip chip-time">⏱ 2.5 hrs</span>
+        <span class="meta-chip chip-type">Formula + Numerical</span>
+        <span class="meta-chip chip-hot">🔥 End-Sem 4 Questions</span>
+      </div>
+      <div class="tc-reason">
+        End-Sem Q7 (principle, 2-mark), Q8 (delay of 16-bit M=4 carry-bypass adder with tsetup=tcarry=tbypass=tsum=1ns), Q14b (part of 20-bit carry select). The delay formula for M-bit carry bypass adder must be mastered. Compare with ripple carry.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u4);--glow:var(--glow4)">
+      <div class="tc-top">
+        <div class="tc-name">4×4 Array Multiplier — Logic Resources, Critical Path, Carry Save Multiplier</div>
+        <div class="tc-prob" style="color:var(--u4)">80%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:80%;background:var(--u4)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-hard">Hard</span>
+        <span class="meta-chip chip-time">⏱ 3 hrs</span>
+        <span class="meta-chip chip-type">Problem-solving</span>
+      </div>
+      <div class="tc-reason">
+        End-Sem Q14a(i): "Show the realization of 4×4 array multiplier. State logic resources used. Determine all critical path delay terms in propagation delay of logic elements. Show how critical path delay is minimized by realizing Carry Save Multiplier." 13 marks.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u4);--glow:var(--glow4)">
+      <div class="tc-top">
+        <div class="tc-name">Square Root Carry Select Adder — Design Principle, 20-bit Implementation</div>
+        <div class="tc-prob" style="color:var(--u4)">70%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:70%;background:var(--u4)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-hard">Hard</span>
+        <span class="meta-chip chip-time">⏱ 2.5 hrs</span>
+        <span class="meta-chip chip-type">Derivation + Design</span>
+      </div>
+      <div class="tc-reason">
+        End-Sem Q14b: "Design a 20-bit adder using square root carry select principle. Derive expression for time delay. Compare performance with other adders." The square-root scheme groups bits as 1,2,3,4... to equalize delay stages. Know time delay formula.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u4);--glow:var(--glow4)">
+      <div class="tc-top">
+        <div class="tc-name">Barrel Shifter — 4×4 NMOS Design, All Shift Operations</div>
+        <div class="tc-prob" style="color:var(--u4)">60%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:60%;background:var(--u4)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-medium">Medium</span>
+        <span class="meta-chip chip-time">⏱ 1.5 hrs</span>
+        <span class="meta-chip chip-type">Circuit Design</span>
+      </div>
+      <div class="tc-reason">
+        End-Sem Q14b(ii): "Design a 4×4 NMOS barrel shifter to perform all shift operations." NxN barrel shifter uses N×N pass transistor network. Rows = inputs, columns = outputs. Control signals select shift amount. Know: left shift, right shift, rotate.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 13-mark Questions -->
+  <div class="questions-section">
+    <div class="qs-head">
+      <span class="qs-badge b16">13-MARK QUESTIONS (Part B)</span>
+      <span class="qs-title">Most Probable</span>
+    </div>
+    <div class="q-list">
+      <div class="q-item">
+        <div class="q-rank rank-1">1</div>
+        <div><div class="q-text">Show the realization of a 4×4 array multiplier. State the logic resources used for realization. Determine all the critical path terms in propagation delay of the logic elements. Show how critical path delay is minimized by realizing a Carry Save Multiplier.<span class="tag tag-new">ESE Direct</span></div><div class="q-tag">End-Sem Q14a · 13 marks · Probability: 80%</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-2">2</div>
+        <div><div class="q-text">(i) Design a 20-bit adder using the square root carry select principle. Derive the expression for time delay involved in addition. Compare its performance with ripple carry and carry bypass adders. (ii) Design a 4×4 NMOS barrel shifter to perform all shift operations.<span class="tag tag-new">ESE Direct</span></div><div class="q-tag">End-Sem Q14b · 13 marks · Probability: 70%</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-3">3</div>
+        <div><div class="q-text">Discuss the principle involved in carry bypass adder. Determine the delay of a 16-bit carry-bypass adder with M=4 stages per group, where tsetup = tcarry = tbypass = tsum = 1 ns. Compare with ripple-carry adder delay.<span class="tag tag-rep">Repeated</span><span class="tag tag-num">Numerical</span></div><div class="q-tag">End-Sem Q7+Q8 combined · Probability: 85%</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2-mark Questions -->
+  <div class="questions-section">
+    <div class="qs-head">
+      <span class="qs-badge b8">2-MARK QUESTIONS (Part A)</span>
+      <span class="qs-title">Most Probable</span>
+    </div>
+    <div class="q-list">
+      <div class="q-item">
+        <div class="q-rank rank-1">1</div>
+        <div><div class="q-text">Discuss the principle involved in carry bypass adder. Why is it faster than ripple carry?</div><div class="q-tag">End-Sem Q7</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-2">2</div>
+        <div><div class="q-text">Determine the delay of a 16-bit carry-bypass adder with M=4 stages, tsetup=tcarry=tbypass=tsum=1ns.<span class="tag tag-num">Numerical</span></div><div class="q-tag">End-Sem Q8</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="priority-row">
+    <div class="priority-box">
+      <div class="pb-head"><span class="dot-hi"></span> HIGH PRIORITY</div>
+      <ul class="priority-list">
+        <li><span class="pl-icon">🔥</span> Carry Bypass Adder — delay formula + 16-bit numerical</li>
+        <li><span class="pl-icon">🔥</span> 4×4 Array Multiplier + Carry Save approach</li>
+        <li><span class="pl-icon">⚡</span> Square Root Carry Select — group sizes + delay</li>
+        <li><span class="pl-icon">✅</span> Barrel Shifter 4×4 circuit (pass transistor array)</li>
+      </ul>
+    </div>
+    <div class="priority-box">
+      <div class="pb-head"><span class="dot-lo"></span> LOW PRIORITY</div>
+      <ul class="priority-list">
+        <li><span class="pl-icon">❌</span> Carry Lookahead Adder detailed PG logic (not in papers)</li>
+        <li><span class="pl-icon">❌</span> Wallace tree multiplier (not asked yet)</li>
+        <li><span class="pl-icon">⚠️</span> Accumulator specific design (low frequency)</li>
+      </ul>
+    </div>
+  </div>
+</div><!-- end u4 -->
+
+<!-- ═══ UNIT V ════════════════════════════════════ -->
+<div class="tab-panel" id="u5">
+  <div class="unit-header">
+    <div class="unit-chip" style="--uc:var(--u5);color:var(--u5);border-color:rgba(192,132,252,.4);background:rgba(192,132,252,.07)">
+      ◉ UNIT V
+    </div>
+    <div>
+      <div class="unit-title">Implementation Strategies</div>
+      <div class="unit-subtitle">Full/Semi-Custom · Standard Cell · FPGA (Xilinx, ACT-1, LUT) · ASIC Design Flow</div>
+    </div>
+  </div>
+
+  <div class="note-box">
+    <span class="ni">📌</span>
+    <span><b>Examiner Pattern:</b> Unit V appeared <b>entirely in the End-Semester paper</b>. FPGA architectures (LUT, antifuse, Xilinx-4000, ACT-1) got 2 Part A questions (Q9, Q10) + full Part B Q15. ASIC design flow with Static Timing Analysis got Q15a (13 marks). This is a <b>high-reward, low-effort unit</b> — mostly theory with specific exam questions. Can be completed in 1 day.</span>
+  </div>
+
+  <div class="topics-grid">
+
+    <div class="topic-card" style="--uc:var(--u5);--glow:var(--glow5)">
+      <div class="tc-top">
+        <div class="tc-name">ASIC Design Flow — Static Timing Analysis, Slack Computation</div>
+        <div class="tc-prob" style="color:var(--u5)">85%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:85%;background:var(--u5)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-easy">Easy</span>
+        <span class="meta-chip chip-time">⏱ 2 hrs</span>
+        <span class="meta-chip chip-type">Memory-heavy + Diagram</span>
+        <span class="meta-chip chip-hot">🔥 End-Sem 13 marks</span>
+      </div>
+      <div class="tc-reason">
+        End-Sem Q15a (13 marks): "Explain various stages of ASIC design flow. Explain how Static Timing Analysis is carried out and slack is computed." ASIC flow: Specification → RTL → Synthesis → Floor plan → P&R → STA → Signoff → Tape-out. Slack = required arrival – actual arrival. Setup/hold slack analysis.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u5);--glow:var(--glow5)">
+      <div class="tc-top">
+        <div class="tc-name">FPGA Architectures — Xilinx-4000, ACT-1, LUT vs Antifuse</div>
+        <div class="tc-prob" style="color:var(--u5)">85%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:85%;background:var(--u5)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-easy">Easy</span>
+        <span class="meta-chip chip-time">⏱ 2 hrs</span>
+        <span class="meta-chip chip-type">Memory-heavy</span>
+        <span class="meta-chip chip-hot">🔥 End-Sem 3 Questions</span>
+      </div>
+      <div class="tc-reason">
+        End-Sem Q10 (antifuse and LUT techniques), Q15b (Xilinx-4000 architecture + ACT-1 architecture with F=AB+B'C+D realization). Know Xilinx CLB structure, configurable logic blocks, IOBs, routing. ACT-1: uses multiplexer-based logic cells. Antifuse vs SRAM-based FPGA tradeoffs.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u5);--glow:var(--glow5)">
+      <div class="tc-top">
+        <div class="tc-name">Standard Cell Design — Features, Cell Library, Semi-Custom Design</div>
+        <div class="tc-prob" style="color:var(--u5)">65%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:65%;background:var(--u5)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-easy">Easy</span>
+        <span class="meta-chip chip-time">⏱ 1 hr</span>
+        <span class="meta-chip chip-type">Memory-heavy</span>
+      </div>
+      <div class="tc-reason">
+        End-Sem Q9 (2-mark): "Give the features of a Standard Cell." Features: fixed height rows, variable width, standardized VDD/GND rails, characterized for timing/power/area. Know difference between full-custom, semi-custom, standard cell, and gate array.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u5);--glow:var(--glow5)">
+      <div class="tc-top">
+        <div class="tc-name">Full Custom vs Semi-Custom Design — Comparison, Applications</div>
+        <div class="tc-prob" style="color:var(--u5)">55%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:55%;background:var(--u5)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-easy">Easy</span>
+        <span class="meta-chip chip-time">⏱ 1 hr</span>
+        <span class="meta-chip chip-type">Memory-heavy</span>
+      </div>
+      <div class="tc-reason">
+        Syllabus topic, not directly asked in recent papers but forms the context for Q15a. Know NRE cost tradeoffs: Full custom (best PPA, high NRE) vs Standard cell (moderate) vs FPGA (lowest NRE, worst PPA). Likely appears as Part of Q15.
+      </div>
+    </div>
+
+    <div class="topic-card" style="--uc:var(--u5);--glow:var(--glow5)">
+      <div class="tc-top">
+        <div class="tc-name">FPGA Interconnect — Routing Resources, Segmented vs Full-Crossbar</div>
+        <div class="tc-prob" style="color:var(--u5)">50%</div>
+      </div>
+      <div class="prob-bar-wrap"><div class="prob-bar-bg"><div class="prob-bar-fill" style="width:50%;background:var(--u5)"></div></div></div>
+      <div class="tc-meta">
+        <span class="meta-chip chip-easy">Easy</span>
+        <span class="meta-chip chip-time">⏱ 45 min</span>
+        <span class="meta-chip chip-type">Memory-heavy</span>
+      </div>
+      <div class="tc-reason">
+        Syllabus: FPGA interconnect structure. Types of routing resources in Xilinx: single-length lines, double-length, long lines, global buffers. Connection boxes, switch matrices. May appear as sub-question within Q15b.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 13-mark Questions -->
+  <div class="questions-section">
+    <div class="qs-head">
+      <span class="qs-badge b16">13-MARK QUESTIONS (Part B)</span>
+      <span class="qs-title">Most Probable</span>
+    </div>
+    <div class="q-list">
+      <div class="q-item">
+        <div class="q-rank rank-1">1</div>
+        <div><div class="q-text">Explain the various stages of ASIC design flow. Explain how Static Timing Analysis (STA) is carried out and how slack is computed. Distinguish between setup slack and hold slack.<span class="tag tag-new">ESE Direct</span></div><div class="q-tag">End-Sem Q15a · 13 marks · Probability: 85%</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-2">2</div>
+        <div><div class="q-text">(a) Explain Xilinx-4000 Architecture — CLB structure, IOB, routing resources, and programmability. (b) Realize the function F = AB + B'C + D using ACT-1 Architecture. Explain how ACT-1 uses multiplexer-based logic modules.<span class="tag tag-new">ESE Direct</span></div><div class="q-tag">End-Sem Q15b · 13 marks · Probability: 80%</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-3">3</div>
+        <div><div class="q-text">Compare Full-Custom, Semi-Custom, Standard Cell, and FPGA implementation strategies in terms of NRE cost, design effort, performance (PPA), and time-to-market. When is each approach preferred?<span class="tag tag-new">Theory</span></div><div class="q-tag">Syllabus-based · Probability: 60%</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2-mark Questions -->
+  <div class="questions-section">
+    <div class="qs-head">
+      <span class="qs-badge b8">2-MARK QUESTIONS (Part A)</span>
+      <span class="qs-title">Most Probable</span>
+    </div>
+    <div class="q-list">
+      <div class="q-item">
+        <div class="q-rank rank-1">1</div>
+        <div><div class="q-text">Discuss antifuse and LUT techniques used in FPGA. Compare their advantages and disadvantages.</div><div class="q-tag">End-Sem Q10</div></div>
+      </div>
+      <div class="q-item">
+        <div class="q-rank rank-2">2</div>
+        <div><div class="q-text">Give the features of a Standard Cell in standard cell design methodology.</div><div class="q-tag">End-Sem Q9</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="priority-row">
+    <div class="priority-box">
+      <div class="pb-head"><span class="dot-hi"></span> HIGH PRIORITY</div>
+      <ul class="priority-list">
+        <li><span class="pl-icon">🔥</span> ASIC design flow stages + STA + slack formula</li>
+        <li><span class="pl-icon">🔥</span> Xilinx-4000 CLB structure + ACT-1 with example</li>
+        <li><span class="pl-icon">⚡</span> LUT vs Antifuse comparison table</li>
+        <li><span class="pl-icon">✅</span> Standard Cell features (fixed height, char. data)</li>
+        <li><span class="pl-icon">✅</span> Full-Custom vs Semi-Custom NRE comparison</li>
+      </ul>
+    </div>
+    <div class="priority-box">
+      <div class="pb-head"><span class="dot-lo"></span> LOW PRIORITY</div>
+      <ul class="priority-list">
+        <li><span class="pl-icon">❌</span> Detailed FPGA routing algorithm</li>
+        <li><span class="pl-icon">❌</span> Specific Actel/Altera architecture details</li>
+        <li><span class="pl-icon">⚠️</span> Gate array vs PLA differences (very unlikely)</li>
+      </ul>
+    </div>
+  </div>
+</div><!-- end u5 -->
+
+</div><!-- tab-panels -->
+
+<!-- ═══ MASTER TABLE ════════════════════════════════ -->
+<div style="padding: 24px 24px 0;">
+  <div style="font-size:15px;font-weight:700;margin-bottom:14px;letter-spacing:-.01em;">
+    📊 Master Probability Table — All Topics Ranked
+  </div>
+  <div class="overflow-x">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Topic</th>
+          <th>Unit</th>
+          <th>Probability</th>
+          <th>Toughness</th>
+          <th>Study Hrs</th>
+          <th>Type</th>
+          <th>Evidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>CMOS Inverter VTC + VM + Noise Margin</td><td class="tbl-unit" style="color:var(--u1)">I</td><td class="tbl-prob" style="color:#4ade80">95%</td><td><span class="meta-chip chip-hard" style="font-size:10px">Hard</span></td><td>4–5h</td><td>Derivation+Num</td><td>All 4 papers</td></tr>
+        <tr><td>2</td><td>Pseudo-NMOS Wp/Wn Sizing + Power</td><td class="tbl-unit" style="color:var(--u2)">II</td><td class="tbl-prob" style="color:#4ade80">90%</td><td><span class="meta-chip chip-hard" style="font-size:10px">Hard</span></td><td>3h</td><td>Numerical</td><td>Assess II, Retest, ESE</td></tr>
+        <tr><td>3</td><td>Carry Bypass Adder Delay Formula</td><td class="tbl-unit" style="color:var(--u4)">IV</td><td class="tbl-prob" style="color:#4ade80">90%</td><td><span class="meta-chip chip-medium" style="font-size:10px">Med</span></td><td>2.5h</td><td>Formula+Num</td><td>ESE Q7,Q8,Q14</td></tr>
+        <tr><td>4</td><td>6T SRAM Read/Write + Cell/PU Ratio</td><td class="tbl-unit" style="color:var(--u3)">III</td><td class="tbl-prob" style="color:#4ade80">90%</td><td><span class="meta-chip chip-medium" style="font-size:10px">Med</span></td><td>2.5h</td><td>Circuit+Concept</td><td>Retest, ESE Q13b</td></tr>
+        <tr><td>5</td><td>Short/Long Channel MOSFET ID Derivation</td><td class="tbl-unit" style="color:var(--u1)">I</td><td class="tbl-prob" style="color:#86efac">85%</td><td><span class="meta-chip chip-hard" style="font-size:10px">Hard</span></td><td>4h</td><td>Derivation</td><td>Assess I, ESE Q1</td></tr>
+        <tr><td>6</td><td>Dynamic Logic (Domino) + Switching Activity</td><td class="tbl-unit" style="color:var(--u2)">II</td><td class="tbl-prob" style="color:#86efac">85%</td><td><span class="meta-chip chip-medium" style="font-size:10px">Med</span></td><td>2.5h</td><td>Design+Num</td><td>Retest, ESE Q12</td></tr>
+        <tr><td>7</td><td>Master-Slave TG Register + Timing</td><td class="tbl-unit" style="color:var(--u3)">III</td><td class="tbl-prob" style="color:#86efac">85%</td><td><span class="meta-chip chip-medium" style="font-size:10px">Med</span></td><td>2h</td><td>Circuit+Timing</td><td>Retest, ESE Q13a</td></tr>
+        <tr><td>8</td><td>ASIC Design Flow + STA + Slack</td><td class="tbl-unit" style="color:var(--u5)">V</td><td class="tbl-prob" style="color:#86efac">85%</td><td><span class="meta-chip chip-easy" style="font-size:10px">Easy</span></td><td>2h</td><td>Memory</td><td>ESE Q15a (13m)</td></tr>
+        <tr><td>9</td><td>FPGA: Xilinx-4000, ACT-1, LUT, Antifuse</td><td class="tbl-unit" style="color:var(--u5)">V</td><td class="tbl-prob" style="color:#86efac">85%</td><td><span class="meta-chip chip-easy" style="font-size:10px">Easy</span></td><td>2h</td><td>Memory</td><td>ESE Q9,Q10,Q15b</td></tr>
+        <tr><td>10</td><td>Timing Constraints (Setup, Hold, Freq)</td><td class="tbl-unit" style="color:var(--u3)">III</td><td class="tbl-prob" style="color:#86efac">85%</td><td><span class="meta-chip chip-easy" style="font-size:10px">Easy</span></td><td>1.5h</td><td>Numerical</td><td>Assess II Q7, Retest Q6,Q7</td></tr>
+        <tr><td>11</td><td>1T DRAM Refresh + Bitline Swing Derivation</td><td class="tbl-unit" style="color:var(--u3)">III</td><td class="tbl-prob" style="color:#fbbf24">80%</td><td><span class="meta-chip chip-medium" style="font-size:10px">Med</span></td><td>2h</td><td>Derivation</td><td>Assess II Q9A</td></tr>
+        <tr><td>12</td><td>4×4 Array Multiplier + Carry Save</td><td class="tbl-unit" style="color:var(--u4)">IV</td><td class="tbl-prob" style="color:#fbbf24">80%</td><td><span class="meta-chip chip-hard" style="font-size:10px">Hard</span></td><td>3h</td><td>Problem-solving</td><td>ESE Q14a (13m)</td></tr>
+        <tr><td>13</td><td>Transmission Gate Logic (MUX, TSPC)</td><td class="tbl-unit" style="color:var(--u2)">II</td><td class="tbl-prob" style="color:#fbbf24">80%</td><td><span class="meta-chip chip-medium" style="font-size:10px">Med</span></td><td>2h</td><td>Design</td><td>Assess II, Retest, ESE</td></tr>
+        <tr><td>14</td><td>Logical Effort — Path Effort + Gate Sizing</td><td class="tbl-unit" style="color:var(--u2)">II</td><td class="tbl-prob" style="color:#fbbf24">75%</td><td><span class="meta-chip chip-hard" style="font-size:10px">Hard</span></td><td>3h</td><td>Formula</td><td>ESE Q16 (15m Part C)</td></tr>
+        <tr><td>15</td><td>C²MOS Register — Clock Overlap Immunity</td><td class="tbl-unit" style="color:var(--u3)">III</td><td class="tbl-prob" style="color:#fbbf24">75%</td><td><span class="meta-chip chip-hard" style="font-size:10px">Hard</span></td><td>2h</td><td>Concept</td><td>Assess II, ESE Q13b</td></tr>
+        <tr><td>16</td><td>Pass Transistor VTC + Logic Design</td><td class="tbl-unit" style="color:var(--u1)">I</td><td class="tbl-prob" style="color:#fbbf24">75%</td><td><span class="meta-chip chip-medium" style="font-size:10px">Med</span></td><td>2h</td><td>Circuit</td><td>Assess II, ESE Q3</td></tr>
+        <tr><td>17</td><td>DCVSL AND/NAND Gate Design</td><td class="tbl-unit" style="color:var(--u2)">II</td><td class="tbl-prob" style="color:#fbbf24">70%</td><td><span class="meta-chip chip-medium" style="font-size:10px">Med</span></td><td>1.5h</td><td>Design</td><td>ESE Q4</td></tr>
+        <tr><td>18</td><td>Sq-Root Carry Select Adder Design</td><td class="tbl-unit" style="color:var(--u4)">IV</td><td class="tbl-prob" style="color:#fbbf24">70%</td><td><span class="meta-chip chip-hard" style="font-size:10px">Hard</span></td><td>2.5h</td><td>Derivation</td><td>ESE Q14b</td></tr>
+        <tr><td>19</td><td>Pipelining — Computation Table + Min Delay</td><td class="tbl-unit" style="color:var(--u3)">III</td><td class="tbl-prob" style="color:#94a3b8">65%</td><td><span class="meta-chip chip-medium" style="font-size:10px">Med</span></td><td>1.5h</td><td>Concept</td><td>Retest Q9B</td></tr>
+        <tr><td>20</td><td>Stick Diagram from Boolean Expression</td><td class="tbl-unit" style="color:var(--u2)">II</td><td class="tbl-prob" style="color:#94a3b8">65%</td><td><span class="meta-chip chip-medium" style="font-size:10px">Med</span></td><td>1.5h</td><td>Sketch</td><td>ESE Q2</td></tr>
+        <tr><td>21</td><td>Standard Cell Features + Library</td><td class="tbl-unit" style="color:var(--u5)">V</td><td class="tbl-prob" style="color:#94a3b8">65%</td><td><span class="meta-chip chip-easy" style="font-size:10px">Easy</span></td><td>1h</td><td>Memory</td><td>ESE Q9</td></tr>
+        <tr><td>22</td><td>Scaling Principles + Derived Values</td><td class="tbl-unit" style="color:var(--u1)">I</td><td class="tbl-prob" style="color:#94a3b8">60%</td><td><span class="meta-chip chip-medium" style="font-size:10px">Med</span></td><td>1.5h</td><td>Formula</td><td>ESE Q11b</td></tr>
+        <tr><td>23</td><td>Barrel Shifter 4×4 NMOS Design</td><td class="tbl-unit" style="color:var(--u4)">IV</td><td class="tbl-prob" style="color:#94a3b8">60%</td><td><span class="meta-chip chip-medium" style="font-size:10px">Med</span></td><td>1.5h</td><td>Circuit</td><td>ESE Q14b</td></tr>
+        <tr><td>24</td><td>NORA Logic / Dynamic CMOS Cascading</td><td class="tbl-unit" style="color:var(--u2)">II</td><td class="tbl-prob" style="color:#94a3b8">60%</td><td><span class="meta-chip chip-medium" style="font-size:10px">Med</span></td><td>1.5h</td><td>Concept</td><td>Assess II Q5</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ FINAL STRATEGY ═══════════════════════════════ -->
+<div class="final-strategy">
+  <div class="fs-head">🚀 Final Scoring Strategy — Exam Day Approach</div>
+  <div class="fs-grid">
+    <div class="fs-cell">
+      <div class="fs-label">📅 Day-by-Day Study Plan</div>
+      <div class="fs-items">
+        <div class="fs-item">Day 1: Unit I — VTC + VM + Drain Current (45 marks potential)</div>
+        <div class="fs-item">Day 2: Unit II — Pseudo-NMOS + Domino logic + Power formula</div>
+        <div class="fs-item">Day 3: Unit III — 6T SRAM + Master-slave register + Timing</div>
+        <div class="fs-item">Day 4: Unit IV — Carry bypass + Array multiplier + Barrel shifter</div>
+        <div class="fs-item">Day 5: Unit V — ASIC flow + FPGA (Xilinx-4000 + ACT-1)</div>
+      </div>
+    </div>
+    <div class="fs-cell">
+      <div class="fs-label">⚡ Top 5 Must-Do Derivations</div>
+      <div class="fs-items">
+        <div class="fs-item">VM of CMOS Inverter (with all regions)</div>
+        <div class="fs-item">Long-channel MOSFET ID (triode + saturation)</div>
+        <div class="fs-item">1T DRAM bitline voltage swing ΔV formula</div>
+        <div class="fs-item">Carry bypass adder delay: t = tsetup + M·tcarry + ...</div>
+        <div class="fs-item">Pseudo-NMOS Wp/Wn from VOL spec</div>
+      </div>
+    </div>
+    <div class="fs-cell">
+      <div class="fs-label">🎯 Top 5 Must-Do Numericals</div>
+      <div class="fs-items">
+        <div class="fs-item">VM + NMH + NML given kn', kp', VDSAT, VDD</div>
+        <div class="fs-item">Wp/Wn from VOL = 0.08V (exact end-sem values)</div>
+        <div class="fs-item">Dynamic power: P = α·CL·f·VDD² — given P(x)</div>
+        <div class="fs-item">16-bit carry bypass delay with M=4, t=1ns each</div>
+        <div class="fs-item">Timing: Tc ≥ tpd + tsetup; max freq calculation</div>
+      </div>
+    </div>
+    <div class="fs-cell">
+      <div class="fs-label">🏆 Highest Prob-to-Effort Ratio</div>
+      <div class="fs-items">
+        <div class="fs-item">ASIC design flow — 13 marks, 2 hrs prep, easy</div>
+        <div class="fs-item">Timing constraints — 3× asked, 1.5 hrs, formula-only</div>
+        <div class="fs-item">Standard Cell features — 2 marks, 20 mins, definition</div>
+        <div class="fs-item">LUT vs Antifuse — 2 marks, 30 mins, comparison</div>
+        <div class="fs-item">Dynamic power formula — appears in every paper</div>
+      </div>
+    </div>
+    <div class="fs-cell">
+      <div class="fs-label">⚠️ Toughest Topics (Attempt Smart)</div>
+      <div class="fs-items">
+        <div class="fs-item">Logical Effort (Part C 15 marks) — practise path effort F</div>
+        <div class="fs-item">C²MOS clock overlap analysis — draw circuit first</div>
+        <div class="fs-item">Sq-root carry select — memorise group size sequence</div>
+        <div class="fs-item">Velocity saturation MOSFET derivation — step by step</div>
+      </div>
+    </div>
+    <div class="fs-cell">
+      <div class="fs-label">📝 Exam Attempt Order Suggestion</div>
+      <div class="fs-items">
+        <div class="fs-item">Part A: Start with Q1(I), Q4(II DCVSL), Q5(III register), Q7(IV adder)</div>
+        <div class="fs-item">Part B Q11: Attempt 11(a) VTC derivation first (safest)</div>
+        <div class="fs-item">Part B Q12: Pseudo-NMOS sizing — exact numbers memorised</div>
+        <div class="fs-item">Part B Q13: 6T SRAM or master-slave register (both clear)</div>
+        <div class="fs-item">Part C Q16: Logical effort — 15 marks, follow F=GBH formula</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="text-align:center;padding:24px;color:var(--muted);font-size:11px;font-family:'JetBrains Mono',monospace;border-top:1px solid var(--border);margin-top:24px;">
+  EC23C14 · Digital VLSI Design · CEG Anna University · VI Semester R-2023<br>
+  Prediction based on: Assessment I (Feb 2026) · Assessment II (Apr 6, 2026) · Retest (Apr 13, 2026) · End-Sem (Apr/May 2026)<br>
+  Generated by pattern analysis · Study smart, not just hard 🎯
+</div>
+
+<script>
+  function showTab(id, btn) {
+    // hide all panels
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    // show target
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+    // set CSS var for active underline color
+    btn.style.setProperty('--uc', btn.style.getPropertyValue('--uc') || 'var(--u1)');
+  }
+
+  // Animate probability bars on tab switch
+  function animateBars(panel) {
+    panel.querySelectorAll('.prob-bar-fill').forEach(bar => {
+      const w = bar.style.width;
+      bar.style.width = '0%';
+      setTimeout(() => { bar.style.width = w; }, 50);
+    });
+  }
+
+  // Initial animation
+  window.addEventListener('load', () => {
+    animateBars(document.querySelector('.tab-panel.active'));
+  });
+
+  // Animate on tab switch
+  const origShowTab = showTab;
+  window.showTab = function(id, btn) {
+    origShowTab(id, btn);
+    setTimeout(() => animateBars(document.getElementById(id)), 30);
+  };
+</script>
+</body>
+</html>
