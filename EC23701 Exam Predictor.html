@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EC23701 Exam Predictor</title>
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#eaf0f5; --panel:#fbfdff; --panel2:#f1f6fa; --ink:#0d2233; --muted:#52687a; --line:#cbd8e3;
+  --accent:#1c58c9; --accent-soft:#dbe7fb; --grid:rgba(28,88,201,.07); --pl:42%;
+  --good:#0d7f57; --warn:#b36b00; --bad:#b8321d; --shadow:0 1px 0 rgba(13,34,51,.05);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0a1620; --panel:#112331; --panel2:#0e1d2a; --ink:#e4edf4; --muted:#92a8b9; --line:#25405a;
+    --accent:#6c9cf5; --accent-soft:#17324f; --grid:rgba(108,156,245,.07); --pl:58%;
+    --good:#4cc79a; --warn:#e3a53d; --bad:#f2806a; --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0a1620; --panel:#112331; --panel2:#0e1d2a; --ink:#e4edf4; --muted:#92a8b9; --line:#25405a;
+  --accent:#6c9cf5; --accent-soft:#17324f; --grid:rgba(108,156,245,.07); --pl:58%;
+  --good:#4cc79a; --warn:#e3a53d; --bad:#f2806a; --shadow:none;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 64px);-webkit-text-size-adjust:100%}
+body{
+  margin:0;background-color:var(--bg);color:var(--ink);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;
+  font-family:"Avenir Next","Segoe UI Variable","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  font-size:15px;line-height:1.5;font-variant-numeric:tabular-nums;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:18px 14px 60px}
+header.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+h1{font-size:clamp(24px,5vw,34px);line-height:1.1;margin:0 0 6px;letter-spacing:-.02em;font-weight:800}
+h2{font-size:20px;margin:30px 0 10px;letter-spacing:-.01em}
+h3{font-size:16px;margin:0 0 6px}
+p{margin:0 0 8px}
+.sub{color:var(--muted);max-width:60ch;margin:0}
+button,select,input{font:inherit;color:inherit}
+button.ghost{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+button.ghost:hover{border-color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+nav#tabs{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:4px;overflow-x:auto;
+  background:var(--bg);padding:8px 0 0;margin:0 -14px;padding-left:14px;padding-right:14px;
+  border-bottom:1px solid var(--line);scrollbar-width:thin;
+}
+nav#tabs button{
+  flex:0 0 auto;background:none;border:0;border-bottom:4px solid var(--tc,var(--line));padding:8px 12px 7px;
+  cursor:pointer;color:var(--muted);font-weight:600;border-radius:4px 4px 0 0;white-space:nowrap;
+}
+nav#tabs button[aria-selected="true"]{color:var(--ink);background:var(--panel)}
+nav#tabs button:hover{color:var(--ink)}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.kpi b{display:block;font-size:28px;line-height:1.1;font-weight:800}
+.kpi span{color:var(--muted);font-size:13px}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+
+/* probability bars */
+.bar{height:9px;background:var(--panel2);border:1px solid var(--line);border-radius:5px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;transition:width .9s cubic-bezier(.2,.7,.2,1)}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+.pv{font-weight:800;font-size:18px;min-width:3.2ch;text-align:right}
+
+.surebets .row{display:grid;grid-template-columns:minmax(0,1fr) 60px;gap:4px 10px;align-items:center;padding:7px 0;border-top:1px solid var(--line)}
+.surebets .row:first-child{border-top:0}
+.surebets .bar{grid-column:1 / -1}
+.surebets .nm{font-weight:600}
+.surebets .un{color:var(--muted);font-weight:500;font-size:13px}
+
+/* topics */
+.topic{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:11px 14px;margin-bottom:9px}
+.topic.is-done{opacity:.55}
+.t-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;margin-bottom:7px}
+.t-title{font-weight:700}
+.tid{display:inline-block;margin-right:8px;color:var(--muted);font-weight:600}
+.chk{position:relative;width:22px;height:22px;display:inline-block}
+.chk input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;width:100%;height:100%}
+.chk span{position:absolute;inset:0;border:2px solid var(--line);border-radius:5px;background:var(--panel2)}
+.chk input:checked + span{background:var(--accent);border-color:var(--accent)}
+.chk input:checked + span::after{content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.chk input:focus-visible + span{outline:2px solid var(--accent);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0 2px}
+.chip{border:1px solid var(--line);background:var(--panel2);border-radius:999px;padding:1px 10px;font-size:12.5px;color:var(--muted)}
+.chip.Easy{color:var(--good);border-color:var(--good)}
+.chip.Medium{color:var(--warn);border-color:var(--warn)}
+.chip.Hard{color:var(--bad);border-color:var(--bad)}
+.chip.risk{color:var(--bad);border-style:dashed}
+details{margin-top:6px}
+summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:13.5px}
+details p{margin-top:6px}
+.ev{color:var(--muted);font-size:13px}
+
+.qlist{list-style:none;margin:0;padding:0}
+.qlist li{display:grid;grid-template-columns:52px minmax(0,1fr);gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.qlist li:first-child{border-top:0}
+.qp{font-weight:800;font-size:17px}
+.qlist .bar{margin-top:6px}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+.toolbar select,.toolbar input[type=range]{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:5px 8px}
+.toolbar label{display:flex;gap:6px;align-items:center;color:var(--muted)}
+ul.plain{margin:0;padding-left:18px}
+ul.plain li{margin:4px 0}
+
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:700;background:var(--panel2);white-space:nowrap}
+th.sort{cursor:pointer}
+th.sort:hover{color:var(--accent)}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right}
+
+/* heatmap */
+.hm td,.hm th{padding:5px 7px;text-align:center;font-size:13px}
+.hm td:first-child,.hm th:first-child{text-align:left}
+.hm .L{background:var(--accent);color:#fff;font-weight:700}
+.hm .S{background:var(--accent-soft);color:var(--ink)}
+.hm .N{color:var(--line)}
+
+.callouts{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin-bottom:14px}
+.callouts h3{margin-bottom:8px}
+.callouts li{margin:3px 0}
+.pill{display:inline-block;border-radius:999px;padding:0 8px;background:var(--accent-soft);font-size:12.5px;margin-left:4px}
+.note{border-left:4px solid var(--warn);padding:8px 12px;background:var(--panel2);border-radius:0 6px 6px 0;margin:10px 0}
+.note.bad{border-left-color:var(--bad)}
+.num-card{margin-bottom:10px}
+.num-card .f{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:6px 10px;margin:6px 0;overflow-x:auto}
+.ans{font-weight:700;color:var(--good)}
+.wk{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:8px}
+.wk div{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:6px 10px}
+.wk b{display:block;font-size:17px}
+svg text{fill:var(--muted);font-size:10px;font-family:inherit}
+.bar2{display:grid;grid-template-columns:96px minmax(0,1fr) 40px;gap:8px;align-items:center;margin:4px 0;font-size:13px}
+.bar2 .b{height:12px;background:var(--panel2);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+.bar2 .b i{display:block;height:100%}
+.slot{margin-bottom:12px}
+.slot h3 span{color:var(--muted);font-weight:500;font-size:13px;margin-left:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>EC23701 exam predictor</h1>
+      <p class="sub">Millimeter Wave and Optical Communication, Regulation 2023. End-semester forecast built from 23 past papers, the Aug 2026 Assessment 1 paper and the R2023 syllabus.</p>
+    </div>
+    <button id="themeBtn" class="ghost" type="button">Theme</button>
+  </header>
+  <nav id="tabs" role="tablist" aria-label="Sections"></nav>
+  <main id="view" tabindex="-1"></main>
+</div>
+
+<script>
+/* ---------- helpers ---------- */
+const $ = (s, e=document) => e.querySelector(s);
+const $$ = (s, e=document) => [...e.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let store = {done:{}, theme:null};
+try { const raw = localStorage.getItem('ec23701v1'); if (raw) store = Object.assign(store, JSON.parse(raw)); } catch(e) {}
+if (!store.done) store.done = {};
+const save = () => { try { localStorage.setItem('ec23701v1', JSON.stringify(store)); } catch(e) {} };
+if (store.theme) document.documentElement.setAttribute('data-theme', store.theme);
+const hue = p => Math.round(250 - p*2.4);
+const pcol = p => `hsl(${hue(p)} 72% var(--pl))`;
+const fmt = n => (Math.round(n*10)/10).toString();
+
+/* ---------- data ---------- */
+const UNITS = [
+{id:1, short:'I', name:'Millimeter Wave Propagation', hue:175,
+ syl:'Characteristics, applications and challenges; propagation; 60 GHz channel; Gigabit wireless; standards and coexistence; link budget.',
+ es:'ES22: 17 marks, ES23: 17 marks (2 Part-A questions plus one 13-mark slot).',
+ topics:[
+ {id:'1.1', n:'60 GHz channel performance and challenges', p:88, t:'Medium', h:4, ty:'Concept-heavy', m:11,
+  why:'Anchors Q11 in both end-sems. Expect Shannon capacity vs distance, human shadowing, NLOS multipath, Doppler and noise.',
+  ev:['ES22 11a (13M)','ES23 11a(i) (9M)','Assess-2 Nov23 Q1 and Q7 (13M)','3 of 4 mmWave papers']},
+ {id:'1.2', n:'Free-space path loss numeric', p:85, t:'Easy', h:1, ty:'Formula-heavy', m:2,
+  why:'Part-A numeric in every end-sem; only frequency and distance change. L = 20·log10(4πd/λ).',
+  ev:['ES22: 2.4 GHz, 10 m','ES23: 2 GHz, 20 m','MIT Assess-2: 50 GHz, 1 km','3 of 4']},
+ {id:'1.4', n:'mmWave characteristics, applications, challenges', p:78, t:'Easy', h:1, ty:'Memory-heavy', m:2,
+  why:'Free 2-marker that opened Part A twice and appeared in Assessment 2.',
+  ev:['ES22 Q1 (benefits)','ES23 Q1','Assess-2 Nov23 Q1','3 of 4']},
+ {id:'1.3', n:'mmWave link budget and calibration', p:65, t:'Medium', h:2.5, ty:'Formula-heavy', m:8,
+  why:'Named in the syllabus. Full 13M in ES22, 4M tail in ES23. Chain: Tx power, antenna gains, path loss, noise figure, SNR.',
+  ev:['ES22 12a (13M)','ES23 12a(ii) (4M)','2 of 4']},
+ {id:'1.5', n:'Radio-wave propagation: O₂ absorption, rain, reflection, shadowing', p:45, t:'Medium', h:2, ty:'Concept-heavy', m:6,
+  why:'Never a standalone question, but the syllabus lists it and the 60 GHz channel answer is built from it.',
+  ev:['0 of 4 standalone','embedded in every 60 GHz channel answer']},
+ {id:'1.6', n:'Gigabit wireless, standards and coexistence', p:30, t:'Easy', h:2, ty:'Memory-heavy', m:6,
+  why:'New wording in R2023 with zero paper history. Treat as a short-answer risk only.',
+  ev:['0 of 4','syllabus-only signal']},
+ {id:'1.7', n:'Modulation schemes: OOK, FSK, PSK, QPSK with equations', p:28, t:'Hard', h:5, ty:'Formula-heavy', m:9, r:1,
+  why:'Asked in 3 of 4 mmWave papers under R2019, but the R2023 syllabus no longer lists it. Study last.',
+  ev:['ES22 11b','ES23 11b(i),(ii)','Assess-2 Nov23 Q6 (FSK)','not in R2023 syllabus']}
+ ],
+ q13:[
+  {q:'Elaborate on the channel performance at 60 GHz and discuss the main challenges in using a 60 GHz channel.', p:88},
+  {q:'Explain the mmWave link budget with a worked path-loss and SNR example, including calibration.', p:62},
+  {q:'Discuss radio-wave propagation at mmWave frequencies and the effect of oxygen absorption, rain and human shadowing on Gigabit wireless links.', p:42}],
+ q9:[
+  {q:'List the characteristics, applications and challenges of millimeter-wave communication.', p:75},
+  {q:'Calculate free-space loss for a given frequency and distance, then find the link margin (the 4M tail).', p:78}],
+ high:['60 GHz channel: asked in 3 of 4 mmWave papers, so a repeat is the norm.','Free-space path loss numeric: the template stays, the numbers change.','Characteristics and challenges list: cheap 2 marks.'],
+ low:['Modulation schemes: dropped from R2023 wording.','Standards and coexistence: no history, expect a definition at most.','Backhaul network elements (one 2M question in Assessment 2 only).']},
+
+{id:2, short:'II', name:'mm Wave Transceivers and Antennas', hue:200,
+ syl:'Design considerations; transceiver architecture; transceiver without mixer; receiver without oscillator; beam steering antennas; spatial diversity of MIMO arrays.',
+ es:'ES22: 17 marks, ES23: 17 marks.',
+ topics:[
+ {id:'2.3', n:'Beam-steering antennas and 2×2 horn array with beam switching', p:85, t:'Medium', h:3, ty:'Concept-heavy', m:11,
+  why:'Both end-sems carry it: ES23 as a 9+4 slot, ES22 as a Part-A merits question.',
+  ev:['ES23 12b(i),(ii) (9M+4M)','ES22 Q4','Assess-2 Nov23 Q8','3 of 4']},
+ {id:'2.1', n:'Transceiver architectures: superheterodyne, direct conversion, software radio, six-port', p:80, t:'Medium', h:3, ty:'Concept-heavy', m:9,
+  why:'Block-diagram answer that returns as a 13M, 4M or 2M item.',
+  ev:['ES22 12b (13M)','ES23 11a(ii) (4M)','Assess-2 Nov23 Q3','3 of 4']},
+ {id:'2.4', n:'Antenna parameters: beamwidth, directivity and gain, polarization, pattern', p:78, t:'Easy', h:2, ty:'Formula-heavy', m:4,
+  why:'The Part-A numeric is G ≈ 27000/(θ₁·θ₂). Long form is a four-part list.',
+  ev:['ES23 Q3 numeric','Assess-2 Nov23 Q4 and Q8 (13M)','ES22 Q3','3 of 4']},
+ {id:'2.2', n:'Transceiver without mixer (six-port receiver)', p:62, t:'Hard', h:3, ty:'Concept-heavy', m:9,
+  why:'Explicit in the syllabus; 13M in Assessment 2. Derivation uses S-parameters and four power detectors.',
+  ev:['Assess-2 Nov23 Q9 (13M)','syllabus-explicit','1 of 4 directly']},
+ {id:'2.5', n:'Receiver with and without local oscillator', p:55, t:'Medium', h:2.5, ty:'Concept-heavy', m:9,
+  why:'Maps to the syllabus phrase "receiver without oscillator". Identical wording appeared in ES23 and MIT Assessment 2.',
+  ev:['ES23 12a(i) (9M)','MIT Assess-2 9b (12M) and Q6','2 of 4']},
+ {id:'2.6', n:'Spatial and polarization diversity, MIMO arrays', p:45, t:'Easy', h:1.5, ty:'Memory-heavy', m:4,
+  why:'MIMO has no paper history but is named in the syllabus. Polarization diversity was ES23 Q4.',
+  ev:['ES23 Q4','MIMO 0 of 4']},
+ {id:'2.7', n:'mmWave design considerations', p:25, t:'Easy', h:1, ty:'Memory-heavy', m:4,
+  why:'Syllabus line with no history.', ev:['0 of 4']}
+ ],
+ q13:[
+  {q:'Briefly explain beam-steering antennas in mmWave communication systems, and explain the 2×2 horn array and its beam switching.', p:80},
+  {q:'Explain the mmWave transceiver architectures (superheterodyne, direct conversion, six-port) with block diagrams.', p:76},
+  {q:'Explain the general receiver with and without a local oscillator block, with a neat sketch.', p:50},
+  {q:'Explain in detail a mmWave transceiver without mixer.', p:52}],
+ q9:[
+  {q:'State the requirements for mmWave antennas in terms of beamwidth, directivity, polarization and radiation pattern.', p:60},
+  {q:'Give the merits and demerits of a 2×2 horn array with beam switching.', p:55},
+  {q:'Explain spatial diversity and MIMO arrays in mmWave links (2 to 4 marks).', p:40}],
+ high:['Beam steering plus horn array: present in both end-sems.','Transceiver architectures: 3 of 4 papers.','Beamwidth to gain numeric: formula is one line.'],
+ low:['mmWave design considerations: no history.','MIMO beyond a short answer.']},
+
+{id:3, short:'III', name:'Optical Fiber Characteristics', hue:228,
+ syl:'Optical fiber structure and parameters; ray and mode theory; attenuation; dispersion; standard single-mode and multimode fibers.',
+ es:'ES22: 17 marks, ES23: 30 marks (Part C attenuation 9+4 landed here).',
+ topics:[
+ {id:'3.1', n:'Attenuation mechanisms, with dB/km and output-power numericals', p:94, t:'Medium', h:3, ty:'Memory-heavy', m:13,
+  why:'The most repeated topic in the whole set. Pairs a descriptive 9M with a 4M numeric: Pout = Pin·10^(−αL/10).',
+  ev:['ES22 Q6 and 13a(i)','ES23 16(i),(ii) (9M+4M)','A26 7b(ii)','S24 8b and Part C','7 of 8 optical papers']},
+ {id:'3.2', n:'Dispersion: intermodal, material, waveguide, PMD, with rms pulse-broadening numeric', p:93, t:'Hard', h:4.5, ty:'Formula-heavy', m:13,
+  why:'Seven of eight optical papers. ES22 13b is a verbatim copy of Sep22 7b. A26 asked types of dispersion plus a 10M dispersion-limited link.',
+  ev:['ES22 13b (13M)','ES23 13b(ii)','S24 8a (15M)','A26 Q1 and Part C (10M)','7 of 8']},
+ {id:'3.5', n:'V-number and number of modes (SI: V²/2, GI: V²/4)', p:90, t:'Easy', h:1.5, ty:'Formula-heavy', m:4,
+  why:'A26 asked it three times. ES23 13a(ii) and ES22 13a(ii) were the same template with different n values.',
+  ev:['A26 Q3, 7a(i), 7b(i)','ES23 13a(ii)','ES22 13a(ii)','S24 Q1','6 of 8']},
+ {id:'3.4', n:'NA, acceptance angle, critical angle, total internal reflection', p:88, t:'Easy', h:1.5, ty:'Formula-heavy', m:2,
+  why:'Two-mark workhorse. Also supports the V-number and delay-difference problems.',
+  ev:['ES23 Q5','S24 Q3, Q4','S23 Q1 and 9(i)','MIT Sep23 Q1, 11(ii)','5 of 8']},
+ {id:'3.3', n:'Step-index vs graded-index fibers: profiles, dimensions, ray types', p:70, t:'Easy', h:2, ty:'Memory-heavy', m:9,
+  why:'Diagram-driven 8M that three internals have asked. ES22 Q5 (core and cladding) is the Part-A cousin.',
+  ev:['S22 Part C (8M)','S23 7a(i) (8M)','MIT Sep23 11(i) (6M)','3 of 8']},
+ {id:'3.6', n:'Mode theory: guided and radiation modes, TE/TM, cutoff', p:60, t:'Hard', h:4, ty:'Concept-heavy', m:9,
+  why:'ES23 13a(i) was a 9M. A26 7a(ii) asked guided vs radiation modes, which raises recycle odds.',
+  ev:['ES23 13a(i) (9M)','MIT Sep23 10(i), Q4','A26 7a(ii)','3 of 8']},
+ {id:'3.8', n:'Birefringence, beat length, PMD', p:58, t:'Easy', h:1, ty:'Formula-heavy', m:2,
+  why:'B = λ/L_B. One-line numeric that ES23 used for Part A.',
+  ev:['ES23 Q6','MIT Sep23 Q3, Q8','2 of 8']},
+ {id:'3.7', n:'Nonlinear effects: SPM, XPM, SRS, SBS, FWM', p:42, t:'Medium', h:2.5, ty:'Memory-heavy', m:9, r:1,
+  why:'ES23 13b(i) asked it for 9M, but the R2023 syllabus only says "optical signal distortion". Moderate risk.',
+  ev:['ES23 13b(i)','S23 Q2','S22 Q3','S24 8b','syllabus-ambiguous']},
+ {id:'3.9', n:'Bandwidth-distance product, standard SMF vs MMF', p:40, t:'Easy', h:1, ty:'Memory-heavy', m:4,
+  why:'Short comparisons. A26 asked why single-mode suits long haul.', ev:['MIT Sep23 Q6','S24 Q2','A26 Q2']},
+ {id:'3.10', n:'Bending loss and critical radius of curvature', p:35, t:'Easy', h:1, ty:'Formula-heavy', m:4,
+  why:'Rc = 3n₁²λ / [4π(n₁²−n₂²)^{3/2}]. Appears as a sub-part, not a headline.', ev:['S23 9(iii)','MIT Sep23 Q9','2 of 8']}
+ ],
+ q13:[
+  {q:'Explain the attenuation mechanisms in optical fiber (absorption, scattering, bending) and compute the loss and output power of an N-km link in dB and dBm.', p:86},
+  {q:'Explain intermodal and intramodal dispersion in SI/GI fibers, derive the rms pulse broadening and compute it for a 6 km link with Δ = 1%.', p:85},
+  {q:'Explain the mode theory of light propagation: V-number, number of modes, guided and radiation modes, SI vs GI.', p:62},
+  {q:'With diagrams, explain the nonlinear effects in optical fibers.', p:36}],
+ q9:[
+  {q:'Compare SI and GI fibers with index profiles, typical dimensions and ray paths.', p:60},
+  {q:'Derive the pulse broadening due to material dispersion, D_mat = −(λ/c)·d²n/dλ².', p:45},
+  {q:'Why is single-mode fiber preferred for long-distance links? List the types of dispersion.', p:50}],
+ high:['Attenuation: 7 of 8 optical papers.','Dispersion plus rms numeric: 7 of 8.','V-number and modes: A26 used it three times.','NA and acceptance angle: free marks.'],
+ low:['Bending loss and critical radius: sub-part only.','Bandwidth-distance product.','Nonlinear effects if you are short on time: the syllabus does not name them.']},
+
+{id:4, short:'IV', name:'Optical Transmitters and Receivers', hue:268,
+ syl:'Materials; LED; laser diode; P–I characteristics; noise; direct and external modulation; optical detection; spectral responsivity; PIN and APD; preamplifiers; receiver noise.',
+ es:'ES22: 32 marks (Part C landed here), ES23: 19 marks.',
+ topics:[
+ {id:'4.3', n:'PIN vs APD: structure, operation, responsivity, multiplication factor', p:94, t:'Medium', h:3, ty:'Concept-heavy', m:13,
+  why:'Present in both end-sems and in A26 8b. The numeric is M = I_M / I_p with I_p = R·P.',
+  ev:['ES22 14b','ES23 14b(i)','A26 8b (12M)','S23 8b','S24 9b','MIT Assess-2 8b','6 of 8']},
+ {id:'4.7', n:'Quantum efficiency, responsivity, photocurrent numerics', p:88, t:'Easy', h:1, ty:'Formula-heavy', m:2,
+  why:'Part-A numeric most years. R = ηλ(µm)/1.24; I_p = R·P.',
+  ev:['A26 Q6, Q7','ES23 Q8','ES22 Q8','MIT Assess-2 Q5','4 of 9']},
+ {id:'4.1', n:'LED: surface vs edge emitting, double heterostructure, lifetime and power numeric', p:85, t:'Medium', h:3, ty:'Formula-heavy', m:13,
+  why:'ES23 had it, ES22 did not, and 9 of 14 legacy papers carry the τ, η_int, P_int template. Due.',
+  ev:['ES23 14a (13M)','S22 8a and Part C','S23 8a','MIT Sep23 Part C','S24 Q5','5 of 8']},
+ {id:'4.2', n:'Laser diode: principle, threshold gain, P–I curve, mode spacing', p:85, t:'Hard', h:4, ty:'Concept-heavy', m:13,
+  why:'A26 Part B asked construction, population inversion and threshold (12M) and Part A asked mode spacing. Strong recycle candidate.',
+  ev:['A26 8a and Q4','S24 9a (15M)','S22 8b','ES22 14a and Q7','5 of 8']},
+ {id:'4.4', n:'Receiver noise (shot, dark, thermal) and PIN SNR numeric', p:82, t:'Medium', h:3, ty:'Formula-heavy', m:10,
+  why:'ES23 14b(ii) reused the MIT Assessment-2 data set with the dark current changed from 2 to 4 nA. ES22 Part C was a 10M version.',
+  ev:['ES22 16(ii) (10M)','ES23 14b(ii)','MIT Assess-2 8a','S24 9b','4 of 8']},
+ {id:'4.8', n:'Stimulated emission, population inversion, direct vs indirect band gap', p:75, t:'Easy', h:1, ty:'Memory-heavy', m:2,
+  why:'ES23 Q7 and S23 Q5 are the same definition. A26 8a asks spontaneous vs stimulated emission.',
+  ev:['ES23 Q7','S23 Q5','S22 Q4','MIT Sep23 Q2','A26 8a']},
+ {id:'4.6', n:'Direct vs external modulation, Mach-Zehnder modulator', p:55, t:'Medium', h:2, ty:'Concept-heavy', m:6,
+  why:'Listed in the syllabus. Appeared as a 2M list question and a 4M explain.',
+  ev:['S24 Q7','ES23 15b(ii)','MIT Assess-2 9a(ii)','Assess-2 Nov23 Q10']},
+ {id:'4.9', n:'Optical-source materials, alloy band gap and wavelength', p:50, t:'Easy', h:1, ty:'Formula-heavy', m:4,
+  why:'Eg = 1.24/λ(µm). ES23 used the quaternary alloy formula in Part C.',
+  ev:['ES23 16(iii)','MIT Sep23 Q7']},
+ {id:'4.5', n:'Preamplifier types: high-impedance, transimpedance', p:45, t:'Easy', h:2, ty:'Concept-heavy', m:5,
+  why:'ES22 Part C 5M; syllabus-explicit. Rare in R2019 papers but frequent in legacy EC7701.',
+  ev:['ES22 16(i)','6 of 14 legacy papers']},
+ {id:'4.10', n:'Photodetector response time and spectral responsivity', p:35, t:'Medium', h:1.5, ty:'Concept-heavy', m:5,
+  why:'S24 9b; legacy papers ask the factors that set response time.', ev:['S24 9b','legacy papers']}
+ ],
+ q13:[
+  {q:'Construction and operation of PIN photodiode and APD, compare their characteristics, derive responsivity and solve for M.', p:90},
+  {q:'Explain surface-emitting and edge-emitting LEDs with sketches; find total lifetime, internal quantum efficiency and internal power.', p:84},
+  {q:'Explain the principle of the semiconductor laser diode, spontaneous and stimulated emission, population inversion, threshold current and P–I characteristics.', p:76},
+  {q:'Explain receiver noise sources and compute shot, dark, thermal noise and SNR of a PIN receiver; add preamplifier types.', p:72}],
+ q9:[
+  {q:'Compare direct and external modulation of optical sources; explain the Mach-Zehnder modulator.', p:50},
+  {q:'Explain the transimpedance preamplifier and compare it with the high-impedance type.', p:42},
+  {q:'Compute the Fabry-Perot mode spacing, Δν = c/2nL and Δλ = λ²/2nL.', p:55}],
+ high:['PIN vs APD: 6 of 8 papers.','LED numerics: ES22 skipped LED, so ES-level repeat is due.','Laser diode: A26 just asked it for 12M.','PIN noise and SNR: ES23 copied the MIT data set.'],
+ low:['Photodetector response time.','Materials beyond Eg = 1.24/λ.','Preamplifier types when time is short (still 45%).']},
+
+{id:5, short:'V', name:'Optical Wireless Communications', hue:330,
+ syl:'FSO transmitters, receivers, subsystems; pointing, acquisition and tracking; line-of-sight analysis; factors affecting FSO; wavelength selection; integration in optical networks; installation.',
+ es:'ES22: 17 marks, ES23: 17 marks.',
+ topics:[
+ {id:'5.1', n:'ATP system: acquisition, tracking, pointing, with scanning techniques', p:92, t:'Medium', h:3, ty:'Concept-heavy', m:13,
+  why:'Q15 anchor in both end-sems. Block diagram plus three phases plus scanning.',
+  ev:['ES22 15b (13M)','ES23 15a (9M+4M)','MIT Assess-2 Part C(i) (6M)','ES22 Q9 scanning','3 of 4']},
+ {id:'5.4', n:'Point-ahead angle: definition, 2v/c, importance', p:90, t:'Easy', h:0.5, ty:'Formula-heavy', m:2,
+  why:'Part-A question in both end-sems and a 6M in MIT Assessment 2. θ = 2v/c = 0.02 µrad for v = 3 m/s.',
+  ev:['ES22 Q10','ES23 Q9','MIT Assess-2 Q2 and Part C(ii)']},
+ {id:'5.3', n:'Wavelength selection: 1550 nm vs 780/850 nm', p:85, t:'Easy', h:0.5, ty:'Memory-heavy', m:2,
+  why:'Eye safety, lower background noise and Rayleigh scattering, higher permitted power. Syllabus lists "selecting transmission wavelength".',
+  ev:['ES23 Q10','MIT Assess-2 Q3','Assess-2 Nov23 Q10 content']},
+ {id:'5.2', n:'FSO transmitters: choice of laser, modulators, modulation schemes (OOK, PPM)', p:80, t:'Medium', h:3, ty:'Concept-heavy', m:13,
+  why:'14M in Assess-2 Nov23, and external-modulation-for-FSO appears in 5 of 14 legacy papers.',
+  ev:['Assess-2 Nov23 Q10 (14M)','ES23 15b(ii)','MIT Assess-2 9a','5 of 14 legacy']},
+ {id:'5.5', n:'Factors affecting FSO: attenuation, scintillation, beam divergence, alignment', p:65, t:'Medium', h:2.5, ty:'Concept-heavy', m:9,
+  why:'13M in ES22; named in the syllabus.', ev:['ES22 15a (13M)','syllabus-explicit']},
+ {id:'5.6', n:'FSO vs RF comparison', p:58, t:'Easy', h:0.5, ty:'Memory-heavy', m:4,
+  why:'Table answer. Appeared twice in 2023 internals.', ev:['Assess-2 Nov23 Q5','MIT Assess-2 Q4']},
+ {id:'5.9', n:'FSO receiver subsystems: communication and beacon detectors', p:35, t:'Medium', h:1.5, ty:'Concept-heavy', m:4,
+  why:'Syllabus says "receivers, subsystems"; only the Assess-2 model answer covers it.', ev:['Assess-2 Nov23 Q10 content']},
+ {id:'5.8', n:'Line-of-sight analysis, FSO in optical networks, installation', p:30, t:'Easy', h:2, ty:'Memory-heavy', m:6,
+  why:'Named in the syllabus, never asked.', ev:['0 of 4','syllabus-only']},
+ {id:'5.7', n:'Indoor wireless optical link configurations', p:22, t:'Medium', h:2, ty:'Concept-heavy', m:9, r:1,
+  why:'Single appearance (ES23 15b(i)) and not in R2023 wording.', ev:['ES23 15b(i) only']}
+ ],
+ q13:[
+  {q:'With a block diagram, explain the ATP system between a ground station and an onboard satellite; explain acquisition, tracking and pointing in detail.', p:90},
+  {q:'Describe the choice of transmitters, lasers, modulators (Mach-Zehnder) and modulation schemes for FSO, and the wavelength choice.', p:76},
+  {q:'Discuss the factors affecting FSO performance and compare FSO with RF systems.', p:58}],
+ q9:[
+  {q:'Define the point-ahead angle, derive θ = 2v/c and explain its importance in FSO.', p:80},
+  {q:'Why is 1550 nm preferred over 780 nm for the data channel in FSO?', p:78},
+  {q:'Explain the scanning techniques used for FSO acquisition.', p:50}],
+ high:['ATP: both end-sems.','Point-ahead angle: Part A in both end-sems.','1550 nm vs 780 nm: ES23 plus MIT Assessment 2.'],
+ low:['Indoor link configurations.','Line-of-sight analysis and installation (name-drop only).','Receiver sub-system detail.']}
+];
+
+const ALL = UNITS.flatMap(u => u.topics.map(t => Object.assign({}, t, {u:u.id, us:u.short})));
+const expM = t => t.p*t.m/100;
+const ratio = t => t.p/t.h;
+const TOTAL_EXP = ALL.reduce((a,t)=>a+expM(t),0);
+
+/* heat map: columns are papers */
+const PAPERS = ['S22','S23','MIT-S23','A2-N23','MIT-N23','S24','ES22','ES23','A26'];
+const PAPER_FULL = {S22:'Assessment 1, Sep 2022',S23:'Assessment 1, Sep 2023 (key)','MIT-S23':'MIT Assessment 1, 15 Sep 2023','A2-N23':'Assessment 2, 6 Nov 2023','MIT-N23':'MIT Assessment 2, 15 Nov 2023',S24:'Assessment 1, Sep 2024',ES22:'End-sem Nov/Dec 2022',ES23:'End-sem Nov/Dec 2023',A26:'Assessment 1, Aug 2026 (EC23701)'};
+const HEAT = [
+ ['Attenuation (mechanisms and numeric)','LLL--LLLL'],
+ ['Dispersion and pulse broadening','LLL--LLSL'],
+ ['V-number and number of modes','LS---SLSL'],
+ ['NA, acceptance and critical angle','-SS--S-S-'],
+ ['Mode theory','--L----LL'],
+ ['SI vs GI and ray types','LLL------'],
+ ['Nonlinear effects','SS---L-L-'],
+ ['Birefringence and PMD','--L----S-'],
+ ['LED and lifetime numeric','LLL--S-L-'],
+ ['Laser diode','LS---LL-L'],
+ ['PIN and APD','-L--LLLLL'],
+ ['Receiver noise and SNR','----LSLS-'],
+ ['Quantum efficiency and responsivity','----S-SSS'],
+ ['Preamplifier types','------L--'],
+ ['External modulation and MZM','---LLS-S-'],
+ ['ATP and scanning','----L-LL-'],
+ ['Point-ahead angle','----L-SS-'],
+ ['1550 nm vs 780 nm','----S--S-'],
+ ['60 GHz channel','---L--LL-'],
+ ['Free-space path loss numeric','----S-SS-'],
+ ['Link budget','------LS-'],
+ ['Transceiver architectures','---L--LS-'],
+ ['mmWave antennas and horn array','---L--SL-'],
+ ['Receiver with and without LO','----L--L-']
+];
+
+/* numericals */
+const NUMS = [
+ {u:3,t:'Attenuation and output power',f:'α = (10/L)·log10(Pin/Pout);  Pout = Pin·10^(−αL/10)',
+  w:'20 km at 0.6 dB/km, 190 µW launched: loss = 12 dB, so Pout = 190/15.85.',a:'Pout ≈ 12 µW (−19.2 dBm)',s:'ES23 16(ii), S23 7a(ii), S22 Q2'},
+ {u:3,t:'Total and per-km loss',f:'α = 10·log10(Pin/Pout)',w:'150 µW in, 5 µW out over 10 km: 10·log10(30).',a:'14.77 dB, 1.477 dB/km',s:'S23 7a(ii)'},
+ {u:3,t:'NA, acceptance angle, critical angle',f:'NA = √(n₁²−n₂²);  θa = sin⁻¹(NA/n₀);  θc = sin⁻¹(n₂/n₁)',
+  w:'n₁ = 1.450, n₂ = 1.435: NA = √0.04328.',a:'NA = 0.208, θa = 12.0°, θc = 81.75°',s:'ES23 Q5, S24 Q3, MIT Sep23 Q1'},
+ {u:3,t:'V-number and number of modes',f:'V = (2πa/λ)·NA;  M = V²/2 (SI), V²/4 (GI)',
+  w:'50 µm core, n = 1.48/1.46, λ = 0.82 µm: NA = 0.2425, V = 46.45.',a:'M ≈ 1079 (key prints 1077). Using n₁ = 1.5: V = 65.9, M ≈ 2173',s:'S23 Q3, ES23 13a(ii), S24 Q1'},
+ {u:3,t:'Intermodal dispersion, rms (SI vs GI)',f:'σSI = n₁ΔL / (2√3·c);  σGI = n₁Δ²L / (20√3·c)',
+  w:'6 km, n₁ = 1.5, Δ = 1%.',a:'SI 86.6 ns; GI 86.6 ps',s:'ES23 13b(ii), MIT Assess-1 2019'},
+ {u:3,t:'Delay difference, slowest vs fastest mode',f:'ΔT = (n₁L/c)·(n₁/n₂ − 1)',
+  w:'n₂ = 1.5 − 0.015 = 1.485, L = 6 km: (3×10⁻⁵ s)(0.010101).',a:'303 ns (not 30.3 µs)',s:'S23 9(ii)'},
+ {u:3,t:'Chromatic broadening and bit rate (A26 Part C)',f:'Δτchrom = D·L·Δλ;  Δτtotal = √(τ₀² + Δτchrom²);  B ≈ 1/(2Δτ)',
+  w:'D = 17 ps/(nm·km), L = 40 km, Δλ = 2 nm, τ₀ = 1 ns: Δτchrom = 1.36 ns, total = 1.69 ns.',a:'B ≈ 296 Mb/s',s:'A26 Q9(i)'},
+ {u:3,t:'Birefringence and beat length',f:'B = λ / L_B',w:'λ = 1310 nm, L_B = 7 cm.',a:'1.87×10⁻⁵',s:'ES23 Q6'},
+ {u:3,t:'Critical radius of curvature',f:'Rc ≈ 3n₁²λ / [4π(n₁²−n₂²)^{3/2}]',w:'n₁ = 1.5, n₂ = 1.485, λ = 1.55 µm.',a:'87.9 µm',s:'S23 9(iii)'},
+ {u:3,t:'A26 Q3: single-mode check',f:'V = (2πa/λ)·NA; single mode if V < 2.405',w:'a = 4.5 µm, NA = 0.12, λ = 1.55 µm.',a:'V = 2.19, single-mode',s:'A26 Q3'},
+ {u:3,t:'A26 7a(i) / 7b(i): modes',f:'V = 2πa·NA/λ',w:'a = 25 µm, NA = 0.2, λ = 850 nm: V = 36.96.',a:'Multimode. Step-index: M ≈ 683. Graded-index: ≈ 341',s:'A26 7a(i), 7b(i)'},
+ {u:4,t:'LED: lifetime, efficiency, internal power',f:'τ = τrτnr/(τr+τnr);  η = τ/τr;  Pint = η·(hc/λq)·I',
+  w:'30 ns and 100 ns, 1310 nm, 40 mA: τ = 23.08 ns, η = 0.769, hc/λq = 0.946 V.',a:'Pint ≈ 29.1 mW. Also: 70/100 ns gives τ = 41.18 ns, η = 0.588; 60/100 ns gives 37.5 ns, 0.625',s:'S23 8a, ES23 14a(ii), MIT Sep23 Part C'},
+ {u:4,t:'Fabry-Perot mode spacing',f:'Δν = c/(2nL);  Δλ = λ²/(2nL)',
+  w:'GaAs 850 nm, 500 µm, n = 3.7.',a:'Δν = 81.1 GHz, Δλ = 0.195 nm. He-Ne 30 cm, n = 1: 500 MHz. Ruby 5 cm, n = 1.67: 1.80 GHz',s:'A26 Q4, S23 Q4, ES22 14a(ii)'},
+ {u:4,t:'Responsivity, photocurrent, quantum efficiency',f:'R = ηqλ/hc = ηλ(µm)/1.24;  Ip = R·P;  η = (e-h pairs)/(photons)',
+  w:'η = 0.9 at 1300 nm gives R = 0.943 A/W. 5.4×10⁶ pairs from 6×10⁶ photons.',a:'η = 90%. A26 Q7: 100 µW × 0.8 A/W = 80 µA',s:'ES23 Q8, A26 Q7, ES22 Q8'},
+ {u:4,t:'APD multiplication factor',f:'M = I_M / Ip,  Ip = ηqPλ/hc',
+  w:'η = 0.65, 900 nm, 0.5 µW, 10 µA: R = 0.472 A/W, Ip = 0.236 µA.',a:'M ≈ 42.4. (η = 0.70, 20 µA gives M ≈ 78.7)',s:'ES22 14b(ii), MIT Assess-2 8b(ii)'},
+ {u:4,t:'PIN noise and SNR (ES23 14b(ii) data)',f:'⟨is²⟩ = 2qIpB;  ⟨id²⟩ = 2qIDB;  ⟨iT²⟩ = 4kTB/RL;  SNR = Ip²/(sum)',
+  w:'InGaAs 1300 nm, η = 0.9, 300 nW, ID = 4 nA, RL = 1 kΩ, B = 10 MHz, T = 293 K: Ip = 0.283 µA.',a:'shot 9.1×10⁻¹⁹, dark 1.3×10⁻²⁰, thermal 1.62×10⁻¹⁶ A²; SNR ≈ 492 (26.9 dB)',s:'ES23 14b(ii), MIT Assess-2 8a(ii), ES22 16(ii)'},
+ {u:4,t:'Band gap of a source material',f:'λ(µm) = 1.24/Eg(eV);  Eg = 1.35 − 0.72y + 0.12y²,  y = 2.2x',
+  w:'x = 0.3: y = 0.66.',a:'Eg = 0.927 eV, λ = 1.337 µm. A26 Part C(ii): photon energy at 1.55 µm = 0.80 eV (1.28×10⁻¹⁹ J)',s:'ES23 16(iii), MIT Sep23 Q7, A26 Part C(ii)'},
+ {u:1,t:'Free-space path loss',f:'L = 20·log10(4πd/λ)',w:'2 GHz, 20 m: λ = 0.15 m.',a:'64.48 dB. Also: 2.4 GHz, 10 m gives 60.05 dB; 50 GHz, 1 km gives 126.4 dB',s:'ES23 Q2, ES22 Q2, MIT Assess-2 Q7'},
+ {u:2,t:'Antenna gain from beamwidths',f:'G ≈ 27000 / (θ_az·θ_el)',w:'27° and 10°.',a:'G = 100 (20 dBi)',s:'ES23 Q3'},
+ {u:5,t:'Point-ahead angle',f:'θ = 2v/c',w:'v = 3 m/s.',a:'2×10⁻⁸ rad = 0.02 µrad',s:'ES23 Q9, ES22 Q10, MIT Assess-2 Q2'}
+];
+
+/* blueprint */
+const A_SLOTS = [
+ {u:1,c:[['Free-space path loss numeric',85],['mmWave characteristics and challenges',70],['Link budget one-liner',25]]},
+ {u:2,c:[['Beamwidth to gain numeric',65],['Polarization or spatial diversity',45],['2×2 horn array merits and demerits',35]]},
+ {u:3,c:[['NA, acceptance and critical angle numeric',70],['Fiber loss dB/km or Pout numeric',55],['V-number and number of modes',50],['Birefringence and beat length',45],['Types of dispersion, or single-mode for long haul',40]]},
+ {u:4,c:[['Quantum efficiency, responsivity or photocurrent numeric',80],['Stimulated emission or direct vs indirect band gap',65],['Laser mode-spacing numeric',50],['Principle of optical detection',35]]},
+ {u:5,c:[['Point-ahead angle',90],['1550 nm vs 780 nm',80],['Scanning techniques or FSO vs RF',45]]}
+];
+const B_SLOTS = [
+ {q:'Q11',u:1,c:[['60 GHz channel performance and challenges',88],['Link budget and calibration',55],['Propagation: absorption, rain, shadowing',35],['Modulation schemes (syllabus risk)',20]]},
+ {q:'Q12',u:2,c:[['Beam-steering antennas and 2×2 horn array',78],['Transceiver architectures',75],['Receiver with and without LO',40],['Six-port transceiver without mixer',35],['Antenna parameters',30]]},
+ {q:'Q13',u:3,c:[['Attenuation plus numeric',85],['Dispersion plus rms numeric',85],['Mode theory, V and modes, SI vs GI',60],['Nonlinear effects',30]]},
+ {q:'Q14',u:4,c:[['PIN vs APD plus responsivity and M',88],['LED surface/edge plus lifetime numeric',80],['Laser diode principle and threshold',70],['Receiver noise plus SNR numeric',45]]},
+ {q:'Q15',u:5,c:[['ATP plus scanning',90],['FSO transmitters, modulators, wavelength',70],['Factors affecting FSO',45],['Indoor links or MZM modulator',15]]}
+];
+const C_OPTS = [
+ ['Attenuation causes (9) + dB/dBm output-power numeric (4) + alloy band gap (2)',34],
+ ['Dispersion-limited link: chromatic broadening, total pulse width, max bit rate + photon energy',30],
+ ['Transimpedance preamplifier (5) + PIN noise and SNR numeric (10)',28],
+ ['Other U3/U4 numeric mixes (LED lifetime, APD M, V and modes)',8]
+];
+
+/* ---------- ui parts ---------- */
+const TABS = [
+ ['overview','Overview',null],
+ ['u1','I mmWave',175],['u2','II Transceivers',200],['u3','III Fiber',228],['u4','IV Tx and Rx',268],['u5','V FSO',330],
+ ['rank','Rankings',null],['blue','Paper blueprint',null],['num','Numericals',null],['plan','Study plan',null],['notes','Method and flags',null]
+];
+function renderTabs(cur){
+  $('#tabs').innerHTML = TABS.map(([id,l,h]) =>
+    `<button role="tab" type="button" data-tab="${id}" aria-selected="${id===cur}" style="--tc:${h===null?'var(--line)':`hsl(${h} 65% 48%)`}">${esc(l)}</button>`).join('');
+}
+function animateBars(){
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    $$('i[data-w]').forEach(el => { el.style.width = el.dataset.w + '%'; });
+  }));
+}
+const bar = p => `<div class="bar"><i data-w="${p}" style="background:${pcol(p)}"></i></div>`;
+
+function topicCard(t){
+  const done = !!store.done[t.id];
+  return `<article class="topic ${done?'is-done':''}">
+   <div class="t-head">
+     <label class="chk"><input type="checkbox" data-done="${t.id}" ${done?'checked':''} aria-label="Mark ${esc(t.n)} as studied"><span></span></label>
+     <div class="t-title"><span class="tid">${t.id}</span>${esc(t.n)}</div>
+     <div class="pv" style="color:${pcol(t.p)}">${t.p}%</div>
+   </div>
+   ${bar(t.p)}
+   <div class="chips"><span class="chip ${t.t}">${t.t}</span><span class="chip">${t.h} h</span><span class="chip">${esc(t.ty)}</span><span class="chip">about ${t.m} marks</span>${t.r?'<span class="chip risk">syllabus risk</span>':''}</div>
+   <details><summary>Why and evidence</summary><p>${esc(t.why)}</p><ul class="plain ev">${t.ev.map(e=>`<li>${esc(e)}</li>`).join('')}</ul></details>
+  </article>`;
+}
+const qList = arr => `<ul class="qlist">${arr.map(x=>`<li><div class="qp" style="color:${pcol(x.p)}">${x.p}%</div><div>${esc(x.q)}${bar(x.p)}</div></li>`).join('')}</ul>`;
+
+/* ---------- views ---------- */
+function viewOverview(){
+  const sure = [...ALL].sort((a,b)=>b.p-a.p).slice(0,8);
+  const core = ALL.filter(t=>t.p>=60);
+  const coreH = core.reduce((a,t)=>a+t.h,0);
+  const maxB = 34;
+  const ES22 = [17,17,17,32,17], ES23 = [17,17,30,19,17];
+  const cov = [['I',8,5],['II',6,4],['III',6,5],['IV',12,10],['V',10,6]];
+  return `
+  <section class="grid g2" style="margin-top:16px">
+    <div class="panel surebets">
+      <h3>Near-certain topics</h3>
+      <p class="muted small">Highest estimated chance of appearing in the end-semester paper, in any form.</p>
+      ${sure.map(t=>`<div class="row"><div class="nm">${esc(t.n)} <span class="un">Unit ${t.us}</span></div><div class="pv" style="color:${pcol(t.p)}">${t.p}%</div>${bar(t.p)}</div>`).join('')}
+    </div>
+    <div class="grid" style="align-content:start">
+      <div class="grid g4">
+        <div class="panel kpi"><b>23</b><span>papers: 6 end-sem, 17 internals</span></div>
+        <div class="panel kpi"><b>${ALL.length}</b><span>topics ranked</span></div>
+        <div class="panel kpi"><b>${fmt(coreH)} h</b><span>for every topic at 60% or above (${core.length} topics)</span></div>
+        <div class="panel kpi"><b>2 per unit</b><span>Part-A questions, in both R2019 end-sems</span></div>
+      </div>
+      <div class="panel">
+        <h3>What the papers show</h3>
+        <ul class="plain">
+          <li>Internals feed the end-sem. ES23 had a same-topic twin in the 2023 internals for 8 of 10 Part-A questions and all 10 Part-B options.</li>
+          <li>ES22 reused Assessment 1 Sep 2022 almost verbatim: Q5, Q6, 13a(i),(ii) and 13b.</li>
+          <li>Templates stay, numbers move. ES23 14b(ii) is the MIT Assessment-2 PIN problem with dark current changed from 2 to 4 nA.</li>
+          <li>Aug 2026 Assessment 1 covered Units III and IV only. Its questions are the strongest single predictor for those two units.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <h2>Where the marks sit</h2>
+  <div class="panel">
+    <p class="muted small">Marks per unit in each end-sem against an equal 20-mark share. Part C (15 marks, compulsory) landed on Unit III or IV both times.</p>
+    ${UNITS.map((u,i)=>`
+      <div class="bar2"><div>Unit ${u.short}</div><div>
+        <div class="b" title="ES22"><i style="width:${ES22[i]/maxB*100}%;background:hsl(${u.hue} 65% var(--pl))"></i></div>
+        <div class="b" style="margin-top:3px" title="ES23"><i style="width:${ES23[i]/maxB*100}%;background:hsl(${u.hue} 45% var(--pl));opacity:.65"></i></div>
+      </div><div>${ES22[i]} / ${ES23[i]}</div></div>`).join('')}
+    <p class="muted small" style="margin-top:8px">Upper bar ES22, lower bar ES23. Expect Units I, II and V at about 17 each, and Units III and IV to share the remaining 49 marks.</p>
+  </div>
+
+  <h2>Syllabus items vs items actually asked</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Unit</th><th class="num">Syllabus items</th><th class="num">Asked in papers</th><th>Gap to watch</th></tr></thead>
+    <tbody>
+     <tr><td>I</td><td class="num">8</td><td class="num">5</td><td>Standards and coexistence, Gigabit wireless, propagation as a standalone topic</td></tr>
+     <tr><td>II</td><td class="num">6</td><td class="num">4</td><td>MIMO arrays, design considerations</td></tr>
+     <tr><td>III</td><td class="num">6</td><td class="num">5</td><td>Introduction to optical communication; nonlinear effects are asked but not named</td></tr>
+     <tr><td>IV</td><td class="num">12</td><td class="num">10</td><td>Materials and preamplifiers get thin coverage in R2019 papers</td></tr>
+     <tr><td>V</td><td class="num">10</td><td class="num">6</td><td>Line-of-sight analysis, network integration, installation, receiver subsystems</td></tr>
+    </tbody></table></div>
+
+  <h2>Topic history across the papers</h2>
+  <p class="muted small">Dark cell: long answer (5 marks or more). Light cell: short question. Hover a column heading for the paper. The R2015 legacy papers are used only for supporting counts, not in this grid.</p>
+  <div class="tw hm"><table>
+    <thead><tr><th>Topic</th>${PAPERS.map(p=>`<th title="${esc(PAPER_FULL[p])}">${p}</th>`).join('')}<th>Hits</th></tr></thead>
+    <tbody>${HEAT.map(([n,c])=>`<tr><td>${esc(n)}</td>${[...c].map(x=>`<td class="${x==='-'?'N':x}">${x==='-'?'–':x==='L'?'Long':'Short'}</td>`).join('')}<td><b>${[...c].filter(x=>x!=='-').length}</b></td></tr>`).join('')}</tbody>
+  </table></div>`;
+}
+
+function viewUnit(id){
+  const u = UNITS.find(x=>x.id===id);
+  const st = (viewUnit.state = viewUnit.state || {sort:'p', hide:false});
+  let list = [...u.topics];
+  const keyf = {p:t=>-t.p, h:t=>t.h, r:t=>-ratio(t), e:t=>-expM(t)}[st.sort];
+  list.sort((a,b)=>keyf(a)-keyf(b));
+  if (st.hide) list = list.filter(t=>!store.done[t.id]);
+  const core = u.topics.filter(t=>t.p>=60);
+  const coreH = core.reduce((a,t)=>a+t.h,0);
+  const expU = u.topics.reduce((a,t)=>a+expM(t),0);
+  return `
+  <div style="margin-top:16px">
+    <h2 style="margin-top:6px">Unit ${u.short}: ${esc(u.name)}</h2>
+    <p class="muted">${esc(u.syl)}</p>
+    <p class="muted small">${esc(u.es)}</p>
+    <div class="grid g4" style="margin:10px 0">
+      <div class="panel kpi"><b>${u.topics.length}</b><span>topics</span></div>
+      <div class="panel kpi"><b>${fmt(coreH)} h</b><span>to cover the ${core.length} topics at 60% or above</span></div>
+      <div class="panel kpi"><b>${fmt(u.topics.reduce((a,t)=>a+t.h,0))} h</b><span>for the whole unit</span></div>
+      <div class="panel kpi"><b>${fmt(expU/core.length || 0)}</b><span>average expected marks per core topic</span></div>
+    </div>
+    <h2>1. Most important topics</h2>
+    <div class="toolbar">
+      <label>Sort by <select id="uSort">
+        <option value="p" ${st.sort==='p'?'selected':''}>Probability</option>
+        <option value="r" ${st.sort==='r'?'selected':''}>Probability per hour</option>
+        <option value="e" ${st.sort==='e'?'selected':''}>Expected marks</option>
+        <option value="h" ${st.sort==='h'?'selected':''}>Study time (shortest)</option></select></label>
+      <label><input type="checkbox" id="uHide" ${st.hide?'checked':''}> Hide studied</label>
+    </div>
+    ${list.map(topicCard).join('') || '<p class="muted">Every topic in this unit is marked as studied.</p>'}
+    <h2>2. Most probable long answers (13M Part B, 15M Part C)</h2>
+    <div class="panel">${qList(u.q13)}</div>
+    <h2>3. Most probable sub-part questions (4 to 9 marks)</h2>
+    <div class="panel">${qList(u.q9)}</div>
+    <div class="grid g2" style="margin-top:12px">
+      <div class="panel"><h3>4. High priority, even if repeated recently</h3><ul class="plain">${u.high.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+      <div class="panel"><h3>5. Low priority, skip if time is short</h3><ul class="plain">${u.low.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+    </div>
+  </div>`;
+}
+
+function paretoStats(){
+  const s = [...ALL].sort((a,b)=>expM(b)-expM(a));
+  let cum = 0; const pts = []; let n80 = null;
+  s.forEach((t,i)=>{ cum += expM(t); pts.push(cum/TOTAL_EXP); if (n80===null && cum/TOTAL_EXP>=0.8) n80 = i+1; });
+  const k = Math.ceil(0.2*s.length);
+  return {s, pts, k, share:pts[k-1], n80, hours:s.slice(0,k).reduce((a,t)=>a+t.h,0), hours80:s.slice(0,n80).reduce((a,t)=>a+t.h,0)};
+}
+function paretoSvg(P){
+  const W=420,H=190,L=34,B=24,T=8,R=8, n=P.pts.length;
+  const x=i=>L+(W-L-R)*(i+1)/n, y=v=>T+(H-T-B)*(1-v);
+  const path = P.pts.map((v,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const kx = x(P.k-1), ky = y(P.share);
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Cumulative share of expected marks by number of topics studied">
+   ${[0,.25,.5,.75,1].map(v=>`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="4" y="${y(v)+3}">${Math.round(v*100)}%</text>`).join('')}
+   <path d="${path}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+   <line x1="${kx}" x2="${kx}" y1="${ky}" y2="${H-B}" stroke="var(--bad)" stroke-dasharray="4 3"/>
+   <circle cx="${kx}" cy="${ky}" r="4" fill="var(--bad)"/>
+   <text x="${Math.min(kx+6,W-130)}" y="${ky+16}">top 20%: ${Math.round(P.share*100)}% of marks</text>
+   <text x="${L}" y="${H-6}">topics studied, best first</text>
+  </svg>`;
+}
+
+function viewRank(){
+  const st = (viewRank.state = viewRank.state || {key:'p',dir:-1,unit:0,tough:'all'});
+  const P = paretoStats();
+  const safest = ALL.filter(t=>t.p>=80 && t.t==='Easy').sort((a,b)=>b.p-a.p);
+  const hardest = ALL.filter(t=>t.t==='Hard').sort((a,b)=>b.p-a.p);
+  const unitStats = UNITS.map(u=>{
+    const c = u.topics.filter(t=>t.p>=60);
+    const h = c.reduce((a,t)=>a+t.h,0), e = c.reduce((a,t)=>a+expM(t),0);
+    return {u, h, e, per:e/h, all:u.topics.reduce((a,t)=>a+t.h,0)};
+  }).sort((a,b)=>a.h-b.h);
+  const best = [...ALL].sort((a,b)=>ratio(b)-ratio(a)).slice(0,10);
+  const top = P.s.slice(0,P.k);
+  let rows = ALL.filter(t=>(!st.unit||t.u===st.unit)&&(st.tough==='all'||t.t===st.tough));
+  const val = {p:t=>t.p,h:t=>t.h,r:ratio,e:expM,m:t=>t.m,u:t=>t.u,t:t=>({Easy:1,Medium:2,Hard:3})[t.t],n:t=>t.n}[st.key];
+  rows.sort((a,b)=>{const x=val(a),y=val(b);return (x>y?1:x<y?-1:0)*st.dir;});
+  const th = (k,l,c='')=>`<th class="sort ${c}" data-sort="${k}">${l}${st.key===k?(st.dir<0?' ▾':' ▴'):''}</th>`;
+  return `
+  <div style="margin-top:16px">
+  <div class="callouts">
+    <div class="panel"><h3>Safest scoring</h3><p class="muted small">Easy and 80% or higher.</p><ul class="plain">${safest.map(t=>`<li>${esc(t.n)}<span class="pill">${t.p}%</span></li>`).join('')}</ul></div>
+    <div class="panel"><h3>Hardest</h3><p class="muted small">Hard-rated, by probability. Start early.</p><ul class="plain">${hardest.map(t=>`<li>${esc(t.n)}<span class="pill">${t.p}%</span></li>`).join('')}</ul></div>
+    <div class="panel"><h3>Fastest units to finish</h3><p class="muted small">Hours to cover every topic at 60% or above.</p><ul class="plain">${unitStats.map(s=>`<li>Unit ${s.u.short}: ${fmt(s.h)} h <span class="muted">(${fmt(s.per)} expected marks per hour; whole unit ${fmt(s.all)} h)</span></li>`).join('')}</ul></div>
+    <div class="panel"><h3>Best probability per hour</h3><ul class="plain">${best.map(t=>`<li>${esc(t.n)}<span class="pill">${fmt(ratio(t))}%/h</span></li>`).join('')}</ul></div>
+  </div>
+  <div class="panel">
+    <h3>Top 20% of topics</h3>
+    <p>The best ${P.k} topics by expected marks cover <b>${Math.round(P.share*100)}%</b> of the total expected marks, in ${fmt(P.hours)} hours. Reaching 80% takes ${P.n80} topics (${fmt(P.hours80)} hours).</p>
+    <p class="muted small">This paper is flatter than a classic 80/20 split: five units each get a compulsory-style Part-A pair and a 13-mark slot, and Part B has only one OR choice per unit. Use the curve to decide where extra hours stop paying.</p>
+    ${paretoSvg(P)}
+    <ul class="plain">${top.map(t=>`<li>${esc(t.n)} <span class="muted">(Unit ${t.us}, about ${fmt(expM(t))} expected marks)</span></li>`).join('')}</ul>
+  </div>
+
+  <h2>All topics, ranked</h2>
+  <div class="toolbar">
+    <label>Unit <select id="rUnit"><option value="0">All</option>${UNITS.map(u=>`<option value="${u.id}" ${st.unit===u.id?'selected':''}>${u.short}</option>`).join('')}</select></label>
+    <label>Difficulty <select id="rTough">${['all','Easy','Medium','Hard'].map(x=>`<option ${st.tough===x?'selected':''} value="${x}">${x==='all'?'All':x}</option>`).join('')}</select></label>
+    <span class="muted small">Click a column heading to sort.</span>
+  </div>
+  <div class="tw"><table>
+   <thead><tr>${th('n','Topic')}${th('u','Unit')}${th('p','Probability','num')}${th('t','Difficulty')}${th('h','Hours','num')}${th('r','Prob per hour','num')}${th('e','Expected marks','num')}</tr></thead>
+   <tbody>${rows.map((t,i)=>`<tr><td>${esc(t.n)}${t.r?' <span class="chip risk">syllabus risk</span>':''}</td><td>${t.us}</td><td class="num"><b style="color:${pcol(t.p)}">${t.p}%</b></td><td><span class="chip ${t.t}">${t.t}</span></td><td class="num">${t.h}</td><td class="num">${fmt(ratio(t))}</td><td class="num">${fmt(expM(t))}</td></tr>`).join('')}</tbody>
+  </table></div></div>`;
+}
+
+function viewBlue(){
+  const slot = (title, sub, arr) => `<div class="panel slot"><h3>${title}<span>${sub}</span></h3>${qList(arr.map(([q,p])=>({q,p})))}</div>`;
+  return `
+  <div style="margin-top:16px">
+  <h2 style="margin-top:6px">Likely end-sem paper</h2>
+  <p class="muted">Assumes the R2019 end-sem layout continues: Part A 10×2, Part B 5×13 with an OR in every slot, Part C 1×15 compulsory. No R2023 end-sem paper exists yet, so confirm the layout with your department. Percentages are the chance a candidate shows up in that slot.</p>
+  <div class="note"><b>Mark-scheme note.</b> You asked for 16-mark and 8-mark questions. The papers use 13 and 15: Part B splits 9+4, 8+5 or 7+6, Part C splits 9+4+2 or 5+10. The question lists in each unit use those real splits.</div>
+
+  <h2>Part A: two questions per unit (2 marks each)</h2>
+  ${A_SLOTS.map(s=>slot(`Unit ${UNITS[s.u-1].short} pair`, UNITS[s.u-1].name, s.c)).join('')}
+
+  <h2>Part B: one 13-mark slot per unit, each with an OR</h2>
+  <p class="muted small">An option can combine a 9M and a 4M topic, so the percentages in a slot add up to more than 200.</p>
+  ${B_SLOTS.map(s=>slot(`${s.q}, Unit ${UNITS[s.u-1].short}`, UNITS[s.u-1].name, s.c)).join('')}
+
+  <h2>Part C: compulsory 15 marks (Unit III or IV)</h2>
+  <div class="panel slot"><h3>Q16 theme<span>chances add to 100%</span></h3>${qList(C_OPTS.map(([q,p])=>({q,p})))}</div>
+  </div>`;
+}
+
+function viewNum(){
+  const st = (viewNum.state = viewNum.state || {u:0});
+  const list = NUMS.filter(n=>!st.u || n.u===st.u);
+  return `
+  <div style="margin-top:16px">
+  <h2 style="margin-top:6px">Numerical bank</h2>
+  <p class="muted">Every formula-driven question seen in the papers, solved. Try it first, then open the answer. Values recomputed from the formulas; where a published key disagrees, the flag says so.</p>
+  <div class="toolbar">
+    <label>Unit <select id="nUnit"><option value="0">All</option>${UNITS.map(u=>`<option value="${u.id}" ${st.u===u.id?'selected':''}>${u.short} ${esc(u.name)}</option>`).join('')}</select></label>
+  </div>
+  ${list.map(n=>`<div class="panel num-card">
+    <h3>${esc(n.t)} <span class="pill">Unit ${UNITS[n.u-1].short}</span></h3>
+    <div class="f">${esc(n.f)}</div>
+    <p>${esc(n.w)}</p>
+    <details><summary>Show answer</summary><p class="ans">${esc(n.a)}</p></details>
+    <p class="muted small" style="margin-top:6px">Seen in: ${esc(n.s)}</p>
+  </div>`).join('')}
+  </div>`;
+}
+
+function viewPlan(){
+  const st = (viewPlan.state = viewPlan.state || {h:40, min:0, risk:true});
+  const sorted = [...ALL].filter(t=>t.p>=st.min && !(st.risk && t.r)).sort((a,b)=>(expM(b)/b.h)-(expM(a)/a.h));
+  let cumH = 0, cumE = 0; const picked = [];
+  for (const t of sorted){ if (cumH + t.h <= st.h){ cumH += t.h; cumE += expM(t); picked.push({t, cumH, cumE}); } }
+  const doneH = ALL.filter(t=>store.done[t.id]).reduce((a,t)=>a+t.h,0);
+  const doneN = ALL.filter(t=>store.done[t.id]).length;
+  const allH = ALL.reduce((a,t)=>a+t.h,0);
+  return `
+  <div style="margin-top:16px">
+  <h2 style="margin-top:6px">Study plan builder</h2>
+  <p class="muted">Pick the hours you have. Topics are chosen by expected marks per hour until the budget runs out.</p>
+  <div class="panel">
+    <div class="toolbar">
+      <label>Hours available: <b id="hLab">${st.h}</b> <input type="range" id="pH" min="4" max="${Math.ceil(allH)}" step="1" value="${st.h}"></label>
+      <label>Minimum probability <select id="pMin">${[0,30,50,70].map(v=>`<option value="${v}" ${st.min===v?'selected':''}>${v}%</option>`).join('')}</select></label>
+      <label><input type="checkbox" id="pRisk" ${st.risk?'checked':''}> Skip syllabus-risk topics</label>
+    </div>
+    <div class="grid g4">
+      <div class="kpi"><b>${picked.length}</b><span>topics fit</span></div>
+      <div class="kpi"><b>${fmt(cumH)} h</b><span>planned</span></div>
+      <div class="kpi"><b>${Math.round(cumE/TOTAL_EXP*100)}%</b><span>of all expected marks covered</span></div>
+      <div class="kpi"><b>${doneN} (${fmt(doneH)} h)</b><span>topics ticked as studied so far</span></div>
+    </div>
+  </div>
+  <div class="tw" style="margin-top:12px"><table>
+    <thead><tr><th>Order</th><th>Topic</th><th>Unit</th><th class="num">Hours</th><th class="num">Running hours</th><th class="num">Coverage</th></tr></thead>
+    <tbody>${picked.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.t.n)}</td><td>${x.t.us}</td><td class="num">${x.t.h}</td><td class="num">${fmt(x.cumH)}</td><td class="num">${Math.round(x.cumE/TOTAL_EXP*100)}%</td></tr>`).join('')}</tbody>
+  </table></div>
+  <p class="muted small" style="margin-top:8px">Tick topics in the unit tabs and your progress shows here. The tick marks are saved in this browser only.</p>
+  </div>`;
+}
+
+function viewNotes(){
+  return `
+  <div style="margin-top:16px">
+  <h2 style="margin-top:6px">Flags worth reading before you trust any number</h2>
+  <div class="note bad"><b>Answer-key conflicts.</b> The first copy of the Sep 2023 key says 10° light will not propagate and 25° will, with a delay difference of 30.3 µs. Both are wrong. Acceptance angle is 12.2°, so 10° is launched and 25° is not, and the delay difference is 303 ns. The corrected copy in the same file fixes the angle statement and the 303 ns figure.</div>
+  <div class="note bad"><b>Handwritten ES23 check.</b> Critical angle is shown as 81.49°. sin⁻¹(1.435/1.450) gives 81.75°. The acceptance angle (12°), beat-length answer (1.87×10⁻⁵), rms broadening (86.6 ns), mode count (about 2170) and path loss (64.48 dB) all check out.</div>
+  <div class="note"><b>Syllabus drift.</b> R2023 does not list modulation schemes (ASK, FSK, PSK, QPSK), indoor optical link configurations or coherent detection by name, yet R2019 end-sems asked them. They are ranked low or flagged "syllabus risk". The old "receiver with and without LO" question is mapped to the R2023 phrase "receiver without oscillator" in Unit II.</div>
+  <div class="note"><b>Legacy papers.</b> The 14 EC7701 (R2015) papers include preform fabrication, couplers, isolators, EDFA, SONET, WDM networks, DCF and photonic crystal fibers. None are in the R2023 syllabus, so they are excluded. Those papers only add supporting hit counts for overlapping topics (attenuation, LED, laser, PIN noise, preamplifiers, external modulation).</div>
+
+  <h2>How the numbers were built</h2>
+  <div class="panel">
+    <ul class="plain">
+     <li><b>Papers:</b> 23 total. EC5701/EC23701: 9 (ES Nov/Dec 2022 and 2023, six internals, Aug 2026 Assessment 1). EC7701: 14 (4 end-sems, 10 internals).</li>
+     <li><b>Probability:</b> an analyst estimate anchored on hit rate. End-sem hits count most, R2019/R2023 internals next, legacy papers least. Topics asked in the Aug 2026 internal get a small boost, topics missing from the R2023 syllabus a penalty. It is not a statistical guarantee.</li>
+     <li><b>Thin data:</b> only two R2019 end-sems and no R2023 end-sem exist. Units I, II and V rest on four mmWave/FSO papers. Treat their percentages as softer than Units III and IV.</li>
+     <li><b>Expected marks:</b> probability × typical marks when the topic appears. It overlaps across topics, so use it for ranking, not for adding up to 100.</li>
+     <li><b>Hours:</b> study-time estimates for an ECE student who has seen the unit once.</li>
+    </ul>
+  </div>
+  <div class="note"><b>Next paper to feed in.</b> Assessment 2 of 2026 is not in the dataset. In 2023 it covered Units I, II and V plus receivers, so it will become the next recycle pool for those units. Re-run the analysis when you have it.</div>
+  <div class="note"><b>Aug 2026 Assessment 1 answers.</b> Check yourself in the Numericals tab: Q3 V = 2.19 (single-mode), Q4 500 MHz, Q7 80 µA, 7a(i) and 7b(i) V = 36.96 with about 683 modes if step-index, Part C about 1.36 ns chromatic broadening and about 296 Mb/s.</div>
+  </div>`;
+}
+
+/* ---------- router and events ---------- */
+const VIEWS = {overview:viewOverview,u1:()=>viewUnit(1),u2:()=>viewUnit(2),u3:()=>viewUnit(3),u4:()=>viewUnit(4),u5:()=>viewUnit(5),rank:viewRank,blue:viewBlue,num:viewNum,plan:viewPlan,notes:viewNotes};
+let current = 'overview';
+function go(id, keepScroll){
+  if (!VIEWS[id]) id = 'overview';
+  current = id;
+  renderTabs(id);
+  $('#view').innerHTML = VIEWS[id]();
+  animateBars();
+  if (!keepScroll) { try { history.replaceState(null,'','#'+id); } catch(e){} window.scrollTo({top:0}); }
+}
+document.addEventListener('click', e => {
+  const tb = e.target.closest('[data-tab]');
+  if (tb) { go(tb.dataset.tab); return; }
+  const sh = e.target.closest('[data-sort]');
+  if (sh) {
+    const s = viewRank.state, k = sh.dataset.sort;
+    if (s.key===k) s.dir *= -1; else { s.key = k; s.dir = (k==='n'||k==='u'||k==='h')?1:-1; }
+    go('rank', true);
+  }
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset.done) { store.done[t.dataset.done] = t.checked; if (!t.checked) delete store.done[t.dataset.done]; save(); go(current, true); return; }
+  if (t.id==='uSort') { viewUnit.state.sort = t.value; go(current, true); }
+  else if (t.id==='uHide') { viewUnit.state.hide = t.checked; go(current, true); }
+  else if (t.id==='rUnit') { viewRank.state.unit = +t.value; go('rank', true); }
+  else if (t.id==='rTough') { viewRank.state.tough = t.value; go('rank', true); }
+  else if (t.id==='nUnit') { viewNum.state.u = +t.value; go('num', true); }
+  else if (t.id==='pMin') { viewPlan.state.min = +t.value; go('plan', true); }
+  else if (t.id==='pRisk') { viewPlan.state.risk = t.checked; go('plan', true); }
+});
+document.addEventListener('input', e => {
+  if (e.target.id==='pH') { viewPlan.state.h = +e.target.value; $('#hLab').textContent = e.target.value; }
+});
+document.addEventListener('change', e => { if (e.target.id==='pH') go('plan', true); });
+$('#themeBtn').addEventListener('click', () => {
+  const cur = document.documentElement.getAttribute('data-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  store.theme = next; save();
+});
+window.addEventListener('hashchange', () => { const h = location.hash.slice(1); if (h && h!==current) go(h, true); });
+go((location.hash||'#overview').slice(1), true);
+</script>
+</body>
+</html>
