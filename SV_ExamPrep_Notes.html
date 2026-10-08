@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SV Exam Prep — 7 Topics</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--green:#3fb950;--yellow:#d29922;--red:#f85149;--purple:#bc8cff;--orange:#ffa657;--text:#e6edf3;--muted:#8b949e;--code:#010409}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.7}
+header{background:linear-gradient(135deg,#1a1f2e,#0d1117);border-bottom:2px solid var(--accent);padding:2.5rem 2rem;text-align:center;position:relative;overflow:hidden}
+header::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at center,rgba(88,166,255,.06) 0%,transparent 70%);pointer-events:none}
+header h1{font-size:2.2rem;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+header p{color:var(--muted);margin-top:.4rem;font-size:.95rem}
+.header-badges{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:1rem}
+.badge{background:rgba(88,166,255,.12);border:1px solid rgba(88,166,255,.3);color:var(--accent);padding:.25rem .7rem;border-radius:20px;font-size:.75rem;font-weight:600}
+nav{background:var(--card);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+nav a{color:var(--muted);text-decoration:none;padding:.35rem .9rem;border-radius:8px;font-size:.82rem;border:1px solid var(--border);transition:all .2s}
+nav a:hover{color:var(--accent);border-color:var(--accent);background:rgba(88,166,255,.08)}
+.container{max-width:1150px;margin:0 auto;padding:2rem}
+.program{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:3.5rem;overflow:hidden;box-shadow:0 6px 30px rgba(0,0,0,.5);transition:box-shadow .3s}
+.program:hover{box-shadow:0 8px 40px rgba(88,166,255,.12)}
+.prog-header{padding:1.3rem 1.6rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:1rem;background:#1c2128}
+.prog-num{font-weight:700;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;color:#000}
+.prog-title{font-size:1.1rem;font-weight:600}
+.prog-sub{color:var(--muted);font-size:.8rem;margin-top:.15rem}
+.tag{font-size:.7rem;padding:.25rem .6rem;border-radius:5px;font-weight:700;margin-left:auto;letter-spacing:.5px}
+.t-rand{background:rgba(63,185,80,.15);color:var(--green)}
+.t-con{background:rgba(255,166,87,.15);color:var(--orange)}
+.t-inh{background:rgba(188,140,255,.15);color:var(--purple)}
+.t-tb{background:rgba(88,166,255,.15);color:var(--accent)}
+.t-cov{background:rgba(210,153,34,.15);color:var(--yellow)}
+.t-sva{background:rgba(248,81,73,.15);color:var(--red)}
+.t-apb{background:rgba(63,185,80,.15);color:var(--green)}
+.slabel{font-size:.7rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);padding:.8rem 1.6rem .35rem}
+.obj{padding:.5rem 1.6rem 1rem;color:#cdd9e5;font-size:.92rem;border-bottom:1px solid var(--border);background:rgba(88,166,255,.03)}
+.obj strong{color:var(--accent)}
+/* Concept table */
+.concept-table{width:100%;border-collapse:collapse;margin:.5rem 1.6rem 1rem;width:calc(100% - 3.2rem);font-size:.85rem}
+.concept-table th{background:#1c2128;color:var(--accent);padding:.5rem .9rem;text-align:left;border:1px solid var(--border);font-weight:600}
+.concept-table td{padding:.45rem .9rem;border:1px solid var(--border);color:#cdd9e5}
+.concept-table tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+/* Tabs */
+.tabs{display:flex;border-bottom:1px solid var(--border);background:#1c2128;overflow-x:auto}
+.tb{padding:.75rem 1.3rem;font-size:.83rem;color:var(--muted);background:none;border:none;cursor:pointer;border-bottom:2.5px solid transparent;transition:all .2s;font-family:inherit;white-space:nowrap;flex-shrink:0}
+.tb.active{color:var(--accent);border-bottom-color:var(--accent);background:rgba(88,166,255,.06)}
+.tb:hover:not(.active){color:var(--text);border-bottom-color:var(--border)}
+.tc{display:none}
+.tc.active{display:block}
+pre{background:var(--code);padding:1.6rem;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.7;border:1px solid #21262d;margin:0;tab-size:2}
+/* Syntax highlighting */
+.kw{color:#ff7b72}.cm{color:#8b949e;font-style:italic}.st{color:#a5d6ff}.nm{color:#79c0ff}.fn{color:#d2a8ff}.op{color:#ffa657}.mn{color:#7ee787}.tp{color:#f0883e}
+/* Output box */
+.ob{background:var(--code);border:1px solid #21262d;padding:1.6rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.8;color:#b0d0ff}
+.o-sep{color:#3fb950;font-weight:600}.o-hdr{color:#ffa657;font-weight:600}.o-lbl{color:#d2a8ff}.o-val{color:#7ee787}.o-ok{color:#3fb950;font-weight:700}.o-warn{color:#d29922;font-weight:700}.o-err{color:#f85149;font-weight:700}
+/* Key concepts box */
+.cb{margin:0;padding:1.3rem 1.6rem;background:rgba(88,166,255,.04);border-top:1px solid var(--border)}
+.cb h4{color:var(--accent);font-size:.88rem;margin-bottom:.7rem;display:flex;align-items:center;gap:.5rem}
+.cb h4::before{content:'⭐';font-size:.8rem}
+.cb ul{list-style:none;padding-left:.8rem}
+.cb li{font-size:.83rem;color:var(--muted);padding:.2rem 0;display:flex;gap:.5rem}
+.cb li::before{content:"▸";color:var(--accent);flex-shrink:0}
+.cb code{background:rgba(88,166,255,.1);color:var(--accent);padding:.1rem .35rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.78rem}
+/* Exam Q section */
+.exam-qs{padding:1.1rem 1.6rem;border-top:1px solid var(--border);background:rgba(210,153,34,.04)}
+.exam-qs h4{color:var(--yellow);font-size:.85rem;margin-bottom:.6rem}
+.exam-qs ol{padding-left:1.4rem;font-size:.82rem;color:var(--muted)}
+.exam-qs li{padding:.18rem 0}
+/* Mistake box */
+.mistake{padding:.7rem 1.6rem;border-top:1px solid var(--border);background:rgba(248,81,73,.06);font-size:.83rem;color:#f0b0b0}
+.mistake strong{color:var(--red)}
+/* Scrollbar */
+::-webkit-scrollbar{height:5px;width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⚡ SV Exam Prep — 7 High-Priority Topics</h1>
+  <p>Randomization · Constraints · Inheritance · Testbench · Coverage · Assertions · APB</p>
+  <div class="header-badges">
+    <span class="badge">🎯 Exam Focused</span>
+    <span class="badge">7 Programs</span>
+    <span class="badge">Code + Output + Concepts</span>
+    <span class="badge">⭐ Must-Memorize Items</span>
+  </div>
+</header>
+
+<nav>
+  <a href="#p1">P1: Randomization</a>
+  <a href="#p2">P2: Constraints</a>
+  <a href="#p3">P3: Inheritance</a>
+  <a href="#p4">P4: Testbench Arch</a>
+  <a href="#p5">P5: Func Coverage</a>
+  <a href="#p6">P6: Assertions SVA</a>
+  <a href="#p7">P7: APB Protocol</a>
+</nav>
+
+<div class="container">
+
+<!-- ============================================================ -->
+<!-- P1: RANDOMIZATION -->
+<!-- ============================================================ -->
+<div class="program" id="p1">
+  <div class="prog-header">
+    <div class="prog-num" style="background:var(--green)">1</div>
+    <div>
+      <div class="prog-title">Randomization — rand, randc, randomize()</div>
+      <div class="prog-sub">rand · randc · constraint_mode · rand_mode · inline override</div>
+    </div>
+    <span class="tag t-rand">RAND</span>
+  </div>
+
+  <div class="slabel">Definition</div>
+  <div class="obj">
+    Randomization generates automatic stimulus values. <strong>rand</strong> picks freely (may repeat);
+    <strong>randc</strong> cycles through all values once before repeating.
+    Call <strong>randomize()</strong> to trigger generation — returns 1 on success.
+  </div>
+
+  <table class="concept-table">
+    <tr><th>Keyword / Method</th><th>Meaning</th></tr>
+    <tr><td><code>rand</code></td><td>Random — value chosen randomly each call; may repeat</td></tr>
+    <tr><td><code>randc</code></td><td>Random-Cyclic — all values used before any repeat</td></tr>
+    <tr><td><code>randomize()</code></td><td>Triggers randomization; returns 1=success, 0=fail</td></tr>
+    <tr><td><code>constraint_mode(0/1)</code></td><td>Disable/enable a named constraint at runtime</td></tr>
+    <tr><td><code>rand_mode(0/1)</code></td><td>Make a specific variable non-random / re-enable</td></tr>
+    <tr><td><code>randomize() with {}</code></td><td>Inline constraint — single call override</td></tr>
+    <tr><td><code>soft constraint</code></td><td>Overridable constraint — lower priority than hard</td></tr>
+  </table>
+
+  <div class="tabs">
+    <button class="tb active" onclick="showTab('p1','c')">Code</button>
+    <button class="tb" onclick="showTab('p1','o')">Expected Output</button>
+    <button class="tb" onclick="showTab('p1','e')">Exam Questions</button>
+  </div>
+
+  <div id="p1-c" class="tc active"><pre>
+<span class="cm">// ========================================================</span>
+<span class="cm">// Topic 1: Randomization — rand, randc, randomize()</span>
+<span class="cm">// File: 01_Randomization/randomization_demo.sv</span>
+<span class="cm">// ========================================================</span>
+
+<span class="kw">class</span> <span class="tp">Transaction</span>;
+  <span class="kw">rand</span>  <span class="kw">bit</span> [7:0] addr;   <span class="cm">// random — may repeat</span>
+  <span class="kw">randc</span> <span class="kw">bit</span> [3:0] data;   <span class="cm">// random-cyclic — all before repeat</span>
+  <span class="kw">rand</span>  <span class="kw">bit</span>       write;
+
+  <span class="cm">// ⭐ Constraint: word-aligned addr during write</span>
+  <span class="kw">constraint</span> align_c {
+    <span class="kw">if</span> (write) addr[1:0] == <span class="nm">2'b00</span>;
+  }
+
+  <span class="kw">constraint</span> addr_c {
+    addr <span class="kw">inside</span> {[<span class="nm">8'h00</span> : <span class="nm">8'hFF</span>]};
+  }
+
+  <span class="cm">// Soft: prefer data &lt; 8 (can be overridden)</span>
+  <span class="kw">soft constraint</span> data_soft_c { data &lt; <span class="nm">8</span>; }
+
+  <span class="kw">function void</span> <span class="fn">display</span>(<span class="kw">string</span> tag = <span class="st">""</span>);
+    <span class="op">$display</span>(<span class="st">"[%s] addr=0x%02h data=0x%01h write=%0b"</span>,
+             tag, addr, data, write);
+  <span class="kw">endfunction</span>
+<span class="kw">endclass</span>
+
+<span class="kw">module</span> <span class="mn">randomization_demo</span>;
+  <span class="kw">initial begin</span>
+    <span class="tp">Transaction</span> t = <span class="kw">new</span>();
+
+    <span class="op">$display</span>(<span class="st">"=== Normal Randomization ==="</span>);
+    <span class="kw">repeat</span>(<span class="nm">5</span>) <span class="kw">begin</span>
+      <span class="kw">if</span> (!t.<span class="fn">randomize</span>())
+        <span class="op">$fatal</span>(<span class="nm">1</span>, <span class="st">"Randomization FAILED!"</span>);
+      t.<span class="fn">display</span>(<span class="st">"RND"</span>);
+    <span class="kw">end</span>
+
+    <span class="op">$display</span>(<span class="st">"\n=== Inline Override: force addr=0xAC ==="</span>);
+    <span class="kw">if</span> (!t.<span class="fn">randomize</span>() <span class="kw">with</span> { addr == <span class="nm">8'hAC</span>; write == <span class="nm">1</span>; })
+      <span class="op">$fatal</span>(<span class="nm">1</span>, <span class="st">"Inline randomize failed!"</span>);
+    t.<span class="fn">display</span>(<span class="st">"OVR"</span>);
+
+    <span class="op">$display</span>(<span class="st">"\n=== Disable align_c ==="</span>);
+    t.align_c.<span class="fn">constraint_mode</span>(<span class="nm">0</span>);
+    <span class="kw">repeat</span>(<span class="nm">3</span>) <span class="kw">begin</span>
+      <span class="kw">void</span>'(t.<span class="fn">randomize</span>());
+      t.<span class="fn">display</span>(<span class="st">"NO_ALIGN"</span>);
+    <span class="kw">end</span>
+    t.align_c.<span class="fn">constraint_mode</span>(<span class="nm">1</span>); <span class="cm">// re-enable</span>
+
+    <span class="op">$display</span>(<span class="st">"\n=== Fix addr (rand_mode off) ==="</span>);
+    t.addr.<span class="fn">rand_mode</span>(<span class="nm">0</span>);
+    t.addr = <span class="nm">8'hBB</span>;
+    <span class="kw">repeat</span>(<span class="nm">3</span>) <span class="kw">begin</span>
+      <span class="kw">void</span>'(t.<span class="fn">randomize</span>());
+      t.<span class="fn">display</span>(<span class="st">"FIXED_ADDR"</span>);
+    <span class="kw">end</span>
+  <span class="kw">end</span>
+<span class="kw">endmodule</span></pre></div>
+
+  <div id="p1-o" class="tc"><div class="ob">
+<span class="o-sep">=== Normal Randomization ===</span><br>
+[RND] addr=0x<span class="o-val">3c</span>  data=0x<span class="o-val">4</span>  write=<span class="o-val">1</span><br>
+[RND] addr=0x<span class="o-val">a0</span>  data=0x<span class="o-val">2</span>  write=<span class="o-val">0</span><br>
+[RND] addr=0x<span class="o-val">7c</span>  data=0x<span class="o-val">6</span>  write=<span class="o-val">1</span><br>
+[RND] addr=0x<span class="o-val">f0</span>  data=0x<span class="o-val">1</span>  write=<span class="o-val">0</span><br>
+[RND] addr=0x<span class="o-val">18</span>  data=0x<span class="o-val">3</span>  write=<span class="o-val">1</span><br><br>
+<span class="o-sep">=== Inline Override: force addr=0xAC ===</span><br>
+[OVR] addr=0x<span class="o-ok">ac</span>  data=0x<span class="o-val">0</span>  write=<span class="o-ok">1</span><br><br>
+<span class="o-sep">=== Disable align_c ===</span><br>
+[NO_ALIGN] addr=0x<span class="o-warn">c7</span>  data=0x<span class="o-val">5</span>  write=<span class="o-val">1</span>&nbsp;&nbsp;<span class="o-warn">← addr not aligned, constraint OFF</span><br>
+[NO_ALIGN] addr=0x<span class="o-warn">f1</span>  data=0x<span class="o-val">7</span>  write=<span class="o-val">1</span><br><br>
+<span class="o-sep">=== Fix addr (rand_mode off) ===</span><br>
+[FIXED_ADDR] addr=0x<span class="o-ok">bb</span>  data=0x<span class="o-val">4</span>  write=<span class="o-val">0</span>&nbsp;&nbsp;<span class="o-ok">← addr always 0xBB</span><br>
+[FIXED_ADDR] addr=0x<span class="o-ok">bb</span>  data=0x<span class="o-val">2</span>  write=<span class="o-val">1</span><br>
+[FIXED_ADDR] addr=0x<span class="o-ok">bb</span>  data=0x<span class="o-val">6</span>  write=<span class="o-val">0</span>
+  </div></div>
+
+  <div id="p1-e" class="tc">
+    <div class="exam-qs">
+      <h4>Expected Exam Questions</h4>
+      <ol>
+        <li>Differentiate <code>rand</code> and <code>randc</code> with examples.</li>
+        <li>What does <code>randomize()</code> return? How do you handle failure?</li>
+        <li>Write a class with <code>rand</code> variables and an <code>inside</code> constraint.</li>
+        <li>What is an inline constraint? Syntax?</li>
+        <li>What does <code>constraint_mode(0)</code> do vs <code>rand_mode(0)</code>?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="mistake"><strong>⚠️ Common Mistake:</strong> Declaring <code>rand</code> outside a class. <code>rand</code>/<code>randc</code> are <strong>only valid inside class definitions</strong> — not in modules or tasks.</div>
+  <div class="cb"><h4>Must Memorize</h4><ul>
+    <li><code>rand</code> = free random, may repeat | <code>randc</code> = cyclic, exhaustive before repeat</li>
+    <li><code>randomize()</code> returns <code>1</code> on success, <code>0</code> if constraints unsatisfiable</li>
+    <li><code>soft</code> constraint can be overridden by inline or child class constraints</li>
+    <li><code>constraint_mode(0)</code> disables a named constraint block at runtime</li>
+    <li><code>rand_mode(0)</code> makes a specific variable fixed (non-random)</li>
+  </ul></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- P2: CONSTRAINTS -->
+<!-- ============================================================ -->
+<div class="program" id="p2">
+  <div class="prog-header">
+    <div class="prog-num" style="background:var(--orange)">2</div>
+    <div>
+      <div class="prog-title">Constraints — inside, dist, implication, solve-before, foreach</div>
+      <div class="prog-sub">inside · dist · if-then · -> implication · solve-before · soft · foreach</div>
+    </div>
+    <span class="tag t-con">CONSTRAINT</span>
+  </div>
+
+  <div class="slabel">Definition</div>
+  <div class="obj">
+    Constraint blocks restrict the values that <strong>rand</strong> variables can take during <strong>randomize()</strong>.
+    Multiple constraint types allow precise control over value distributions, ordering, and conditional rules.
+  </div>
+
+  <table class="concept-table">
+    <tr><th>Constraint Type</th><th>Syntax</th><th>Meaning</th></tr>
+    <tr><td>Range</td><td><code>x inside {[a:b]}</code></td><td>x must be between a and b</td></tr>
+    <tr><td>Set membership</td><td><code>x inside {1,2,4,8}</code></td><td>x must be one of listed values</td></tr>
+    <tr><td>Distribution :=</td><td><code>x dist {0:=30, 1:=70}</code></td><td>Absolute weight (30 hits vs 70 hits)</td></tr>
+    <tr><td>Distribution :/</td><td><code>x dist {0:/30, 1:/70}</code></td><td>Proportional (30% vs 70%)</td></tr>
+    <tr><td>Implication (if)</td><td><code>if (mode==1) addr &lt; 10</code></td><td>Conditional constraint</td></tr>
+    <tr><td>Implication (→)</td><td><code>(wr==1) -> (addr[1:0]==0)</code></td><td>Equivalence implication</td></tr>
+    <tr><td>Solve-before</td><td><code>solve a before b</code></td><td>Randomize a first, use result for b</td></tr>
+    <tr><td>Foreach</td><td><code>foreach(arr[i]) arr[i]&lt;8</code></td><td>Constrain each array element</td></tr>
+    <tr><td>Soft</td><td><code>soft constraint c { x &lt; 10; }</code></td><td>Lower priority; can be overridden</td></tr>
+  </table>
+
+  <div class="tabs">
+    <button class="tb active" onclick="showTab('p2','c')">Code</button>
+    <button class="tb" onclick="showTab('p2','o')">Expected Output</button>
+    <button class="tb" onclick="showTab('p2','e')">Exam Questions</button>
+  </div>
+
+  <div id="p2-c" class="tc active"><pre>
+<span class="cm">// ========================================================</span>
+<span class="cm">// Topic 2: Constraints</span>
+<span class="cm">// File: 02_Constraints/constraints_demo.sv</span>
+<span class="cm">// ========================================================</span>
+
+<span class="kw">class</span> <span class="tp">Packet</span>;
+  <span class="kw">rand</span> <span class="kw">bit</span> [7:0]  addr;
+  <span class="kw">rand</span> <span class="kw">bit</span> [7:0]  data;
+  <span class="kw">rand</span> <span class="kw">bit</span> [1:0]  mode;       <span class="cm">// 0=IDLE 1=READ 2=WRITE 3=BURST</span>
+  <span class="kw">rand</span> <span class="kw">bit</span> [3:0]  burst_len;
+  <span class="kw">rand</span> <span class="kw">bit</span> [7:0]  payload[4]; <span class="cm">// array</span>
+
+  <span class="cm">// ⭐ inside: range constraint</span>
+  <span class="kw">constraint</span> addr_range_c {
+    addr <span class="kw">inside</span> {[<span class="nm">8'h10</span> : <span class="nm">8'hEF</span>]};
+  }
+
+  <span class="cm">// ⭐ dist: weighted distribution</span>
+  <span class="kw">constraint</span> data_dist_c {
+    data <span class="kw">dist</span> { <span class="nm">8'h00</span>          := <span class="nm">10</span>,
+                [<span class="nm">8'h01</span>:<span class="nm">8'h7F</span>] := <span class="nm">60</span>,
+                [<span class="nm">8'h80</span>:<span class="nm">8'hFF</span>] := <span class="nm">30</span> };
+  }
+
+  <span class="cm">// ⭐ if-implication: BURST needs non-zero length</span>
+  <span class="kw">constraint</span> burst_c {
+    <span class="kw">if</span> (mode == <span class="nm">2'b11</span>) burst_len <span class="kw">inside</span> {[<span class="nm">2</span>:<span class="nm">15</span>]};
+    <span class="kw">else</span>               burst_len == <span class="nm">0</span>;
+  }
+
+  <span class="cm">// ⭐ -> implication: WRITE must be word-aligned</span>
+  <span class="kw">constraint</span> write_align_c {
+    (mode == <span class="nm">2'b10</span>) -> (addr[<span class="nm">1</span>:<span class="nm">0</span>] == <span class="nm">2'b00</span>);
+  }
+
+  <span class="cm">// ⭐ solve-before: solve mode first, then burst_len</span>
+  <span class="kw">constraint</span> order_c {
+    <span class="kw">solve</span> mode <span class="kw">before</span> burst_len;
+  }
+
+  <span class="cm">// ⭐ foreach: constrain each array element</span>
+  <span class="kw">constraint</span> payload_c {
+    <span class="kw">foreach</span> (payload[i]) payload[i] <span class="kw">inside</span> {[<span class="nm">8'h01</span> : <span class="nm">8'hFE</span>]};
+  }
+
+  <span class="cm">// ⭐ soft constraint (overridable)</span>
+  <span class="kw">soft constraint</span> prefer_read_c { mode == <span class="nm">2'b01</span>; }
+<span class="kw">endclass</span>
+
+<span class="kw">module</span> <span class="mn">constraints_demo</span>;
+  <span class="kw">initial begin</span>
+    <span class="tp">Packet</span> p = <span class="kw">new</span>();
+
+    <span class="cm">// Default constraints</span>
+    <span class="kw">repeat</span>(<span class="nm">3</span>) <span class="kw">begin</span>
+      <span class="kw">assert</span>(p.<span class="fn">randomize</span>()) <span class="kw">else</span> <span class="op">$fatal</span>(<span class="nm">1</span>,<span class="st">"Failed"</span>);
+      <span class="op">$display</span>(<span class="st">"mode=%0d addr=0x%02h data=0x%02h burst=%0d"</span>,
+               p.mode, p.addr, p.data, p.burst_len);
+    <span class="kw">end</span>
+
+    <span class="cm">// Override soft: force BURST mode</span>
+    <span class="op">$display</span>(<span class="st">"\n=== Force BURST ==="</span>);
+    p.<span class="fn">randomize</span>() <span class="kw">with</span> { mode == <span class="nm">2'b11</span>; };
+    <span class="op">$display</span>(<span class="st">"mode=%0d burst_len=%0d"</span>, p.mode, p.burst_len);
+
+    <span class="cm">// Disable data_dist_c at runtime</span>
+    p.data_dist_c.<span class="fn">constraint_mode</span>(<span class="nm">0</span>);
+    p.<span class="fn">randomize</span>();
+    <span class="op">$display</span>(<span class="st">"\n=== No dist: data=0x%02h"</span>, p.data);
+  <span class="kw">end</span>
+<span class="kw">endmodule</span></pre></div>
+
+  <div id="p2-o" class="tc"><div class="ob">
+mode=<span class="o-val">1</span> addr=0x<span class="o-val">3a</span> data=0x<span class="o-val">52</span> burst=<span class="o-val">0</span><br>
+mode=<span class="o-val">1</span> addr=0x<span class="o-val">c4</span> data=0x<span class="o-val">00</span> burst=<span class="o-val">0</span><br>
+mode=<span class="o-val">1</span> addr=0x<span class="o-val">78</span> data=0x<span class="o-val">2b</span> burst=<span class="o-val">0</span><br><br>
+<span class="o-sep">=== Force BURST ===</span><br>
+mode=<span class="o-ok">3</span> burst_len=<span class="o-ok">7</span>&nbsp;&nbsp;<span class="o-ok">← soft constraint overridden, burst_len in [2:15]</span><br><br>
+<span class="o-sep">=== No dist: </span>data=0x<span class="o-warn">d4</span>&nbsp;&nbsp;<span class="o-warn">← any value now, dist constraint disabled</span>
+  </div></div>
+
+  <div id="p2-e" class="tc">
+    <div class="exam-qs">
+      <h4>Expected Exam Questions</h4>
+      <ol>
+        <li>Write a constraint using <code>inside</code> and <code>dist</code>.</li>
+        <li>Explain <code>solve...before</code> — when is it needed?</li>
+        <li>Difference between <code>:=</code> and <code>:/</code> in <code>dist</code>.</li>
+        <li>What is a soft constraint? How does it differ from a hard constraint?</li>
+        <li>Write a <code>foreach</code> constraint for an array.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="mistake"><strong>⚠️ Common Mistake:</strong> Confusing <code>:=</code> (absolute weight) with <code>:/</code> (proportional). With <code>:=</code>, weights are literal hit counts. With <code>:/</code>, they are percentage-proportional.</div>
+  <div class="cb"><h4>Must Memorize</h4><ul>
+    <li><code>inside {[a:b]}</code> = range | <code>inside {v1, v2}</code> = set membership</li>
+    <li><code>dist {val := w}</code> = absolute weight | <code>dist {val :/ w}</code> = proportional</li>
+    <li><code>if (cond) constraint</code> = conditional (implication)</li>
+    <li><code>(a==1) -> (b==0)</code> = equivalence implication operator</li>
+    <li><code>solve a before b</code> = randomize a first so b can depend on its result</li>
+  </ul></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- P3: INHERITANCE & POLYMORPHISM -->
+<!-- ============================================================ -->
+<div class="program" id="p3">
+  <div class="prog-header">
+    <div class="prog-num" style="background:var(--purple)">3</div>
+    <div>
+      <div class="prog-title">Inheritance &amp; Polymorphism</div>
+      <div class="prog-sub">extends · virtual · super · dynamic dispatch · $cast · polymorphic array</div>
+    </div>
+    <span class="tag t-inh">OOP</span>
+  </div>
+
+  <div class="slabel">Definition</div>
+  <div class="obj">
+    <strong>Inheritance</strong> lets a child class reuse parent members via <strong>extends</strong>.
+    <strong>Polymorphism</strong> lets a parent handle call the correct child method at runtime using <strong>virtual</strong> functions — called <em>dynamic dispatch</em>.
+  </div>
+
+  <table class="concept-table">
+    <tr><th>Concept</th><th>Keyword</th><th>Effect</th></tr>
+    <tr><td>Inherit</td><td><code>extends</code></td><td>Child gets all parent variables and methods</td></tr>
+    <tr><td>Override</td><td>Same method name in child</td><td>Child's version replaces parent's</td></tr>
+    <tr><td>Virtual method</td><td><code>virtual function</code> in parent</td><td>Enables dynamic dispatch</td></tr>
+    <tr><td>Call parent</td><td><code>super.method()</code></td><td>Invoke parent version from child</td></tr>
+    <tr><td>Dynamic dispatch</td><td>Parent handle → child object</td><td>Runtime selects correct method</td></tr>
+    <tr><td>Downcast</td><td><code>$cast(child, parent)</code></td><td>Safe conversion back to child type</td></tr>
+  </table>
+
+  <div class="tabs">
+    <button class="tb active" onclick="showTab('p3','c')">Code</button>
+    <button class="tb" onclick="showTab('p3','o')">Expected Output</button>
+    <button class="tb" onclick="showTab('p3','e')">Exam Questions</button>
+  </div>
+
+  <div id="p3-c" class="tc active"><pre>
+<span class="cm">// ========================================================</span>
+<span class="cm">// Topic 3: Inheritance &amp; Polymorphism</span>
+<span class="cm">// File: 03_Inheritance_Polymorphism/inheritance_demo.sv</span>
+<span class="cm">// ========================================================</span>
+
+<span class="kw">class</span> <span class="tp">BaseTransaction</span>;
+  <span class="kw">rand</span> <span class="kw">bit</span> [7:0] addr;
+  <span class="kw">rand</span> <span class="kw">bit</span> [7:0] data;
+
+  <span class="cm">// ⭐ virtual — required for dynamic dispatch</span>
+  <span class="kw">virtual function void</span> <span class="fn">display</span>();
+    <span class="op">$display</span>(<span class="st">"[BASE   ] addr=0x%02h  data=0x%02h"</span>, addr, data);
+  <span class="kw">endfunction</span>
+
+  <span class="kw">virtual function string</span> <span class="fn">get_type</span>();
+    <span class="kw">return</span> <span class="st">"BASE"</span>;
+  <span class="kw">endfunction</span>
+<span class="kw">endclass</span>
+
+<span class="kw">class</span> <span class="tp">WriteTransaction</span> <span class="kw">extends</span> <span class="tp">BaseTransaction</span>; <span class="cm">// ⭐ extends</span>
+  <span class="kw">rand</span> <span class="kw">bit</span> parity;
+
+  <span class="kw">function void</span> <span class="fn">display</span>(); <span class="cm">// Override</span>
+    <span class="kw">super</span>.<span class="fn">display</span>();        <span class="cm">// ⭐ call parent version</span>
+    <span class="op">$display</span>(<span class="st">"[WRITE  ] parity=%0b"</span>, parity);
+  <span class="kw">endfunction</span>
+
+  <span class="kw">function string</span> <span class="fn">get_type</span>(); <span class="kw">return</span> <span class="st">"WRITE"</span>; <span class="kw">endfunction</span>
+<span class="kw">endclass</span>
+
+<span class="kw">class</span> <span class="tp">ReadTransaction</span> <span class="kw">extends</span> <span class="tp">BaseTransaction</span>;
+  <span class="kw">bit</span> [7:0] rdata;
+
+  <span class="kw">function void</span> <span class="fn">display</span>();
+    <span class="kw">super</span>.<span class="fn">display</span>();
+    <span class="op">$display</span>(<span class="st">"[READ   ] rdata=0x%02h"</span>, rdata);
+  <span class="kw">endfunction</span>
+
+  <span class="kw">function string</span> <span class="fn">get_type</span>(); <span class="kw">return</span> <span class="st">"READ"</span>; <span class="kw">endfunction</span>
+<span class="kw">endclass</span>
+
+<span class="kw">module</span> <span class="mn">inheritance_demo</span>;
+  <span class="kw">initial begin</span>
+    <span class="tp">BaseTransaction</span>  base_h;  <span class="cm">// ⭐ parent handle</span>
+    <span class="tp">WriteTransaction</span> wt = <span class="kw">new</span>();
+    <span class="tp">ReadTransaction</span>  rt = <span class="kw">new</span>();
+    wt.addr=<span class="nm">8'hAB</span>; wt.data=<span class="nm">8'h12</span>; wt.parity=<span class="nm">1</span>;
+    rt.addr=<span class="nm">8'hCD</span>; rt.rdata=<span class="nm">8'h77</span>;
+
+    <span class="cm">// ⭐ Dynamic Dispatch</span>
+    base_h = wt;
+    base_h.<span class="fn">display</span>();        <span class="cm">// Calls WriteTransaction::display()</span>
+    base_h = rt;
+    base_h.<span class="fn">display</span>();        <span class="cm">// Calls ReadTransaction::display()</span>
+
+    <span class="cm">// ⭐ Polymorphic array</span>
+    <span class="tp">BaseTransaction</span> txn_list[<span class="nm">2</span>];
+    txn_list[<span class="nm">0</span>] = wt;
+    txn_list[<span class="nm">1</span>] = rt;
+    <span class="kw">foreach</span>(txn_list[i]) txn_list[i].<span class="fn">display</span>();
+
+    <span class="cm">// ⭐ $cast — downcast</span>
+    <span class="tp">WriteTransaction</span> wt2;
+    base_h = wt;
+    <span class="kw">if</span> (<span class="op">$cast</span>(wt2, base_h))
+      <span class="op">$display</span>(<span class="st">"Downcast OK: parity=%0b"</span>, wt2.parity);
+    <span class="kw">else</span>
+      <span class="op">$display</span>(<span class="st">"Downcast FAILED"</span>);
+  <span class="kw">end</span>
+<span class="kw">endmodule</span></pre></div>
+
+  <div id="p3-o" class="tc"><div class="ob">
+<span class="o-lbl">[BASE   ] </span>addr=0x<span class="o-val">ab</span>  data=0x<span class="o-val">12</span><br>
+<span class="o-ok">[WRITE  ] parity=1</span>&nbsp;&nbsp;<span class="o-ok">← dynamic dispatch called child method</span><br>
+<span class="o-lbl">[BASE   ] </span>addr=0x<span class="o-val">cd</span>  data=0x<span class="o-val">00</span><br>
+<span class="o-ok">[READ   ] rdata=0x77</span><br><br>
+<span class="o-sep">=== Polymorphic Array ===</span><br>
+<span class="o-lbl">[BASE   ] </span>addr=0x<span class="o-val">ab</span>  data=0x<span class="o-val">12</span><br>
+<span class="o-ok">[WRITE  ] parity=1</span><br>
+<span class="o-lbl">[BASE   ] </span>addr=0x<span class="o-val">cd</span>  data=0x<span class="o-val">00</span><br>
+<span class="o-ok">[READ   ] rdata=0x77</span><br><br>
+<span class="o-sep">Downcast OK: parity=<span class="o-ok">1</span></span>
+  </div></div>
+
+  <div id="p3-e" class="tc">
+    <div class="exam-qs">
+      <h4>Expected Exam Questions</h4>
+      <ol>
+        <li>Differentiate static and dynamic dispatch with code example.</li>
+        <li>What is a <code>virtual</code> function? Why is it needed?</li>
+        <li>Explain <code>extends</code> and <code>super</code> with example.</li>
+        <li>What is <code>$cast</code>? When do you use it?</li>
+        <li>Can a parent handle point to a child object? What must be true for polymorphism?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="mistake"><strong>⚠️ Common Mistake:</strong> Forgetting <code>virtual</code> on the parent method. Without it, the parent handle <em>always</em> calls the parent's method — even when the object is a child type. No dynamic dispatch without <code>virtual</code>.</div>
+  <div class="cb"><h4>Must Memorize</h4><ul>
+    <li><code>extends</code> = inherit all parent members and methods</li>
+    <li><code>virtual function</code> in parent = enables dynamic dispatch (polymorphism)</li>
+    <li>Parent handle can hold child object — <code>BaseTransaction t = new WriteTransaction()</code></li>
+    <li>Without <code>virtual</code>: parent method called (static). With <code>virtual</code>: child method called (dynamic)</li>
+    <li><code>$cast(child_h, parent_h)</code> returns 1 if type matches, 0 if mismatch</li>
+    <li><code>super.method()</code> explicitly calls parent's version from inside child</li>
+  </ul></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- P4: TESTBENCH ARCHITECTURE -->
+<!-- ============================================================ -->
+<div class="program" id="p4">
+  <div class="prog-header">
+    <div class="prog-num" style="background:var(--accent)">4</div>
+    <div>
+      <div class="prog-title">SystemVerilog Testbench Architecture</div>
+      <div class="prog-sub">Generator · Mailbox · Driver · Interface · Monitor · Scoreboard · RefModel</div>
+    </div>
+    <span class="tag t-tb">TESTBENCH</span>
+  </div>
+
+  <div class="slabel">Definition</div>
+  <div class="obj">
+    A structured, layered testbench uses OOP components to <strong>generate stimulus</strong>, <strong>drive the DUT</strong>,
+    <strong>monitor outputs</strong>, and <strong>verify correctness</strong>. Components communicate via <strong>mailboxes</strong> (thread-safe FIFOs).
+  </div>
+
+  <table class="concept-table">
+    <tr><th>Component</th><th>Role</th><th>Key Point</th></tr>
+    <tr><td><strong>Transaction</strong></td><td>Data object carrying stimulus/response</td><td>Contains <code>rand</code> fields + constraints</td></tr>
+    <tr><td><strong>Generator</strong></td><td>Creates random transactions</td><td>Calls <code>randomize()</code>, puts in mailbox</td></tr>
+    <tr><td><strong>Mailbox</strong></td><td>Thread-safe FIFO queue</td><td><code>put()</code> / <code>get()</code> pass data between components</td></tr>
+    <tr><td><strong>Driver</strong></td><td>Converts transactions to pin-level signals</td><td>Gets from mailbox, drives DUT via interface</td></tr>
+    <tr><td><strong>Interface</strong></td><td>Bundles signals between TB and DUT</td><td>Clocking block synchronizes to clock</td></tr>
+    <tr><td><strong>Monitor</strong></td><td>Passively observes DUT output</td><td>NEVER drives signals — read-only</td></tr>
+    <tr><td><strong>Scoreboard</strong></td><td>Compares actual vs expected output</td><td>Reports PASS/FAIL</td></tr>
+    <tr><td><strong>Ref Model</strong></td><td>Software golden model</td><td>Predicts expected DUT output</td></tr>
+  </table>
+
+  <div class="tabs">
+    <button class="tb active" onclick="showTab('p4','c')">Code</button>
+    <button class="tb" onclick="showTab('p4','o')">Expected Output</button>
+    <button class="tb" onclick="showTab('p4','e')">Exam Questions</button>
+  </div>
+
+  <div id="p4-c" class="tc active"><pre>
+<span class="cm">// ========================================================</span>
+<span class="cm">// Topic 4: Testbench Architecture</span>
+<span class="cm">// Flow: Generator → [mailbox] → Driver → DUT</span>
+<span class="cm">//       DUT → Monitor → [mailbox] → Scoreboard ↔ RefModel</span>
+<span class="cm">// File: 04_Testbench_Architecture/testbench_architecture.sv</span>
+<span class="cm">// ========================================================</span>
+
+<span class="kw">class</span> <span class="tp">Transaction</span>;            <span class="cm">// ⭐ Data object</span>
+  <span class="kw">rand</span> <span class="kw">bit</span> [7:0] addr, data;
+  <span class="kw">rand</span> <span class="kw">bit</span>       write;
+  <span class="kw">constraint</span> c { addr <span class="kw">inside</span> {[<span class="nm">0</span>:<span class="nm">255</span>]}; }
+<span class="kw">endclass</span>
+
+<span class="kw">class</span> <span class="tp">RefModel</span>;              <span class="cm">// ⭐ Golden model</span>
+  <span class="kw">bit</span> [7:0] mem[256];
+  <span class="kw">function</span> <span class="kw">bit</span> [7:0] <span class="fn">predict</span>(<span class="tp">Transaction</span> t);
+    <span class="kw">if</span> (t.write) mem[t.addr] = t.data;
+    <span class="kw">return</span> mem[t.addr];
+  <span class="kw">endfunction</span>
+<span class="kw">endclass</span>
+
+<span class="kw">class</span> <span class="tp">Generator</span>;             <span class="cm">// ⭐ Stimulus generator</span>
+  <span class="kw">mailbox</span> #(<span class="tp">Transaction</span>) gen2drv;
+  <span class="kw">task</span> <span class="fn">run</span>();
+    <span class="tp">Transaction</span> t;
+    <span class="kw">repeat</span>(<span class="nm">10</span>) <span class="kw">begin</span>
+      t = <span class="kw">new</span>();
+      <span class="kw">assert</span>(t.<span class="fn">randomize</span>());
+      gen2drv.<span class="fn">put</span>(t);          <span class="cm">// ⭐ Put into mailbox</span>
+    <span class="kw">end</span>
+  <span class="kw">endtask</span>
+<span class="kw">endclass</span>
+
+<span class="kw">class</span> <span class="tp">Scoreboard</span>;            <span class="cm">// ⭐ Checker</span>
+  <span class="kw">mailbox</span> #(<span class="tp">Transaction</span>) mon2scb;
+  <span class="tp">RefModel</span> rm = <span class="kw">new</span>();
+  <span class="kw">int</span> pass_cnt, fail_cnt;
+
+  <span class="kw">task</span> <span class="fn">run</span>();
+    <span class="tp">Transaction</span> t; <span class="kw">bit</span>[7:0] expected;
+    <span class="kw">forever begin</span>
+      mon2scb.<span class="fn">get</span>(t);          <span class="cm">// ⭐ Get from mailbox</span>
+      expected = rm.<span class="fn">predict</span>(t);
+      <span class="kw">if</span> (t.data === expected) pass_cnt++;
+      <span class="kw">else</span>                     fail_cnt++;
+      <span class="op">$display</span>(<span class="st">"[SCB] %s addr=%02h actual=%02h exp=%02h"</span>,
+        (t.data===expected)?<span class="st">"PASS"</span>:<span class="st">"FAIL"</span>,t.addr,t.data,expected);
+    <span class="kw">end</span>
+  <span class="kw">endtask</span>
+<span class="kw">endclass</span>
+
+<span class="kw">module</span> <span class="mn">testbench_architecture</span>;
+  <span class="kw">mailbox</span> #(<span class="tp">Transaction</span>) gen2drv = <span class="kw">new</span>();
+  <span class="kw">mailbox</span> #(<span class="tp">Transaction</span>) mon2scb = <span class="kw">new</span>();
+  <span class="tp">Generator</span>  gen = <span class="kw">new</span>();
+  <span class="tp">Scoreboard</span> scb = <span class="kw">new</span>();
+
+  <span class="kw">initial begin</span>
+    gen.gen2drv = gen2drv;
+    scb.mon2scb = mon2scb;
+    <span class="kw">fork</span>
+      gen.<span class="fn">run</span>();  <span class="cm">// ⭐ All run concurrently</span>
+      scb.<span class="fn">run</span>();
+    <span class="kw">join_any</span>
+    #<span class="nm">10</span>; <span class="op">$finish</span>;
+  <span class="kw">end</span>
+<span class="kw">endmodule</span></pre></div>
+
+  <div id="p4-o" class="tc"><div class="ob">
+[GEN] Starting — will generate 10 transactions<br>
+[DRV] WR addr=0x<span class="o-val">3c</span> data=0x<span class="o-val">a5</span><br>
+[MON] WR addr=0x<span class="o-val">3c</span> data=0x<span class="o-val">a5</span><br>
+<span class="o-ok">[SCB] PASS addr=3c actual=a5 exp=a5</span><br>
+[DRV] RD addr=0x<span class="o-val">71</span> data=0x<span class="o-val">00</span><br>
+[MON] RD addr=0x<span class="o-val">71</span> data=0x<span class="o-val">00</span><br>
+<span class="o-ok">[SCB] PASS addr=71 actual=00 exp=00</span><br>
+... (10 transactions)<br><br>
+<span class="o-sep">========================================</span><br>
+RESULTS: PASS=<span class="o-ok">10</span>  FAIL=<span class="o-err">0</span><br>
+<span class="o-sep">========================================</span>
+  </div></div>
+
+  <div id="p4-e" class="tc">
+    <div class="exam-qs">
+      <h4>Expected Exam Questions</h4>
+      <ol>
+        <li>Draw and explain the SV testbench architecture block diagram.</li>
+        <li>What is the role of a scoreboard and reference model?</li>
+        <li>Difference between driver and monitor?</li>
+        <li>What is a mailbox? How does generator pass data to driver?</li>
+        <li>Why is an interface used in a testbench?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="mistake"><strong>⚠️ Common Mistake:</strong> Making the Monitor drive DUT signals. The Monitor is <strong>strictly passive</strong> — it only <em>observes</em> (reads) DUT outputs. Only the Driver drives the DUT.</div>
+  <div class="cb"><h4>Must Memorize</h4><ul>
+    <li>Flow: <code>Generator → [mailbox] → Driver → Interface → DUT</code></li>
+    <li>Flow: <code>DUT → Interface → Monitor → [mailbox] → Scoreboard ↔ RefModel</code></li>
+    <li><code>mailbox #(T)</code> is a typed, thread-safe FIFO: <code>put()</code> sends, <code>get()</code> receives</li>
+    <li>Monitor is <strong>read-only</strong> — never drives signals</li>
+    <li>All components run in <code>fork...join_any</code> for concurrency</li>
+  </ul></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- P5: FUNCTIONAL COVERAGE -->
+<!-- ============================================================ -->
+<div class="program" id="p5">
+  <div class="prog-header">
+    <div class="prog-num" style="background:var(--yellow)">5</div>
+    <div>
+      <div class="prog-title">Functional Coverage</div>
+      <div class="prog-sub">covergroup · coverpoint · bins · illegal_bins · ignore_bins · cross · sample()</div>
+    </div>
+    <span class="tag t-cov">COVERAGE</span>
+  </div>
+
+  <div class="slabel">Definition</div>
+  <div class="obj">
+    Functional coverage measures <strong>which design scenarios were exercised</strong> during simulation.
+    Unlike code coverage, it is <strong>user-defined</strong> and tied to the specification — you declare what matters, the tool tracks whether it occurred.
+  </div>
+
+  <table class="concept-table">
+    <tr><th>Term</th><th>Syntax</th><th>Purpose</th></tr>
+    <tr><td><code>covergroup</code></td><td><code>covergroup cg; ... endgroup</code></td><td>Container for coverage points</td></tr>
+    <tr><td><code>coverpoint</code></td><td><code>cp_x: coverpoint var { bins ... }</code></td><td>Track values of a variable</td></tr>
+    <tr><td><code>bins</code></td><td><code>bins b1 = {v1, v2};</code></td><td>Named value group</td></tr>
+    <tr><td><code>illegal_bins</code></td><td><code>illegal_bins bad = {x};</code></td><td>Error if this value is hit</td></tr>
+    <tr><td><code>ignore_bins</code></td><td><code>ignore_bins skip = {x};</code></td><td>Exclude value from coverage %</td></tr>
+    <tr><td><code>cross</code></td><td><code>cx: cross cp1, cp2;</code></td><td>Track all combinations of two coverpoints</td></tr>
+    <tr><td><code>.sample()</code></td><td><code>cg.sample();</code></td><td>Manually trigger coverage sampling</td></tr>
+    <tr><td><code>get_coverage()</code></td><td><code>cg.get_coverage()</code></td><td>Returns coverage % as real</td></tr>
+  </table>
+
+  <div class="tabs">
+    <button class="tb active" onclick="showTab('p5','c')">Code</button>
+    <button class="tb" onclick="showTab('p5','o')">Expected Output</button>
+    <button class="tb" onclick="showTab('p5','e')">Exam Questions</button>
+  </div>
+
+  <div id="p5-c" class="tc active"><pre>
+<span class="cm">// ========================================================</span>
+<span class="cm">// Topic 5: Functional Coverage</span>
+<span class="cm">// File: 05_Functional_Coverage/functional_coverage_demo.sv</span>
+<span class="cm">// ========================================================</span>
+
+<span class="kw">class</span> <span class="tp">APBTransaction</span>;
+  <span class="kw">rand</span> <span class="kw">bit</span> [3:0]  addr;    <span class="cm">// 0–15</span>
+  <span class="kw">rand</span> <span class="kw">bit</span> [1:0]  opcode;  <span class="cm">// 00=READ 01=WRITE 10=IDLE 11=reserved</span>
+  <span class="kw">rand</span> <span class="kw">bit</span>        pready;
+
+  <span class="cm">// ⭐ COVERGROUP</span>
+  <span class="kw">covergroup</span> apb_cg;
+
+    <span class="cm">// ⭐ COVERPOINT with named bins</span>
+    cp_opcode: <span class="kw">coverpoint</span> opcode {
+      <span class="kw">bins</span> read_op  = {<span class="nm">2'b00</span>};
+      <span class="kw">bins</span> write_op = {<span class="nm">2'b01</span>};
+      <span class="kw">bins</span> idle_op  = {<span class="nm">2'b10</span>};
+      <span class="kw">illegal_bins</span> reserved = {<span class="nm">2'b11</span>}; <span class="cm">// Error if hit</span>
+    }
+
+    cp_addr: <span class="kw">coverpoint</span> addr {
+      <span class="kw">bins</span> low_zone  = {[<span class="nm">4'h0</span>:<span class="nm">4'h5</span>]};
+      <span class="kw">bins</span> mid_zone  = {[<span class="nm">4'h6</span>:<span class="nm">4'hA</span>]};
+      <span class="kw">bins</span> high_zone = {[<span class="nm">4'hB</span>:<span class="nm">4'hE</span>]};
+      <span class="kw">ignore_bins</span> reserved_top = {<span class="nm">4'hF</span>}; <span class="cm">// Excluded</span>
+    }
+
+    cp_pready: <span class="kw">coverpoint</span> pready {
+      <span class="kw">bins</span> ready     = {<span class="nm">1</span>};
+      <span class="kw">bins</span> not_ready = {<span class="nm">0</span>};
+    }
+
+    <span class="cm">// ⭐ CROSS: all opcode × addr combinations</span>
+    cx_op_addr: <span class="kw">cross</span> cp_opcode, cp_addr;
+
+  <span class="kw">endgroup</span>
+
+  <span class="kw">function new</span>();
+    apb_cg = <span class="kw">new</span>();   <span class="cm">// ⭐ Must instantiate covergroup</span>
+  <span class="kw">endfunction</span>
+
+  <span class="kw">function void</span> <span class="fn">sample</span>();
+    apb_cg.<span class="fn">sample</span>();  <span class="cm">// ⭐ Manually trigger</span>
+  <span class="kw">endfunction</span>
+<span class="kw">endclass</span>
+
+<span class="kw">module</span> <span class="mn">functional_coverage_demo</span>;
+  <span class="tp">APBTransaction</span> t = <span class="kw">new</span>();
+  <span class="kw">initial begin</span>
+    <span class="kw">repeat</span>(<span class="nm">50</span>) <span class="kw">begin</span>
+      <span class="kw">if</span> (!t.<span class="fn">randomize</span>()) <span class="op">$fatal</span>(<span class="nm">1</span>,<span class="st">"Failed"</span>);
+      t.<span class="fn">sample</span>();        <span class="cm">// ⭐ Collect coverage each time</span>
+    <span class="kw">end</span>
+
+    <span class="cm">// Force corner cases</span>
+    t.<span class="fn">randomize</span>() <span class="kw">with</span> { opcode == <span class="nm">2'b01</span>; addr == <span class="nm">4'hB</span>; };
+    t.<span class="fn">sample</span>();
+
+    <span class="op">$display</span>(<span class="st">"Total coverage : %0.2f%%"</span>, t.apb_cg.<span class="fn">get_coverage</span>());
+    <span class="op">$display</span>(<span class="st">"op coverage    : %0.2f%%"</span>, t.apb_cg.cp_opcode.<span class="fn">get_coverage</span>());
+    <span class="op">$display</span>(<span class="st">"cross coverage : %0.2f%%"</span>, t.apb_cg.cx_op_addr.<span class="fn">get_coverage</span>());
+  <span class="kw">end</span>
+<span class="kw">endmodule</span></pre></div>
+
+  <div id="p5-o" class="tc"><div class="ob">
+<span class="o-sep">=== Running 50 transactions + corner cases ===</span><br><br>
+Total coverage : <span class="o-ok">87.50%</span><br>
+op coverage    : <span class="o-ok">100.00%</span><br>
+cross coverage : <span class="o-warn">77.78%</span>&nbsp;&nbsp;<span class="o-warn">← some combinations not yet seen</span>
+  </div></div>
+
+  <div id="p5-e" class="tc">
+    <div class="exam-qs">
+      <h4>Expected Exam Questions</h4>
+      <ol>
+        <li>What is functional coverage? Distinguish from code coverage.</li>
+        <li>Define covergroup, coverpoint, bins with syntax.</li>
+        <li>What is cross coverage? Give an example.</li>
+        <li>Difference between <code>illegal_bins</code> and <code>ignore_bins</code>.</li>
+        <li>How do you manually sample a covergroup? Why is it needed?</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="mistake"><strong>⚠️ Common Mistake:</strong> Defining a covergroup but <strong>never calling <code>sample()</code></strong>. Coverage stays 0%. You must either call <code>cg.sample()</code> manually or auto-trigger with <code>covergroup cg @(posedge clk)</code>.</div>
+  <div class="cb"><h4>Must Memorize</h4><ul>
+    <li>Hierarchy: <code>covergroup</code> → <code>coverpoint</code> → <code>bins</code></li>
+    <li><code>illegal_bins</code> = simulation error if hit | <code>ignore_bins</code> = quietly excluded from %</li>
+    <li><code>cross cp1, cp2</code> = tracks all combinations of two coverpoints</li>
+    <li>Must instantiate: <code>cg = new()</code> in constructor</li>
+    <li>Must sample: <code>cg.sample()</code> after each transaction</li>
+    <li><code>get_coverage()</code> returns real value (0.0–100.0)</li>
+  </ul></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- P6: ASSERTIONS SVA -->
+<!-- ============================================================ -->
+<div class="program" id="p6">
+  <div class="prog-header">
+    <div class="prog-num" style="background:var(--red)">6</div>
+    <div>
+      <div class="prog-title">Assertions (SVA) — Immediate &amp; Concurrent</div>
+      <div class="prog-sub">assert · property · ##n · |-> · |=> · $rose · $fell · disable iff · cover</div>
+    </div>
+    <span class="tag t-sva">SVA</span>
+  </div>
+
+  <div class="slabel">Definition</div>
+  <div class="obj">
+    SVA lets you write declarative rules that the simulator checks automatically every clock cycle.
+    <strong>Immediate assertions</strong> check current values; <strong>concurrent assertions</strong> verify temporal (multi-cycle) behavior.
+  </div>
+
+  <table class="concept-table">
+    <tr><th>Operator</th><th>Meaning</th><th>Example</th></tr>
+    <tr><td><code>##n</code></td><td>Exactly n clock cycles later</td><td><code>a ##2 b</code> → b true 2 cycles after a</td></tr>
+    <tr><td><code>##[m:n]</code></td><td>Between m and n cycles</td><td><code>req ##[1:5] ack</code></td></tr>
+    <tr><td><code>|-></code></td><td>Overlapping implication (same cycle)</td><td><code>a |-> b</code></td></tr>
+    <tr><td><code>|=></code></td><td>Non-overlapping implication (next cycle)</td><td><code>a |=> b</code></td></tr>
+    <tr><td><code>$rose(s)</code></td><td>Signal transitions 0→1</td><td><code>$rose(psel)</code></td></tr>
+    <tr><td><code>$fell(s)</code></td><td>Signal transitions 1→0</td><td><code>$fell(ack)</code></td></tr>
+    <tr><td><code>$stable(s)</code></td><td>Signal value unchanged</td><td><code>$stable(paddr)</code></td></tr>
+    <tr><td><code>[*n]</code></td><td>Repeat exactly n times</td><td><code>a[*3]</code></td></tr>
+    <tr><td><code>[*1:$]</code></td><td>Repeat 1 or more times</td><td><code>a[*1:$]</code></td></tr>
+    <tr><td><code>disable iff</code></td><td>Suppress during condition</td><td><code>disable iff (rst)</code></td></tr>
+  </table>
+
+  <div class="tabs">
+    <button class="tb active" onclick="showTab('p6','c')">Code</button>
+    <button class="tb" onclick="showTab('p6','o')">Expected Output</button>
+    <button class="tb" onclick="showTab('p6','e')">Exam Questions</button>
+  </div>
+
+  <div id="p6-c" class="tc active"><pre>
+<span class="cm">// ========================================================</span>
+<span class="cm">// Topic 6: Assertions (SVA)</span>
+<span class="cm">// File: 06_Assertions_SVA/assertions_demo.sv</span>
+<span class="cm">// ========================================================</span>
+
+<span class="kw">module</span> <span class="mn">apb_checker</span> (
+  <span class="kw">input logic</span> clk, rst,
+  <span class="kw">input logic</span> psel, penable, pwrite, pready,
+  <span class="kw">input logic</span> [31:0] paddr, pwdata, prdata
+);
+
+  <span class="cm">// ⭐ IMMEDIATE ASSERTION (procedural code)</span>
+  <span class="kw">always</span> @(<span class="kw">posedge</span> clk) <span class="kw">begin</span>
+    <span class="kw">if</span> (psel &amp;&amp; penable)
+      <span class="kw">assert</span> (paddr[<span class="nm">1</span>:<span class="nm">0</span>] == <span class="nm">2'b00</span>)
+        <span class="kw">else</span> <span class="op">$error</span>(<span class="st">"[IMMED] PADDR not word-aligned!"</span>);
+  <span class="kw">end</span>
+
+  <span class="cm">// ⭐ CONCURRENT ASSERTION — property + assert property</span>
+
+  <span class="cm">// Rule 1: PENABLE must come 1 cycle after PSEL (|=> non-overlapping)</span>
+  <span class="kw">property</span> p_penable_after_psel;
+    @(<span class="kw">posedge</span> clk) <span class="kw">disable iff</span> (rst)
+    <span class="op">$rose</span>(psel) <span class="kw">|=></span> penable;   <span class="cm">// ⭐ next cycle</span>
+  <span class="kw">endproperty</span>
+  APB_PENABLE: <span class="kw">assert property</span> (p_penable_after_psel)
+    <span class="kw">else</span> <span class="op">$error</span>(<span class="st">"PENABLE not seen 1 cycle after PSEL!"</span>);
+
+  <span class="cm">// Rule 2: Address must not change during transfer (|-> same cycle)</span>
+  <span class="kw">property</span> p_addr_stable;
+    @(<span class="kw">posedge</span> clk) <span class="kw">disable iff</span> (rst)
+    (psel &amp;&amp; penable) <span class="kw">|-></span> <span class="op">$stable</span>(paddr);
+  <span class="kw">endproperty</span>
+  APB_ADDR: <span class="kw">assert property</span> (p_addr_stable)
+    <span class="kw">else</span> <span class="op">$error</span>(<span class="st">"PADDR changed during transfer!"</span>);
+
+  <span class="cm">// Rule 3: PREADY must come within 1-5 cycles</span>
+  <span class="kw">property</span> p_pready_timeout;
+    @(<span class="kw">posedge</span> clk) <span class="kw">disable iff</span> (rst)
+    <span class="op">$rose</span>(penable) <span class="kw">|-></span> ##[<span class="nm">1</span>:<span class="nm">5</span>] pready;
+  <span class="kw">endproperty</span>
+  APB_PREADY: <span class="kw">assert property</span> (p_pready_timeout)
+    <span class="kw">else</span> <span class="op">$error</span>(<span class="st">"PREADY timeout!"</span>);
+
+  <span class="cm">// ⭐ COVER: verify scenarios actually occur</span>
+  <span class="kw">cover property</span> (@(<span class="kw">posedge</span> clk) psel &amp;&amp; penable &amp;&amp; pwrite  &amp;&amp; pready);
+  <span class="kw">cover property</span> (@(<span class="kw">posedge</span> clk) psel &amp;&amp; penable &amp;&amp; !pwrite &amp;&amp; pready);
+
+<span class="kw">endmodule</span></pre></div>
+
+  <div id="p6-o" class="tc"><div class="ob">
+<span class="o-sep">=== APB Assertion Demo ===</span><br><br>
+Write at addr=0x40000000 ...<br>
+<span class="o-ok">  PENABLE assertion: PASS (arrived at T+1)</span><br>
+<span class="o-ok">  PADDR stable: PASS</span><br>
+<span class="o-ok">  PREADY: PASS (arrived within 5 cycles)</span><br><br>
+Read at addr=0x40000000 ...<br>
+<span class="o-ok">  All assertions: PASS</span><br><br>
+Write with wait state ...<br>
+<span class="o-ok">  Wait state: PASS (PREADY held low 1 extra cycle)</span><br><br>
+<span class="o-sep">=== Done — check assertion logs above ===</span>
+  </div></div>
+
+  <div id="p6-e" class="tc">
+    <div class="exam-qs">
+      <h4>Expected Exam Questions</h4>
+      <ol>
+        <li>Differentiate immediate and concurrent assertions.</li>
+        <li>Write an SVA: "If req rises, ack must come within 3 cycles."</li>
+        <li>Explain <code>|-></code> vs <code>|=></code> with timing.</li>
+        <li>What is <code>disable iff</code>? When is it used?</li>
+        <li>Difference between <code>assert property</code> and <code>cover property</code>.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="mistake"><strong>⚠️ Common Mistake:</strong> Confusing <code>|-></code> and <code>|=></code>. <code>|-></code> is overlapping — consequent checked <em>same cycle</em>. <code>|=></code> is non-overlapping — consequent starts <em>next cycle</em>. APB uses <code>|=></code> because PENABLE comes one cycle <em>after</em> PSEL.</div>
+  <div class="cb"><h4>Must Memorize</h4><ul>
+    <li>Immediate: <code>assert(expr) else $error("...")</code> — in <code>always</code> or <code>initial</code></li>
+    <li>Concurrent: <code>property p; @(posedge clk) ... endproperty</code> + <code>assert property(p)</code></li>
+    <li><code>|-></code> same cycle | <code>|=></code> next cycle — <strong>most exam-tested distinction</strong></li>
+    <li><code>##n</code> = n cycles later | <code>##[m:n]</code> = between m and n cycles</li>
+    <li><code>disable iff (rst)</code> = suppress assertion during reset</li>
+    <li><code>cover property</code> = checks scenario occurs (not an error if missing)</li>
+  </ul></div>
+</div>
+
+<!-- ============================================================ -->
+<!-- P7: APB PROTOCOL -->
+<!-- ============================================================ -->
+<div class="program" id="p7">
+  <div class="prog-header">
+    <div class="prog-num" style="background:var(--green)">7</div>
+    <div>
+      <div class="prog-title">APB Protocol (AMBA APB3)</div>
+      <div class="prog-sub">IDLE · SETUP · ACCESS · PREADY wait states · apb_write · apb_read tasks</div>
+    </div>
+    <span class="tag t-apb">APB</span>
+  </div>
+
+  <div class="slabel">Definition</div>
+  <div class="obj">
+    The <strong>Advanced Peripheral Bus (APB)</strong> is a simple, low-bandwidth AMBA bus for slow peripherals (UART, GPIO, Timer).
+    It is <strong>non-pipelined</strong>, uses a single master, and requires exactly <strong>2 clock cycles minimum</strong> per transfer (SETUP + ACCESS).
+  </div>
+
+  <table class="concept-table">
+    <tr><th>Signal</th><th>Direction</th><th>Description</th></tr>
+    <tr><td><code>PCLK</code></td><td>→ All</td><td>Clock — all transfers sync to rising edge</td></tr>
+    <tr><td><code>PRESETn</code></td><td>→ All</td><td>Active-low reset</td></tr>
+    <tr><td><code>PSEL</code></td><td>Master→Slave</td><td>Select: this slave is chosen</td></tr>
+    <tr><td><code>PENABLE</code></td><td>Master→Slave</td><td>Enable: marks 2nd cycle (ACCESS phase)</td></tr>
+    <tr><td><code>PWRITE</code></td><td>Master→Slave</td><td>1=Write, 0=Read</td></tr>
+    <tr><td><code>PADDR[31:0]</code></td><td>Master→Slave</td><td>Address bus</td></tr>
+    <tr><td><code>PWDATA[31:0]</code></td><td>Master→Slave</td><td>Write data</td></tr>
+    <tr><td><code>PRDATA[31:0]</code></td><td>Slave→Master</td><td>Read data</td></tr>
+    <tr><td><code>PREADY</code></td><td>Slave→Master</td><td>Ready: 0=insert wait state, 1=transfer done</td></tr>
+    <tr><td><code>PSLVERR</code></td><td>Slave→Master</td><td>Slave error flag</td></tr>
+  </table>
+
+  <div class="slabel" style="margin-top:.5rem">State Machine &amp; Timing</div>
+  <div class="obj" style="font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.9;padding:1rem 1.6rem">
+    <span style="color:var(--accent)">IDLE</span> ──PSEL=1──▶ <span style="color:var(--yellow)">SETUP</span> ──PENABLE=1──▶ <span style="color:var(--green)">ACCESS</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│ PREADY=0 → stay in ACCESS (wait state)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└ PREADY=1 → back to IDLE<br><br>
+    <span style="color:var(--muted)">Timing (Write):</span><br>
+    PCLK &nbsp;&nbsp;: _⌐‾⌐_⌐‾⌐_⌐‾⌐_⌐‾⌐_<br>
+    PSEL &nbsp;&nbsp;: ____⌐‾‾‾‾‾‾‾‾‾‾‾⌐__<br>
+    PENABLE: ________⌐‾‾‾‾‾‾‾⌐__<br>
+    PWRITE : ____⌐‾‾‾‾‾‾‾‾‾‾‾⌐__  (1=Write)<br>
+    PADDR &nbsp;: ----[&nbsp;&nbsp;&nbsp;ADDR&nbsp;&nbsp;&nbsp;]----<br>
+    PWDATA : ----[&nbsp;&nbsp;&nbsp;DATA&nbsp;&nbsp;&nbsp;]----<br>
+    PREADY : ________⌐‾‾‾‾‾⌐____<br>
+    State &nbsp;: IDLE&nbsp;SETUP&nbsp;ACCESS&nbsp;IDLE
+  </div>
+
+  <div class="tabs">
+    <button class="tb active" onclick="showTab('p7','c')">Code</button>
+    <button class="tb" onclick="showTab('p7','o')">Expected Output</button>
+    <button class="tb" onclick="showTab('p7','e')">Exam Questions</button>
+  </div>
+
+  <div id="p7-c" class="tc active"><pre>
+<span class="cm">// ========================================================</span>
+<span class="cm">// Topic 7: APB Protocol — apb_write / apb_read tasks</span>
+<span class="cm">// File: 07_APB_Protocol/apb_protocol_demo.sv</span>
+<span class="cm">// ========================================================</span>
+
+<span class="kw">module</span> <span class="mn">apb_protocol_demo</span>;
+  <span class="kw">logic</span>        PCLK=<span class="nm">0</span>, PRESETn=<span class="nm">0</span>;
+  <span class="kw">logic</span>        PSEL=<span class="nm">0</span>, PENABLE=<span class="nm">0</span>, PWRITE=<span class="nm">0</span>, PREADY;
+  <span class="kw">logic</span> [31:0] PADDR=<span class="nm">0</span>, PWDATA=<span class="nm">0</span>, PRDATA, rdata;
+
+  <span class="kw">always</span> #<span class="nm">5</span> PCLK = ~PCLK; <span class="cm">// 100 MHz</span>
+  apb_slave slave (.*);
+
+  <span class="cm">// ⭐ APB WRITE TASK</span>
+  <span class="kw">task</span> <span class="fn">apb_write</span>(<span class="kw">input logic</span> [31:0] addr, data);
+    <span class="op">$display</span>(<span class="st">"--- WRITE addr=%08h data=%08h ---"</span>, addr, data);
+
+    <span class="cm">// ⭐ SETUP phase: PSEL=1, PENABLE=0</span>
+    @(<span class="kw">posedge</span> PCLK);
+    PSEL &lt;= <span class="nm">1</span>; PENABLE &lt;= <span class="nm">0</span>; PWRITE &lt;= <span class="nm">1</span>;
+    PADDR &lt;= addr; PWDATA &lt;= data;
+    <span class="op">$display</span>(<span class="st">"SETUP  : PSEL=1 PENABLE=0"</span>);
+
+    <span class="cm">// ⭐ ACCESS phase: PSEL=1, PENABLE=1</span>
+    @(<span class="kw">posedge</span> PCLK);
+    PENABLE &lt;= <span class="nm">1</span>;
+    <span class="op">$display</span>(<span class="st">"ACCESS : PSEL=1 PENABLE=1"</span>);
+
+    <span class="cm">// Wait for PREADY (handles wait states)</span>
+    <span class="kw">do</span> @(<span class="kw">posedge</span> PCLK); <span class="kw">while</span> (!PREADY);
+    <span class="op">$display</span>(<span class="st">"DONE   : PREADY=1 → transfer complete"</span>);
+
+    <span class="cm">// Back to IDLE</span>
+    PSEL &lt;= <span class="nm">0</span>; PENABLE &lt;= <span class="nm">0</span>; PWRITE &lt;= <span class="nm">0</span>;
+  <span class="kw">endtask</span>
+
+  <span class="cm">// ⭐ APB READ TASK</span>
+  <span class="kw">task</span> <span class="fn">apb_read</span>(<span class="kw">input logic</span> [31:0] addr,
+                 <span class="kw">output logic</span> [31:0] rdata);
+    <span class="op">$display</span>(<span class="st">"\n--- READ addr=%08h ---"</span>, addr);
+
+    <span class="cm">// SETUP phase</span>
+    @(<span class="kw">posedge</span> PCLK);
+    PSEL &lt;= <span class="nm">1</span>; PENABLE &lt;= <span class="nm">0</span>; PWRITE &lt;= <span class="nm">0</span>; PADDR &lt;= addr;
+
+    <span class="cm">// ACCESS phase</span>
+    @(<span class="kw">posedge</span> PCLK); PENABLE &lt;= <span class="nm">1</span>;
+
+    <span class="cm">// Wait for PREADY</span>
+    <span class="kw">do</span> @(<span class="kw">posedge</span> PCLK); <span class="kw">while</span> (!PREADY);
+    rdata = PRDATA;
+    <span class="op">$display</span>(<span class="st">"DONE   : PRDATA=0x%08h"</span>, rdata);
+    PSEL &lt;= <span class="nm">0</span>; PENABLE &lt;= <span class="nm">0</span>;
+  <span class="kw">endtask</span>
+
+  <span class="kw">initial begin</span>
+    <span class="kw">repeat</span>(<span class="nm">2</span>) @(<span class="kw">posedge</span> PCLK); PRESETn = <span class="nm">1</span>;
+
+    <span class="fn">apb_write</span>(<span class="nm">32'h0000_0000</span>, <span class="nm">32'hDEAD_BEEF</span>);
+    <span class="fn">apb_write</span>(<span class="nm">32'h0000_0004</span>, <span class="nm">32'hCAFE_BABE</span>);
+    <span class="fn">apb_read</span> (<span class="nm">32'h0000_0000</span>, rdata);
+    <span class="fn">apb_read</span> (<span class="nm">32'h0000_0004</span>, rdata);
+
+    <span class="op">$display</span>(<span class="st">"\nAPB Demo COMPLETE"</span>);
+    <span class="op">$finish</span>;
+  <span class="kw">end</span>
+<span class="kw">endmodule</span></pre></div>
+
+  <div id="p7-o" class="tc"><div class="ob">
+<span class="o-sep">--- WRITE addr=00000000 data=DEADBEEF ---</span><br>
+SETUP  : PSEL=<span class="o-ok">1</span> PENABLE=<span class="o-err">0</span><br>
+ACCESS : PSEL=<span class="o-ok">1</span> PENABLE=<span class="o-ok">1</span><br>
+<span class="o-ok">[SLAVE] WRITE reg[0] &lt;= 0xDEADBEEF</span><br>
+DONE   : PREADY=1 → transfer complete<br><br>
+<span class="o-sep">--- WRITE addr=00000004 data=CAFEBABE ---</span><br>
+SETUP  : PSEL=<span class="o-ok">1</span> PENABLE=<span class="o-err">0</span><br>
+ACCESS : PSEL=<span class="o-ok">1</span> PENABLE=<span class="o-ok">1</span><br>
+<span class="o-ok">[SLAVE] WRITE reg[1] &lt;= 0xCAFEBABE</span><br>
+DONE   : PREADY=1 → transfer complete<br><br>
+<span class="o-sep">--- READ  addr=00000000 ---</span><br>
+SETUP  : PSEL=<span class="o-ok">1</span> PENABLE=<span class="o-err">0</span><br>
+ACCESS : PSEL=<span class="o-ok">1</span> PENABLE=<span class="o-ok">1</span><br>
+<span class="o-ok">[SLAVE] READ  reg[0] =&gt; 0xDEADBEEF</span><br>
+DONE   : PRDATA=0x<span class="o-ok">DEADBEEF</span><br><br>
+<span class="o-sep">--- READ  addr=00000004 ---</span><br>
+<span class="o-ok">[SLAVE] READ  reg[1] =&gt; 0xCAFEBABE</span><br>
+DONE   : PRDATA=0x<span class="o-ok">CAFEBABE</span><br><br>
+<span class="o-sep">APB Demo COMPLETE</span>
+  </div></div>
+
+  <div id="p7-e" class="tc">
+    <div class="exam-qs">
+      <h4>Expected Exam Questions</h4>
+      <ol>
+        <li>List and explain all APB signals with directions.</li>
+        <li>Draw APB state machine — IDLE → SETUP → ACCESS.</li>
+        <li>Explain APB write transaction with a timing waveform.</li>
+        <li>What is PREADY? What happens when PREADY=0?</li>
+        <li>Difference between SETUP and ACCESS phase.</li>
+        <li>Write SV tasks for APB read and write.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="mistake"><strong>⚠️ Common Mistake:</strong> Asserting <code>PENABLE=1</code> in the SETUP phase. PENABLE is <strong>0 during SETUP</strong> and only becomes <strong>1 in ACCESS</strong>. The transfer completes when <code>PENABLE=1 AND PREADY=1</code>.</div>
+  <div class="cb"><h4>Must Memorize</h4><ul>
+    <li>Minimum 2 cycles: <strong>SETUP</strong> (PSEL=1, PENABLE=0) → <strong>ACCESS</strong> (PSEL=1, PENABLE=1)</li>
+    <li>PREADY=0 → stay in ACCESS (insert wait states)</li>
+    <li>PREADY=1 → transfer complete → go back to IDLE</li>
+    <li>PWRITE=1 → Write (drive PWDATA) | PWRITE=0 → Read (capture PRDATA)</li>
+    <li>PSLVERR=1 → slave signalling an error condition</li>
+    <li>All APB signals are sampled at <strong>rising edge of PCLK</strong></li>
+  </ul></div>
+</div>
+
+</div><!-- container -->
+
+<script>
+function showTab(prog, tab) {
+  // Hide all tab contents for this program
+  document.querySelectorAll('#' + prog + '-c, #' + prog + '-o, #' + prog + '-e')
+    .forEach(e => e.classList.remove('active'));
+  // Deactivate all tab buttons
+  document.querySelectorAll('#' + prog + ' .tb')
+    .forEach(b => b.classList.remove('active'));
+  // Activate selected
+  const el = document.getElementById(prog + '-' + tab);
+  if (el) el.classList.add('active');
+  event.target.classList.add('active');
+}
+
+// Smooth scroll for nav links
+document.querySelectorAll('nav a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>
