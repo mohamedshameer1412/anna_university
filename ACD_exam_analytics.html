@@ -516,6 +516,24 @@ body {
     display: inline;
   }
 }
+
+/* Progress tracking + custom responsive controls */
+.progress-panel{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:18px;margin:0 0 20px;box-shadow:0 3px 12px #1118270a}
+.progress-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}.progress-head strong{font-size:15px}
+.progress-track{height:12px;background:#e9eaf1;border-radius:99px;overflow:hidden}.progress-fill{height:100%;background:linear-gradient(90deg,#4f46e5,#7c3aed);border-radius:99px;transition:width .25s}
+.progress-stats{font-size:12px;color:#4b5563;margin-top:8px}.progress-units{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:13px}
+.progress-mini{background:#f8fafc;border:1px solid #eef0f5;padding:9px 10px;border-radius:10px;font-size:12px;min-width:0}.progress-mini span{display:block;color:#6b7280;margin-top:3px}
+.progress-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:14px}.filter-control{display:flex;align-items:center;gap:9px;flex:1;min-width:220px}.filter-label{font-size:12px;font-weight:700;color:#475569;white-space:nowrap}
+.custom-select-wrap{position:relative;min-width:190px;max-width:260px;flex:1}
+.filter-trigger{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;border:1px solid #d7dbea;background:#fff;color:#1f2937;border-radius:10px;padding:10px 12px;font:600 12px Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;box-shadow:0 1px 2px #11182708;outline:none}.filter-trigger:hover,.filter-trigger[aria-expanded="true"]{border-color:#818cf8}.filter-trigger:focus-visible{box-shadow:0 0 0 3px #6366f122}.filter-chevron{width:7px;height:7px;border-right:2px solid #64748b;border-bottom:2px solid #64748b;transform:rotate(45deg);transition:transform .15s}.filter-trigger[aria-expanded="true"] .filter-chevron{transform:rotate(225deg)}
+.filter-menu{display:none;position:absolute;z-index:20;top:calc(100% + 6px);left:0;right:0;padding:5px;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 12px 28px #0f172a1c}.filter-menu.open{display:block}.filter-option{display:flex;align-items:center;justify-content:space-between;width:100%;border:0;background:transparent;color:#334155;padding:10px;border-radius:8px;text-align:left;font:600 12px Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer}.filter-option:hover{background:#f1f5f9}.filter-option.active{background:#eef2ff;color:#4338ca}.filter-option.active:after{content:"✓";font-weight:800}
+.action-button{border:1px solid #e2e8f0;background:#fff;color:#475569;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:700;cursor:pointer;transition:.18s}.action-button:hover{border-color:#a5b4fc;color:#4338ca;background:#f8faff}
+.checkline,.question-check{display:flex;align-items:flex-start;gap:10px;cursor:pointer;min-width:0}.checkline input,.question-check input{appearance:none;-webkit-appearance:none;width:19px;height:19px;flex:0 0 19px;margin:1px 0 0;border:1.7px solid #c4c9d6;border-radius:6px;background:#fff;cursor:pointer;display:grid;place-content:center;transition:background .15s,border-color .15s,box-shadow .15s}
+.checkline input:before,.question-check input:before{content:"";width:9px;height:5px;border-left:2px solid white;border-bottom:2px solid white;transform:rotate(-45deg) scale(0);transform-origin:center;transition:transform .12s}.checkline input:checked,.question-check input:checked{background:#4f46e5;border-color:#4f46e5}.checkline input:checked:before,.question-check input:checked:before{transform:rotate(-45deg) scale(1)}
+.checkline input:focus-visible,.question-check input:focus-visible{outline:3px solid #6366f133;outline-offset:2px}.checkline .topic-title{line-height:1.45}.completed-topic .topic-title{text-decoration:line-through;color:#6b7280}.question-check{margin:8px 0;line-height:1.55}.question-check.done .question-copy{text-decoration:line-through;color:#6b7280}
+.empty-filter{padding:22px 14px;text-align:center;color:#64748b;background:#fff;border:1px dashed #cbd5e1;border-radius:12px;font-size:13px}
+@media(max-width:650px){.progress-units{grid-template-columns:repeat(2,minmax(0,1fr))}.progress-panel{padding:14px}.progress-actions{align-items:stretch}.filter-control{width:100%;min-width:0}.custom-select-wrap{max-width:none}.action-button{width:100%}}
+@media(max-width:380px){.progress-units{grid-template-columns:1fr 1fr}.filter-control{align-items:flex-start;flex-direction:column}.custom-select-wrap{width:100%}.unit-panel{padding:12px}.topic-header{padding:11px}.topic-title{font-size:13px}}
 </style>
 </head>
 
@@ -548,6 +566,7 @@ body {
   <nav class="nav" id="mainNav"></nav>
 
   <!-- Content -->
+  <section id="progressDashboard"></section>
   <main id="content"></main>
 
 </div>
@@ -994,6 +1013,62 @@ const unitColors = [
 ========================================================= */
 
 let activeUnit = "summary";
+const STORAGE_KEY = "analog-circuits-progress-v1";
+let progress = {};
+let topicFilter = "all";
+try { progress = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); if (!progress || typeof progress !== "object") progress = {}; } catch(e) { progress = {}; }
+const topicKey = (unitId, topicName) => `topic:${unitId}:${topicName}`;
+const questionKey = (unitId, kind, index) => `question:${unitId}:${kind}:${index}`;
+function isDone(key) { return progress[key] === true; }
+function saveProgress() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); } catch(e) {} }
+function toggleProgress(key, checked) {
+  if (checked) progress[key] = true; else delete progress[key];
+  saveProgress(); renderProgress(); renderContent();
+}
+function setTopicFilter(value) { topicFilter = value; renderProgress(); renderContent(); }
+function toggleFilterMenu() {
+  const menu = document.getElementById("filterMenu");
+  const trigger = document.getElementById("filterTrigger");
+  if (!menu || !trigger) return;
+  const open = menu.classList.toggle("open");
+  trigger.setAttribute("aria-expanded", String(open));
+}
+function chooseTopicFilter(value) { topicFilter = value; renderProgress(); renderContent(); }
+function resetProgress() {
+  if (!confirm("Reset all topic and question progress?")) return;
+  progress = {}; saveProgress(); renderProgress(); renderContent();
+}
+function renderProgress() {
+  const allTopics = units.flatMap(u => u.topics.map(t => topicKey(u.id,t.name)));
+  const allQuestions = units.flatMap(u => [...u.q16.map((_,i)=>questionKey(u.id,"q16",i)),...u.q8.map((_,i)=>questionKey(u.id,"q8",i))]);
+  const completed = allTopics.filter(isDone).length;
+  const questionCount = allQuestions.filter(isDone).length;
+  const pct = Math.round(completed / allTopics.length * 100);
+  document.getElementById("progressDashboard").innerHTML = `
+    <div class="progress-panel">
+      <div class="progress-head"><strong>📚 Study Progress</strong><strong>${pct}% complete</strong></div>
+      <div class="progress-track" role="progressbar" aria-label="Topic completion" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="progress-stats">${completed} / ${allTopics.length} topics completed · ${questionCount} / ${allQuestions.length} practice questions completed</div>
+      <div class="progress-units">${units.map(u=>{const n=u.topics.filter(t=>isDone(topicKey(u.id,t.name))).length;return `<div class="progress-mini"><strong>Unit ${u.id}: ${n}/${u.topics.length}</strong><span>${Math.round(n/u.topics.length*100)}% complete</span></div>`}).join("")}</div>
+      <div class="progress-actions">
+        <div class="filter-control">
+          <label class="filter-label" for="topicFilter">Topic view</label>
+          <div class="custom-select-wrap">
+            <button id="filterTrigger" class="filter-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" onclick="toggleFilterMenu()">
+              <span>${topicFilter === "unfinished" ? "Unfinished topics" : topicFilter === "completed" ? "Completed topics" : "All topics"}</span><span class="filter-chevron"></span>
+            </button>
+            <div id="filterMenu" class="filter-menu" role="listbox" aria-label="Topic filter">
+              <button type="button" role="option" aria-selected="${topicFilter === "all"}" class="filter-option ${topicFilter === "all" ? "active" : ""}" onclick="chooseTopicFilter('all')">All topics</button>
+              <button type="button" role="option" aria-selected="${topicFilter === "unfinished"}" class="filter-option ${topicFilter === "unfinished" ? "active" : ""}" onclick="chooseTopicFilter('unfinished')">Unfinished topics</button>
+              <button type="button" role="option" aria-selected="${topicFilter === "completed"}" class="filter-option ${topicFilter === "completed" ? "active" : ""}" onclick="chooseTopicFilter('completed')">Completed topics</button>
+            </div>
+          </div>
+        </div>
+        <button class="action-button" type="button" onclick="resetProgress()">↺ Reset progress</button>
+      </div>
+    </div>`;
+}
+
 
 
 /* =========================================================
@@ -1073,11 +1148,13 @@ behavior: "smooth"
    TOPIC CARD
 ========================================================= */
 
-function renderTopic(topic, color) {
+function renderTopic(topic, color, unitId) {
+const key = topicKey(unitId, topic.name);
+const done = isDone(key);
 
 return `
 <div
-  class="topic-card"
+  class="topic-card ${done ? 'completed-topic' : ''}"
   style="border-color:${color}22"
   onclick="toggleTopic(this)">
 
@@ -1085,9 +1162,10 @@ return `
 
     <div class="topic-title-row">
 
-      <span class="topic-title">
-        ${topic.name}
-      </span>
+      <label class="checkline" onclick="event.stopPropagation()" title="Mark topic as completed">
+        <input type="checkbox" ${done ? 'checked' : ''} onchange="toggleProgress('${key.replace(/'/g, "\\'")}',this.checked)">
+        <span class="topic-title">${topic.name}</span>
+      </label>
 
       <span class="arrow">
         ▼
@@ -1239,8 +1317,14 @@ const sorted = [...unit.topics]
 .sort((a,b) => b.prob - a.prob);
 
 return sorted
-.map(t => renderTopic(t, unit.color))
-.join("");
+ .filter(t => {
+  const done = isDone(topicKey(unit.id,t.name));
+  if (topicFilter === "unfinished") return !done;
+  if (topicFilter === "completed") return done;
+  return true;
+})
+.map(t => renderTopic(t, unit.color, unit.id))
+.join("") || `<div class="empty-filter">${topicFilter === "completed" ? "No completed topics in this unit yet." : "All topics in this unit are completed. Great work!"}</div>`;
 
 }
 
@@ -1296,13 +1380,7 @@ ${unit.q16.map((q,i) => `
     border-left-color:${unit.color};
   ">
 
-  <span
-    class="question-number"
-    style="color:${unit.color}">
-    Q${i+1}.
-  </span>
-
-  ${q}
+  <label class="question-check ${isDone(questionKey(unit.id,"q16",i)) ? 'done' : ''}"><input type="checkbox" ${isDone(questionKey(unit.id,"q16",i)) ? 'checked' : ''} onchange="toggleProgress('question:${unit.id}:q16:${i}',this.checked)"><span class="question-copy"><span class="question-number" style="color:${unit.color}">Q${i+1}.</span> ${q}</span></label>
 
 </div>
 
@@ -1330,13 +1408,7 @@ ${unit.q8.map((q,i) => `
     border-left-color:${unit.color}88;
   ">
 
-  <span
-    class="question-number"
-    style="color:${unit.color}">
-    Q${i+1}.
-  </span>
-
-  ${q}
+  <label class="question-check ${isDone(questionKey(unit.id,"q8",i)) ? 'done' : ''}"><input type="checkbox" ${isDone(questionKey(unit.id,"q8",i)) ? 'checked' : ''} onchange="toggleProgress('question:${unit.id}:q8:${i}',this.checked)"><span class="question-copy"><span class="question-number" style="color:${unit.color}">Q${i+1}.</span> ${q}</span></label>
 
 </div>
 
@@ -1564,6 +1636,7 @@ content.innerHTML = renderUnit(unit);
 ========================================================= */
 
 renderNav();
+renderProgress();
 renderContent();
 
 </script>
