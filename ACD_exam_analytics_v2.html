@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Analog Circuits Design – Exam Prediction Dashboard</title>
+<style>
+:root{--bg:#f4f5fb;--cd:#fff;--tx:#1f2430;--mu:#667085;--bd:#e4e7f0;--ac:#4f46e5}
+*{box-sizing:border-box}body{margin:0;font:14px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,sans-serif;background:var(--bg);color:var(--tx)}
+.w{max-width:920px;margin:0 auto;padding:14px}
+header{background:linear-gradient(135deg,#1e1b4b,#4c1d95);color:#fff;border-radius:18px;padding:20px 22px}
+header small{color:#c7c3ff;font-weight:600}header h1{margin:4px 0;font-size:26px}header p{margin:2px 0 10px;color:#ddd9ff}
+.ch{display:inline-block;border:1px solid #8b84d9;background:#ffffff1a;border-radius:7px;padding:2px 8px;font-size:11px;margin:2px 3px 2px 0}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+nav button,.sb button{border:0;background:#fff;border-radius:10px;padding:7px 14px;font-weight:600;cursor:pointer;box-shadow:0 1px 3px #0001;color:var(--tx);font-size:13px}
+nav button.on{background:var(--ac);color:#fff}
+.card{background:var(--cd);border:1px solid var(--bd);border-radius:16px;padding:16px;margin-bottom:12px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.pb{height:12px;background:#e9e8f5;border-radius:9px;overflow:hidden;margin:8px 0}.pb i{display:block;height:100%;background:var(--ac);transition:width .25s}
+.mu{color:var(--mu);font-size:12px}
+.ug{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin:10px 0}
+.ug div{border:1px solid var(--bd);border-radius:10px;padding:8px 10px;background:#fafaff}
+select,.rs{border:1px solid var(--bd);border-radius:10px;padding:8px 12px;background:#fff;font-size:13px;cursor:pointer}
+.ub{border-radius:16px;padding:16px;border:1px solid}
+.pill{display:inline-block;color:#fff;border-radius:9px;padding:2px 10px;font-weight:700;font-size:12px;margin-right:8px}
+.sb{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.sb button.on{background:var(--c);color:#fff}
+.tc{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.tc.done{background:#f0fdf4;border-color:#86efac}.tc.done .nm{text-decoration:line-through;color:#6b7280}
+.tc label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-weight:600}
+input[type=checkbox]{width:18px;height:18px;margin-top:2px;accent-color:#16a34a;flex:none}
+.bd{display:inline-block;border-radius:7px;padding:1px 8px;font-size:11px;font-weight:600;margin:4px 6px 0 0;background:#eef0f7;color:#475069}
+.E{background:#dcfce7;color:#166534}.M{background:#fef3c7;color:#92400e}.H{background:#fee2e2;color:#991b1b}
+.pr{height:7px;background:#eceef6;border-radius:6px;margin:8px 0 4px;overflow:hidden}.pr i{display:block;height:100%}
+details summary{cursor:pointer;color:var(--ac);font-size:12px;font-weight:600;margin-top:4px}details p{margin:6px 0 0;color:#374151;font-size:13px}
+h3{margin:14px 0 6px;font-size:15px}h2{margin:0 0 8px;font-size:17px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--bd)}th{color:var(--mu);font-weight:600}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+ul{margin:6px 0;padding-left:18px}li{margin:3px 0}
+.note{background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:10px 12px;font-size:12px;color:#78350f}
+.pc{border-left:5px solid;border-radius:10px;background:#fff;padding:8px 12px;margin:8px 0;border-top:1px solid var(--bd);border-right:1px solid var(--bd);border-bottom:1px solid var(--bd)}
+@media(max-width:520px){header h1{font-size:21px}.w{padding:10px}}
+</style></head><body><div class="w">
+<header><small>EC23C02 • ANNA UNIVERSITY (REG 2023) • NOV/DEC 2026 PREDICTION</small><h1>Analog Circuits Design</h1>
+<p>Based on 13 papers analysed: 4 End-Sem + 9 Internal/Lab assessments</p>
+<span class="ch">ND24 = Nov/Dec 2024</span><span class="ch">AM25 = Apr/May 2025</span><span class="ch">ND25 = Nov/Dec 2025</span><span class="ch">AM26 = Apr/May 2026 (arrear)</span><span class="ch">IA1/IA2/Retest/Lab = internals (Oct 2024 – Oct 2026)</span></header>
+<nav id="nav"></nav><div id="prog"></div><div id="main"></div>
+<div class="note" style="margin-top:14px"><b>Read this first.</b> "Probability" = analyst estimate from observed frequency across the papers supplied, not a statistical guarantee. Real paper pattern is 2-mark Part A, 13-mark Part B (OR choice), 15-mark Part C, so this dashboard uses 13-mark long questions instead of 16. Limitations: some scans are tilted/handwritten, so figure details were not always readable; ND24 was supplied twice (counted once); JFET self-bias (ND25 Q1) is outside the listed syllabus and is not tracked; AM26 is an arrear paper and is theory-heavier than the regular papers.</div>
+</div>
+<script>
+/* ===== DATA (analysis) — kept separate from rendering ===== */
+/* T:[name,prob,diff,hours,type,marks,priority,why/evidence]  L/S:[question,marks,kind,evidence,confidence] */
+const U=[
+{n:"Biasing of Discrete BJT & MOSFET",c:"#4f46e5",bg:"#eef0ff",
+T:[["Voltage-divider bias: RTH/VTH, IBQ, ICQ, VCEQ, effect of β change",92,"M",4,"Problem-solving","13–15","Critical","A divider/self-bias numerical appears in every ESE: AM25 11a, ND25 11a (β=150→75), AM26 Q16 (15M). Internals: Retest-24 Q9, IA1-Sep25 8b, IA1-Aug26 8b."],
+["Stability factors S, S′, S″ (derivation + numerical)",85,"M",3,"Formula","2–13","Critical","ND24 11a (13M derive for ICBO, β, VBE); ND25 Q2; AM26 11b; IA1-Sep25 Q1 and 8b(ii); Retest-24 8a."],
+["DC load line, Q-point, regions of operation",82,"E",2,"Concept","2–13","Critical","AM26 Q1 and 11a (13M); AM25 Q2; IA1-Oct24 8a/8b; IA1-Sep25 Q3; Retest-24 Q4."],
+["MOSFET DC bias analysis (ID, VGS, VD, VSD)",68,"M",3,"Problem-solving","2–13","High","ND24 11b (13M PMOS bias) and Q5; AM25 Q6; IA1-Oct24 Q4/Q5; IA1-Aug26 Q10(ii). Not in ND25/AM26 Part B, so due."],
+["Bias design to specs (ΔIc/Ic, β spread, mid-point Q)",60,"H",5,"Problem-solving","13","High","AM25 11b; ND25 11b (mid-point Q, RB, S); IA1-Oct24 Part C; Retest-24 Part C; IA1-Sep25 8a; Lab-Aug26 Part C."],
+["Bias compensation & thermal stability",38,"M",1.5,"Memory","2–6","Low","Only direct hit: Lab-Aug26 Q7 (2M). Syllabus names it, no ESE hit observed. Do not skip fully: 2-mark risk, 20-minute read."]],
+L:[["For a voltage-divider bias circuit find RTH, VTH, IBQ, ICQ, VCEQ; repeat for changed β and comment on Q-point shift.",13,"Numerical","ND25 11a; AM26 Q16; AM25 11a","High (85%)"],
+["Derive the stability factors S(ICBO), S′(VBE), S″(β) for a BJT bias circuit.",13,"Derivation","ND24 11a; AM26 11b; Retest-24 8a","High (78%)"],
+["Design a self-bias circuit (R1, R2, RC, RE) to meet ΔIc/Ic over a temperature range with β spread.",13,"Design","AM25 11b; IA1-Oct24 Q10; Retest-24 Q10","Medium (55%)"]],
+S:[["Define stability factor and state its significance.",2,"Theory","ND25 Q2; IA1-Sep25 Q1; IA1-Aug26 Q1","High (80%)"],
+["Sketch the DC load line / state its significance for a CE amplifier.",2,"Numerical","AM26 Q1; AM25 Q2; IA1-Sep25 Q3","High (75%)"]],
+G:{seq:"Load line → divider bias → stability factors → design-to-spec → MOSFET bias → compensation",dep:"Load line is needed before every other topic in this unit; S derivations need divider bias.",time:"≈ 18.5 h",form:"RTH=R1‖R2, VTH=VCC·R2/(R1+R2), IB=(VTH−VBE)/(RTH+(β+1)RE), S=(1+β)/(1+β·RE/(RE+RB)), ID=Kn(VGS−VTN)²",prac:"Practise ND25 11a, AM26 Q16, then ND24 11b, then AM25 11b."}},
+{n:"Discrete BJT Amplifiers",c:"#0891b2",bg:"#ecfeff",
+T:[["Differential amplifier & CMRR (BJT)",95,"H",4,"Formula","2–13","Critical","In all 4 ESEs: ND24 Q16b (4M), ND25 Q4, AM25 15a (13M), AM26 12a (13M). Internals: IA2-Nov24 Q6, IA2-Oct25 Q10."],
+["Common collector (emitter follower): Av, Ai, Ri, Ro",90,"M",3,"Formula","13","Critical","AM25 12a (8+5), ND25 12a, AM26 12b; IA1-Sep25 Q10 (8+4); IA2-Nov24 Q10 (design)."],
+["Darlington / direct-coupled pair",80,"M",3,"Formula","7–13","Critical","ND24 12b(i) 7M, AM25 12b(i) 8M, ND25 12b 13M; AM25 Q4. Absent in AM26, so due back."],
+["CE small-signal analysis (Av, Ri, Ro, Early effect)",72,"M",4,"Problem-solving","12–13","High","ND24 12a (13M); AM26 Q3; internals very heavy: IA1-Oct24 9, Retest-24 9, IA1-Sep25 9, IA2-Nov24 8a/9b."],
+["AC load line & maximum symmetrical swing",62,"E",2,"Formula","2–4","High","AM25 Q3, AM26 Q4 (both 2M); ND24 12a(c); IA2-Nov24 8a."],
+["Common base, BJT cascode & multistage",48,"M",3,"Concept","2–6","Medium","ND25 Q3 (CB Ri); ND24 12b(ii) cascode design (6M); IA1-Sep25 Q6/Q7. No stand-alone 13M ESE on CB."]],
+L:[["Derive voltage gain, current gain, Ri and Ro of a common-collector amplifier by small-signal AC analysis; solve for given values.",13,"Derivation","AM25 12a; ND25 12a; AM26 12b","High (85%)"],
+["Draw the small-signal model of a BJT differential pair; derive Ad, Acm and CMRR; effect of finite Ro of the current source.",13,"Derivation","AM25 15a; AM26 12a; IA2-Oct25 Q10","High (85%)"],
+["Draw a Darlington amplifier with its equivalent circuit; derive AVS, AIS, RIN and RO.",13,"Derivation","ND25 12b; ND24 12b(i); AM25 12b(i)","High (70%)"]],
+S:[["Define CMRR; state its ideal value and how to improve it.",2,"Theory","ND25 Q4; AM25 Q10; IA2-Nov24 Q6","High (85%)"],
+["Maximum symmetrical output swing for given VCC, VCEQ (or AC load line).",2,"Numerical","AM26 Q4; AM25 Q3","Medium (60%)"]],
+G:{seq:"CC → CE → AC load line → Darlington → BJT diff amp/CMRR → CB & cascode",dep:"CE model (hie, gm, ro) first; CC and Darlington reuse it; diff amp builds on CE half-circuit.",time:"≈ 19 h",form:"gm=IC/VT, rπ=β/gm, Av(CC)=(β+1)RE/(rπ+(β+1)RE), Ro(CC)=RE‖(rπ+Rs)/(β+1), CMRR=|Ad/Acm|",prac:"Derive CC and diff amp on blank paper twice, then AM25 12a(ii), then ND25 12b."}},
+{n:"Discrete MOSFET Amplifiers",c:"#059669",bg:"#ecfdf5",
+T:[["Common-source amplifier (design + Av)",85,"M",3,"Problem-solving","2–13","Critical","AM25 13a (13M design), AM26 13a and 13b (CS/PMOS), ND24 Q5/Q6; IA2-Nov24 Q1/Q2/Q4."],
+["MOSFET differential amplifier (Ad, Acm, CMRR)",80,"H",4,"Formula","2–15","Critical","Part C in ND25 (10M) and AM25 (8M); ND25 Q6; IA2-Oct25 Q10; IA2-Nov24 9a (12M)."],
+["Source follower: Av, Ri, Ro",70,"M",3,"Formula","13","High","ND24 13a, ND25 13a (7+6); same numbers repeated in IA2-Oct25 8a and IA2-Oct26 8a. Absent in AM25/AM26."],
+["Common-gate amplifier",68,"M",3,"Formula","2–13","High","ND24 13b, ND25 13b (6+7) and Q5; IA2-Oct26 8b. Alternates with cascode in AM25."],
+["MOSFET cascode amplifier",55,"H",3.5,"Problem-solving","13","High","AM25 13b (13M design + gain); AM26 Q6 (2M); IA2-Oct25 8b."],
+["Voltage swing limitations (CS / SF)",38,"E",1.5,"Concept","2–4","Low","ND24 13a(c) only as sub-part; no stand-alone ESE question. Cover inside CS."]],
+L:[["Derive Av, Ri and Ro of a source follower and compute Av for given Rs, Rsi, λ.",13,"Derivation + Numerical","ND25 13a; ND24 13a; IA2-Oct25 8a; IA2-Oct26 8a","High (70%)"],
+["Derive gain, Ri, Ro of a common-gate amplifier; solve numerical with Rs, RD, RL.",13,"Derivation + Numerical","ND25 13b; ND24 13b; IA2-Oct26 8b","Medium (65%)"],
+["Small-signal model of a MOSFET differential pair: derive Ad, Acm, CMRR; numerical for given IQ, RD, λ.",13,"Derivation + Numerical","ND25 16(i); AM25 16(i); IA2-Oct25 Q10","High (75%)"]],
+S:[["Midband gain of a CG / CS amplifier from gm, ro, RD.",2,"Numerical","ND25 Q5; ND24 Q6","High (75%)"],
+["Define a cascode amplifier / find CMRR from Ad and Acm.",2,"Theory + Numerical","AM26 Q6; ND25 Q6","Medium (60%)"]],
+G:{seq:"CS → source follower → CG → diff amp → cascode → swing",dep:"Needs MOSFET DC bias (Unit I) and gm/ro model; diff amp reuses CS half-circuit.",time:"≈ 17.5 h",form:"gm=2√(Kn·ID) (or 2ID/VOV), ro=1/(λID), Av(CS)=−gm(RD‖ro‖RL), Av(SF)=gmRs/(1+gmRs), Ri(CG)≈1/gm",prac:"ND25 13a(ii) numbers, ND25 13b(ii), AM25 13a, then diff-amp Part C questions."}},
+{n:"Frequency Analysis of BJT & MOSFET Amplifiers",c:"#d97706",bg:"#fffbeb",
+T:[["Short-circuit current gain; fα, fβ, fT of BJT",96,"M",4,"Formula","2–13","Critical","13M in every ESE: ND24 14b, AM25 14a, ND25 14b, AM26 14a. Part A: ND24 Q8, AM25 Q8, AM26 Q7."],
+["Miller effect & Miller capacitance",94,"M",3,"Concept","2–13","Critical","AM25 Q7 and 14b, ND25 Q8, AM26 14b (13M); IA2-Oct25 Q5; IA2-Oct26 Q3; Lab-Aug26 Q9a."],
+["Low-frequency analysis (Cc, CE, CS lower cutoff)",75,"H",4,"Problem-solving","2–13","High","ND25 14a (13M), ND24 14b(c) and Q7, ND25 Q7; IA2-Oct25 9a (12M)."],
+["HF analysis of CS MOSFET amplifier (fH, CL, Cgs/Cgd)",72,"H",3,"Problem-solving","11–13","High","ND24 14a (13M) and Q16a (11M); AM25 14b (13M); IA2-Oct25 Q7."],
+["HF analysis of CE BJT amplifier (Cπ, CM, fH, midband gain)",62,"H",4,"Problem-solving","12–13","High","ND24 14b(a,b); IA2-Oct25 9b; IA2-Oct26 9b; Lab-Aug26 Q9a."],
+["Unity-gain bandwidth (BJT & MOSFET)",52,"M",1.5,"Formula","2–4","Medium","AM26 Q8; IA2-Oct26 Q5; ND24 Q16a (bandwidth); fT–fβ relation in IA2-Oct25 Q6/Q7."]],
+L:[["Derive the short-circuit current gain of a BJT; derive fα, fβ, fT and their relationship.",13,"Derivation","AM25 14a; ND25 14b; AM26 14a; ND24 14b","High (90%)"],
+["Draw the HF equivalent of a CS amplifier; derive gain vs frequency, Miller capacitance and upper cutoff.",13,"Derivation","AM25 14b; AM26 14b; ND24 14a","High (80%)"],
+["Find the lower cutoff frequency / total low-frequency response of a BJT CE amplifier (Cc1, Cc2, CE).",13,"Numerical","ND25 14a; ND24 14b(c); IA2-Oct25 9a","Medium (65%)"]],
+S:[["Define the Miller effect and Miller capacitance.",2,"Theory","ND25 Q8; AM25 Q7; IA2-Oct25 Q5","High (85%)"],
+["Find Cπ from fβ, β0, Cμ and ICQ (or relate fT, fβ, β0).",2,"Numerical","ND24 Q8; AM25 Q8; AM26 Q7","High (75%)"]],
+G:{seq:"fα/fβ/fT → Miller → HF CS → HF CE → low-frequency → unity-gain BW",dep:"Needs CE/CS small-signal models (Units II, III). Do after Unit III.",time:"≈ 19.5 h",form:"β(jω)=β0/(1+jf/fβ), fT=β0·fβ, fβ=1/(2π rπ(Cπ+Cμ)), CM=Cμ(1+gmRL′), fL from 1/(2πRC) per capacitor",prac:"Write fβ/fT derivation from memory, then ND24 14b(b), IA2-Oct25 9a/9b, ND25 14a."}},
+{n:"IC MOSFET Amplifiers",c:"#be185d",bg:"#fdf2f8",
+T:[["Cascode current source (Ro)",92,"M",3,"Formula","2–13","Critical","ND25 15a (13M) and Q10; AM25 15b(ii) (7M); ND24 Q9."],
+["Two-transistor current source / current mirror (NMOS & BJT)",92,"E",3,"Formula","2–13","Critical","AM25 15b(i) 6M; ND25 16(ii) 5M; AM26 15a (13M BJT mirror); ND24 Q10."],
+["Wilson current source",72,"H",2.5,"Formula","13","High","ND24 15a (13M), AM26 15b (13M); absent in AM25/ND25 so alternates."],
+["Differential amplifier with active load",68,"H",4,"Concept","13","High","ND24 15b (13M numerical), ND25 15b (13M); absent in AM25/AM26."],
+["IC biasing & current steering circuits",60,"E",1.5,"Memory","2","High","AM25 Q9; AM26 Q9 and Q10 (2M each); ND24 Q10."],
+["Amplifier with resistive / depletion load",38,"M",2,"Concept","2–6","Low","ND25 Q9 (CMOS CD with depletion NMOS load); active-load content also inside ND24 15b."]],
+L:[["Explain the construction and operation of a cascode current source; derive its output resistance.",13,"Theory + Derivation","ND25 15a; AM25 15b(ii); ND24 Q9","High (80%)"],
+["Explain the Wilson current source; derive Io, systematic offset error and output resistance.",13,"Derivation","ND24 15a; AM26 15b","Medium (60%)"],
+["Explain a MOSFET differential amplifier with active load: working, advantages, gain and Ro.",13,"Theory + Numerical","ND25 15b; ND24 15b","Medium (55%)"]],
+S:[["Draw a two-transistor NMOS current source; give Io/IREF and Ro.",2,"Small derivation","ND25 16(ii); AM25 15b(i); AM26 15a","High (80%)"],
+["Define IC biasing / sketch a current-steering circuit.",2,"Theory","AM25 Q9; AM26 Q9, Q10","High (75%)"]],
+G:{seq:"IC biasing & steering → basic mirror → cascode source → Wilson → active-load diff amp → depletion load",dep:"Needs MOSFET square-law and ro (Unit III). Shortest unit, so finish before Unit IV.",time:"≈ 16 h",form:"Io=IREF·(W/L)2/(W/L)1, Ro=ro, Ro(cascode)≈gm·ro², Ro(Wilson)≈gm·ro²/2 (BJT: β·ro/2)",prac:"Draw mirror, cascode and Wilson from memory, derive Ro for each, then ND24 15b numerical."}}
+];
+const FAST=["Unit V first: shortest, 3 of 6 topics ≥ 90%/72% with formula-based answers.","Unit III next: reuses the CS model for SF, CG, cascode, diff amp."];
+const TOP=[["fα / fβ / fT derivation + Miller capacitance","U-IV","96% / 94%"],["Differential amplifier + CMRR (BJT and MOSFET)","U-II, U-III","95% / 80%"],["Cascode, basic and Wilson current sources","U-V","92% / 92% / 72%"],["Voltage-divider bias + stability factors","U-I","92% / 85%"],["Common collector + Darlington","U-II","90% / 80%"],["Common source + source follower + common gate","U-III","85% / 70% / 68%"]];
+const SAFE=["Short definitions: CMRR, stability factor, Miller effect, DC load line, current steering (2M each, repeated in 3+ papers).","Common-collector derivation (same steps every time).","Basic mirror + cascode Ro derivations (short, symbolic).","Cπ-from-fβ and midband-gain one-line numericals (Part A, repeated across ND24/AM25/AM26)."];
+const HARD=["Low-frequency response with three capacitors (ND25 14a): many time constants.","HF CE amplifier with Miller + midband gain (IA2-Oct25/Oct26 9b).","Bias design to ΔIc/Ic and β-spread specs (AM25 11b): long design chain.","Diff amp with active load + MOSFET diff amp CMRR: heavy algebra, 13–15 marks."];
+const SEQ=["Unit I – Biasing (foundation for all)","Unit II – BJT amplifiers","Unit III – MOSFET amplifiers","Unit V – IC MOSFET (quick win, needs Unit III)","Unit IV – Frequency analysis (hardest, needs II + III models)","Final 2 days: Part A definitions + repeated numericals"];
+/* ===== STATE ===== */
+const K="acd_dash_v1";let P={t:{},q:{}};
+try{const r=JSON.parse(localStorage.getItem(K)||"{}");P={t:r.t||{},q:r.q||{}}}catch(e){}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(P))}catch(e){}};
+let view="S",sub="t",flt="all";
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $=s=>document.querySelector(s);
+const tid=(i,j)=>"u"+i+"t"+j,qid=(i,k,j)=>"u"+i+k+j;
+/* ===== STATS ===== */
+function stats(){let tt=0,td=0,qt=0,qd=0;const per=U.map((u,i)=>{let t=u.T.length,d=0,q=0,qq=0;u.T.forEach((_,j)=>{if(P.t[tid(i,j)])d++});["l","s"].forEach(k=>u[k.toUpperCase()].forEach((_,j)=>{q++;if(P.q[qid(i,k,j)])qq++}));tt+=t;td+=d;qt+=q;qd+=qq;return{t,d,q,qq}});return{tt,td,qt,qd,per}}
+function renderProg(){const s=stats(),pct=Math.round((s.td+s.qd)/(s.tt+s.qt)*100);
+$("#prog").innerHTML=`<div class="card"><div class="row"><h2 style="margin:0">📚 Study Progress</h2><b style="font-size:16px">${pct}% complete</b></div><div class="pb"><i style="width:${pct}%"></i></div>
+<div class="mu">${s.td} / ${s.tt} topics completed (${s.tt-s.td} remaining) · ${s.qd} / ${s.qt} practice questions completed</div>
+<div class="ug">${s.per.map((p,i)=>`<div><b>Unit ${i+1}: ${p.d}/${p.t}</b><div class="mu">${Math.round((p.d+p.qq)/(p.t+p.q)*100)}% complete · Qs ${p.qq}/${p.q}</div></div>`).join("")}</div>
+<div class="row"><label class="mu">Topic view &nbsp;<select id="flt"><option value="all"${flt=="all"?" selected":""}>All topics</option><option value="done"${flt=="done"?" selected":""}>Completed topics</option><option value="todo"${flt=="todo"?" selected":""}>Unfinished topics</option></select></label><button class="rs" id="rst">↺ Reset progress</button></div></div>`}
+function renderNav(){$("#nav").innerHTML=["S",0,1,2,3,4].map(v=>`<button class="${v===view?"on":""}" data-v="${v}">${v==="S"?"📊 Summary":"Unit "+(v+1)}</button>`).join("")}
+/* ===== VIEWS ===== */
+function topicCard(u,i,j,t){const id=tid(i,j),d=!!P.t[id];return `<div class="tc${d?" done":""}"><label><input type="checkbox" data-k="t" data-id="${id}"${d?" checked":""}><span class="nm">${esc(t[0])}</span></label>
+<div><span class="bd">${t[1]}% probability</span><span class="bd ${t[2]}">${{E:"Easy",M:"Medium",H:"Hard"}[t[2]]}</span><span class="bd">⏱ ${t[3]} h</span><span class="bd">${esc(t[4])}</span><span class="bd">Marks: ${esc(t[5])}</span><span class="bd">${esc(t[6])}</span></div>
+<div class="pr"><i style="width:${t[1]}%;background:${u.c}"></i></div><details><summary>Why it matters · historical references</summary><p>${esc(t[7])}</p></details></div>`}
+function filt(i,j){const d=!!P.t[tid(i,j)];return flt=="all"||(flt=="done"&&d)||(flt=="todo"&&!d)}
+function qCard(i,k,j,q){const id=qid(i,k,j),d=!!P.q[id];return `<div class="tc${d?" done":""}"><label><input type="checkbox" data-k="q" data-id="${id}"${d?" checked":""}><span class="nm">${esc(q[0])}</span></label>
+<div><span class="bd">${q[1]} marks</span><span class="bd">${esc(q[2])}</span><span class="bd">Confidence: ${esc(q[4])}</span></div><details><summary>Historical evidence</summary><p>${esc(q[3])}</p></details></div>`}
+function unitView(i){const u=U[i];let h=`<div class="ub" style="background:${u.bg};border-color:${u.c}55"><div class="row" style="justify-content:flex-start"><span class="pill" style="background:${u.c}">UNIT ${i+1}</span><b style="font-size:17px">${esc(u.n)}</b></div>
+<div class="sb" style="--c:${u.c}">${[["t","Topics"],["l","13-Mark Qs"],["s","Short Qs"],["p","Priority"],["g","Study Strategy"]].map(a=>`<button class="${sub==a[0]?"on":""}" data-s="${a[0]}">${a[1]}</button>`).join("")}</div>`;
+if(sub=="t"){const ix=u.T.map((t,j)=>j).filter(j=>filt(i,j)).sort((a,b)=>u.T[b][1]-u.T[a][1]);h+=ix.length?ix.map(j=>topicCard(u,i,j,u.T[j])).join(""):`<div class="mu">No topics match this filter.</div>`}
+else if(sub=="l")h+=`<div class="mu">Ordered by confidence. 13 marks matches Part B of the real papers.</div>`+u.L.map((q,j)=>qCard(i,"l",j,q)).join("");
+else if(sub=="s")h+=`<div class="mu">Part A style, 2 marks each.</div>`+u.S.map((q,j)=>qCard(i,"s",j,q)).join("");
+else if(sub=="p"){const C={Critical:"#dc2626",High:"#ea580c",Medium:"#ca8a04",Low:"#6b7280"};["Critical","High","Medium","Low"].forEach(p=>{const ix=u.T.map((t,j)=>j).filter(j=>u.T[j][6]==p&&filt(i,j));h+=`<h3 style="color:${C[p]}">${p} Priority (${ix.length})</h3>`+(ix.length?ix.map(j=>`<div class="pc" style="border-left-color:${C[p]}"><b>${esc(u.T[j][0])}</b> <span class="mu">· ${u.T[j][1]}%</span><div class="mu" style="font-size:12px">${esc(u.T[j][7])}</div></div>`).join(""):`<div class="mu">None in this view.</div>`);if(p=="Low")h+=`<div class="note">Low priority means "postpone", not "skip": each of these has appeared at least once or sits in the syllabus text.</div>`})}
+else{const g=u.G;h+=`<div class="card"><h3 style="margin-top:0">Preparation sequence</h3>${esc(g.seq)}<h3>Topic dependencies</h3>${esc(g.dep)}<h3>Estimated completion time</h3>${esc(g.time)} (sum of topic estimates)<h3>Formulas / derivations to prepare</h3>${esc(g.form)}<h3>Suggested practice order</h3>${esc(g.prac)}</div>`}
+return h+"</div>"}
+function summaryView(){const all=[];U.forEach((u,i)=>u.T.forEach(t=>all.push({n:t[0],u:i+1,p:t[1],h:t[3],r:t[1]/t[3]})));
+const roi=[...all].sort((a,b)=>b.r-a.r).slice(0,8);
+const un=U.map((u,i)=>({i:i+1,n:u.n,h:u.T.reduce((a,t)=>a+t[3],0),p:Math.round(u.T.reduce((a,t)=>a+t[1],0)/u.T.length)})).sort((a,b)=>a.h-b.h);
+const ul=a=>"<ul>"+a.map(x=>`<li>${esc(x)}</li>`).join("")+"</ul>";
+return `<div class="g2"><div class="card"><h2>🎯 Top 20% topics → maximum marks</h2><div class="mu">6 clusters of 30 topics. Covers most 13-mark slots in ND25 and AM25 (analyst check, not a guarantee of 80%).</div><table><tr><th>Cluster</th><th>Unit</th><th>Prob.</th></tr>${TOP.map(t=>`<tr><td>${esc(t[0])}</td><td>${esc(t[1])}</td><td>${esc(t[2])}</td></tr>`).join("")}</table></div>
+<div class="card"><h2>✅ Safest scoring topics</h2>${ul(SAFE)}</div>
+<div class="card"><h2>🧗 Hardest topics</h2>${ul(HARD)}</div>
+<div class="card"><h2>⚡ Fastest units to complete</h2><table><tr><th>Unit</th><th>Hours</th><th>Avg prob.</th></tr>${un.map(x=>`<tr><td>Unit ${x.i}</td><td>${x.h} h</td><td>${x.p}%</td></tr>`).join("")}</table>${ul(FAST)}</div>
+<div class="card"><h2>📈 Highest probability-to-effort ratio</h2><table><tr><th>Topic</th><th>U</th><th>Prob ÷ hours</th></tr>${roi.map(x=>`<tr><td>${esc(x.n)}</td><td>${x.u}</td><td>${x.r.toFixed(0)} (${x.p}% / ${x.h} h)</td></tr>`).join("")}</table></div>
+<div class="card"><h2>🗺️ Recommended study sequence</h2><ol>${SEQ.map(s=>`<li>${esc(s)}</li>`).join("")}</ol><div class="mu">Total ≈ ${U.reduce((a,u)=>a+u.T.reduce((b,t)=>b+t[3],0),0)} h of topic study, before question practice.</div></div></div>
+<div class="card"><h2>🔍 Pattern findings</h2>${ul(["Every ESE has the same skeleton: Part A 10×2, Part B 5×13 (a/b OR), Part C 15 (two sub-parts, Units II–V).","Each ESE contains a 13M question on fα/fβ/fT or Miller (Unit IV) and a current-source/mirror question (Unit V).","Alternation: Wilson (ND24, AM26) and cascode source (ND25, AM25); source follower (ND24, ND25) vs cascode amplifier (AM25).","Internal papers re-use ESE numbers (e.g. 162k/463k/0.75k source follower in ND25 13a, IA2-Oct25, IA2-Oct26), so solve internals as ESE practice.","AM26 (arrear) is theory/derivation-led; the regular Nov/Dec paper is more numerical (ND24, ND25 style)."])}</div>`}
+function renderMain(){$("#main").innerHTML=view==="S"?summaryView():unitView(view)}
+function renderAll(){renderNav();renderProg();renderMain()}
+/* ===== EVENTS ===== */
+document.addEventListener("change",e=>{const t=e.target;
+if(t.id==="flt"){flt=t.value;renderAll();return}
+if(t.dataset.k){const m=t.dataset.k;if(t.checked)P[m][t.dataset.id]=1;else delete P[m][t.dataset.id];save();
+if(m==="t"&&flt!=="all"){renderAll()}else{const c=t.closest(".tc");if(c)c.classList.toggle("done",t.checked);renderProg()}}});
+document.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+if(b.dataset.v!==undefined){view=b.dataset.v==="S"?"S":+b.dataset.v;renderAll()}
+else if(b.dataset.s){sub=b.dataset.s;renderMain()}
+else if(b.id==="rst"&&confirm("Reset all topic and question progress? This cannot be undone.")){P={t:{},q:{}};save();renderAll()}});
+renderAll();
+</script></body></html>
