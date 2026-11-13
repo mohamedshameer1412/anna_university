@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EC23029 Exam Prediction Dashboard</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--ink:#1f2937;--mut:#6b7280;--line:#d9dce1;--ok:#15803d}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.5 "Segoe UI",system-ui,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.wrap{max-width:1100px;margin:0 auto;padding:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px}
+h1{margin:0 0 4px;font-size:22px}h2{margin:0 0 8px;font-size:17px}h3{margin:12px 0 6px;font-size:15px}
+.sub,.sm{color:var(--mut);font-size:13px}
+.chips span,.bd{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:1px 9px;font-size:12px;margin:2px 4px 2px 0;background:#fafafa}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.big{font-size:34px;font-weight:700;line-height:1}
+.bar{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin:6px 0}
+.bar i{display:block;height:100%;background:var(--c,#2563eb);border-radius:99px}
+.units{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-top:10px}
+.units div{font-size:12px}
+button{font:inherit;cursor:pointer}
+.tab,.fb,.sb{border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 12px;margin:0 4px 6px 0;font-size:14px}
+.tab.on,.fb.on,.sb.on{background:#1f2937;color:#fff;border-color:#1f2937}
+#reset{border:1px solid #fca5a5;color:#b91c1c;background:#fff;border-radius:8px;padding:6px 12px;float:right}
+.item{border-left:5px solid var(--c,#2563eb)}
+.item.done{background:#f0fdf4;border-color:#bbf7d0;border-left-color:var(--ok)}
+.item.done b,.item.done .qt{text-decoration:line-through;color:var(--mut)}
+.row{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.row input{width:18px;height:18px;margin-top:3px;flex:none}
+.row b,.qt{flex:1}.pct{font-weight:700;color:var(--c)}
+.bd.dE{background:#dcfce7;border-color:#86efac}.bd.dM{background:#fef3c7;border-color:#fcd34d}.bd.dH{background:#fee2e2;border-color:#fca5a5}
+.bd.pC{background:#fee2e2}.bd.pH{background:#ffedd5}.bd.pM{background:#fef9c3}.bd.pL{background:#e5e7eb}
+details{margin-top:6px;font-size:14px}summary{cursor:pointer;color:#2563eb}
+table{width:100%;border-collapse:collapse;font-size:14px}td,th{border:1px solid var(--line);padding:5px 8px;text-align:left}th{background:#f3f4f6}
+ul,ol{margin:4px 0;padding-left:20px}
+.warn{background:#fffbeb;border-color:#fcd34d}
+.tbl{overflow-x:auto}
+</style></head><body><div class="wrap">
+<header class="card">
+<h1>EC23029 – Sensors, Actuators and Interface Electronics</h1>
+<div class="sub">Exam prediction &amp; study tracker · College of Engineering Guindy, Anna University</div>
+<div class="chips"><span>Upcoming End Semester · Jul/Nov 2026 session</span><span>Papers analysed: 2 (IA-I, IA-II, 50 marks each)</span><span>38 question items extracted</span><span>No end-semester papers supplied</span></div>
+<p class="sm">Probabilities are <b>estimated chances that a topic is asked</b>, derived from observed counts in only two internal papers plus syllabus coverage. Unit V was never examined in the IAs, so its figures are coverage-based, not observed.</p>
+</header>
+<section class="card" id="prog"></section>
+<nav id="nav"></nav>
+<main id="panel"></main>
+</div>
+<script>
+/* ============ DATA (analysis) ============ */
+// topic: [id,name,P%,difficulty E/M/H,hours,type,expected marks,priority C/H/M/L,evidence,why]
+// question: [id,kind L/S,category,text,marks,evidence,confidence]
+const U=[
+{id:"u1",r:"I",name:"Strain, Pressure and Temperature Sensors",c:"#2563eb",obs:8,
+T:[
+["u1t1","Resistance strain gauge (GF, tension/compression, bridge)",88,"M",3,"Formula",7,"C","IA-I: A1, 11a(i), 11b(i) = 3 items, the most repeated topic in either paper.","Asked as 2M and 5M; the GF = (dR/R)/strain reasoning is reusable for numericals."],
+["u1t2","Thermistors vs RTDs",85,"E",2,"Concept",5,"C","IA-I: A2, 11a(ii) = 2 items; also needed for Part C bearing-temperature selection.","Asked as compare (2M) and identify-from-behaviour (5M, NTC)."],
+["u1t3","Thermocouples (Seebeck, sensitivity, cold junction)",80,"M",2.5,"Formula",5,"C","IA-I: A8 (4 mV per 100 °C sensitivity). One item, numerical form.","Predictable numerical; theory side (laws, reference junction) not yet examined."],
+["u1t4","Piezoelectric strain gauge / piezoelectric sensing",72,"M",2,"Concept",5,"H","IA-I: 11b(i) strain gauge vs piezo (static vs dynamic load).","Appears as comparison; know what it cannot measure (steady load)."],
+["u1t5","Bolometer and pyroelectric detector",62,"M",2,"Concept",5,"H","IA-I: 11b(ii) (total radiant power vs change in IR).","Full 5M compare-and-recommend; was an OR option, so only one of two choices."],
+["u1t6","Fiber optic sensor and pressure gauges (Unit I)",55,"M",2.5,"Memory",5,"M","Not observed under Unit I. Fiber optics was examined under Unit III (IA-II A5, 11b(ii)). Pressure gauges not observed.","Listed in syllabus and untested; do not assume it is unimportant."],
+["u1t7","Bimetallic strip",52,"E",1,"Memory",2,"M","IA-I: A4 (no bending despite expansion: material mismatch).","One-line concept; cheap marks."]],
+Q:[
+["u1q1","L","Theory","A resistance strain gauge is bonded to a cantilever. Predict and explain the resistance change on the stretched and compressed surfaces; define gauge factor.",5,"IA-I 11a(i), A1","High"],
+["u1q2","L","Theory","Compare resistance strain gauge and piezoelectric sensor for a steady load and a rapidly varying force; select with justification.",5,"IA-I 11b(i)","Medium"],
+["u1q3","L","Theory","Explain the working of NTC thermistor and RTD; compare their characteristics and uses.",5,"IA-I 11a(ii), A2","High"],
+["u1q4","S","Numerical","A thermocouple gives V mV for a temperature difference of T °C. Find its sensitivity.",2,"IA-I A8 (same concept, new values)","High"],
+["u1q5","S","Theory","Why may a bimetallic strip show little bending when heated? State the governing property.",2,"IA-I A4","Medium"]],
+S:{seq:"Strain gauge → Piezoelectric → RTD/Thermistor → Thermocouple → Bolometer/Pyroelectric → Bimetal → Fiber optic and pressure gauges",dep:"Gauge factor before piezo comparison; RTD/thermistor before bolometer.",f:["GF = (dR/R) / strain","R = R0[1 + a(T - T0)] (RTD)","NTC: resistance falls as T rises","Thermocouple sensitivity = dV/dT"],pr:"Part A numericals → 5M compare/predict → Part C sensor selection."}},
+{id:"u2",r:"II",name:"Motion Sensors",c:"#0d9488",obs:10,
+T:[
+["u2t1","Rotary encoders (PPR, pulses to angle/speed, quadrature)",90,"E",2,"Problem",8,"C","IA-I: A9, A10, 12b(i) + Part C (speed/direction) = 4 items.","Numerical pairs recur with changed values; block-diagram 5M also asked."],
+["u2t2","LVDT and accelerometer systems",88,"M",3,"Concept",8,"C","IA-I: A5, 12a(ii), 12b(ii) (selection) + Part C vibration.","Examiner tests damping, null condition, fault logic, not derivations."],
+["u2t3","Capacitor plate sensors",78,"E",2,"Formula",6,"H","IA-I: A7 (capacitive proximity face), 12a(i) (two geometry changes + sketch).","C = eA/d variants; also links to Unit V capacitive proximity."],
+["u2t4","Piezoelectric devices (motion and vibration)",65,"M",1.5,"Concept",4,"H","No direct item; implied in IA-I 12b(ii) and Part C vibration selection.","Likely as selection and justification; pair with Unit I piezo."],
+["u2t5","Rotation sensors: drag-cup devices",50,"M",1,"Concept",2,"M","IA-I: A3 (viscosity effect, 2M).","Single 2M reasoning item."],
+["u2t6","Inductive sensors",50,"M",1.5,"Concept",3,"M","Not observed directly; LVDT is the inductive device examined.","Moderate chance as 2M or inside a compare."]],
+Q:[
+["u2q1","L","Design","A DC motor drives a conveyor. Draw the block diagram of a rotary-encoder sensing system and state what information the encoder signals give.",5,"IA-I 12b(i)","High"],
+["u2q2","L","Theory","Explain LVDT construction and working. Does near-zero differential output always indicate a fault? Role of damping in an LVDT accelerometer.",5,"IA-I 12a(ii), A5","High"],
+["u2q3","L","Derivation","Propose two ways of changing capacitor geometry to sense displacement; derive C = eA/d sensitivity for each with sketches.",5,"IA-I 12a(i), A7","Medium"],
+["u2q4","S","Numerical","An N-PPR encoder gives n pulses (or n pulses/s). Find shaft angle or compare motor speeds.",2,"IA-I A9, A10 (same pattern twice)","High"],
+["u2q5","S","Theory","Explain the working principle of a drag-cup device and the effect of fluid viscosity.",2,"IA-I A3","Medium"]],
+S:{seq:"Rotary encoder → LVDT/accelerometer → Capacitor plate → Piezoelectric → Inductive → Drag cup",dep:"Capacitor sensor basics feed Unit V capacitive proximity; encoder feeds Part C speed monitoring.",f:["Angle = 360 x N / PPR","Speed (rev/s) = pulse rate / PPR","C = e A / d","LVDT: Vout = VA - VB, zero at null, phase flips across null"],pr:"Encoder numericals → LVDT 5M → capacitor sketch 5M."}},
+{id:"u3",r:"III",name:"Optical Sensors",c:"#d97706",obs:9,
+T:[
+["u3t1","Electro-optic sensors (Pockels, Kerr, analyzer, HV measurement)",85,"H",3.5,"Concept",7,"C","IA-II: A3, A4, 11b(i) = 3 items.","Highest repeat in Unit III; definition + working + isolation advantage."],
+["u3t2","Phototransistors and photodiodes",85,"M",2.5,"Concept",7,"C","IA-II: A2, 11a(ii) = 2 items; Part C light-sensing stage.","Compare and optical-switch circuit both asked."],
+["u3t3","Fiber optic sensors and applications (TIR, intensity modulation)",80,"M",3,"Concept",6,"C","IA-II: A5, 11b(ii) = 2 items.","Short TIR question and full signal-path 5M both asked."],
+["u3t4","Liquid crystal devices (LCD)",75,"E",2,"Memory",5,"H","IA-II: 11a(i) (polarizers, LC layer, electrodes, field). Your class deck has several LCD slides.","Diagram-based memory answer; was an OR option so may swap."],
+["u3t5","Photoresistor / photoconductor (LDR)",70,"E",1.5,"Formula",4,"H","IA-II: A1 (LDR + fixed resistor divider).","Quick divider reasoning; easy 2M."],
+["u3t6","Photovoltaic devices, photomultiplier, light and solid-state transducers",50,"M",3,"Concept",4,"M","Not observed in IA-II.","Untested syllabus block; moderate chance."],
+["u3t7","Color temperature and light flux",35,"E",1,"Memory",2,"L","Not observed.","Definitions only; skim for a possible 2M."]],
+Q:[
+["u3q1","L","Theory","Define Pockels and Kerr effects. Explain how an electro-optic sensor measures high voltage without electrical contact; role of the analyzer; advantages of isolation.",5,"IA-II A3, A4, 11b(i)","High"],
+["u3q2","L","Theory","Explain the complete working of an intensity-modulated fiber-optic sensor, tracing the signal from source to photodetector.",5,"IA-II 11b(ii), A5","High"],
+["u3q3","L","Theory","Compare phototransistor and photodiode; explain a phototransistor as an optical switch controlling a load.",5,"IA-II A2, 11a(ii)","High"],
+["u3q4","L","Theory","Explain construction and working of an LCD with polarizers, liquid-crystal layer, electrodes and applied field.",5,"IA-II 11a(i)","Medium"],
+["u3q5","S","Theory","An LDR and a fixed resistor form a divider. How does the output vary with illumination?",2,"IA-II A1","Medium"],
+["u3q6","S","Theory","Why is total internal reflection important in optical-fiber transmission?",2,"IA-II A5","Medium"]],
+S:{seq:"Electro-optic → Phototransistor/photodiode → Fiber optic sensors → LCD → LDR → Photovoltaic/PMT → Color temperature/flux",dep:"LDR and photodiode basics before phototransistor; TIR before fiber sensors; Pockels before electro-optic sensor.",f:["Divider: Vout = 5 R / (R + R_LDR) (LDR on top)","Critical angle = asin(n2/n1)","NA = sqrt(n1^2 - n2^2)","Pockels: change in n ~ E; Kerr: ~ E^2"],pr:"2M definitions → EO sensor 5M → FO signal path 5M → LCD diagram."}},
+{id:"u4",r:"IV",name:"Actuators",c:"#7c3aed",obs:9,
+T:[
+["u4t1","Stepper motors (wave/full/half/micro-step, direction)",92,"M",3,"Formula",9,"C","IA-II: A9, 12b(i), 12b(ii) + Part C actuation = 4 items.","Most-tested actuator: compare, direction reversal and angle numerical all asked."],
+["u4t2","Relays and solenoid drive (flyback, isolation)",85,"E",2,"Concept",6,"C","IA-II: A6, 12a(i) = 2 items.","Microcontroller-relay chain recurs; links to Unit V."],
+["u4t3","Hydraulic actuators (double-acting cylinder, DCV, F = P x A)",82,"M",2.5,"Formula",6,"C","IA-II: A7, 12a(ii) = 2 items.","Numerical force ratio and DCV motion explanation."],
+["u4t4","Resolvers",65,"M",2,"Formula",4,"H","IA-II: A8 (equal SIN and COS gives about 45°).","Angle-from-outputs numerical likely reworded."],
+["u4t5","Voice-coil actuators",60,"E",1,"Memory",3,"H","IA-II: A10 (working principle, 2M).","One-line principle; cheap marks."],
+["u4t6","Synchros",55,"M",2,"Concept",4,"M","Not observed; sibling of resolver.","Likely tested alongside resolver."],
+["u4t7","Inductosyn",40,"M",1.5,"Memory",3,"L","Not observed.","Low chance; learn definition and use."]],
+Q:[
+["u4q1","L","Theory","In a stepper motor compare wave drive, full-step, half-step and microstepping: phases energised, step angle, smoothness, torque.",5,"IA-II 12b(i)","High"],
+["u4q2","L","Theory","Explain how the direction of a stepper motor is reversed by changing the phase-excitation sequence; illustrate with a sequence table.",5,"IA-II 12b(ii)","High"],
+["u4q3","L","Theory","A double-acting hydraulic cylinder is connected P→A, B→T and then P→B, A→T. Explain piston motion and the role of the directional control valve.",5,"IA-II 12a(ii), A7","High"],
+["u4q4","L","Design","A microcontroller switches a 230 V AC lamp through a relay. Explain the complete chain and why isolation and a flyback diode matter.",5,"IA-II 12a(i), A6","High"],
+["u4q5","S","Numerical","A step-angle motor receives N pulses: find angular displacement; or find resolver angle from SIN/COS outputs.",2,"IA-II A9, A8","High"],
+["u4q6","S","Theory","State the working principle of a voice-coil actuator.",2,"IA-II A10","Medium"]],
+S:{seq:"Stepper → Relay/solenoid → Hydraulic → Resolver → Voice coil → Synchro → Inductosyn",dep:"Relay before Unit V microcontroller interfacing; resolver before synchro.",f:["Step angle = 360 / steps per rev","Displacement = pulses x step angle","F = P x A","Resolver angle = atan(Vsin / Vcos)","Voice coil F = B I L"],pr:"Stepper 5M x2 → hydraulic DCV → relay chain → Part A numericals."}},
+{id:"u5",r:"V",name:"Interfacing Electronic Sensors",c:"#dc2626",obs:0,
+T:[
+["u5t1","Proximity detectors: inductive and capacitive",85,"E",2,"Concept",7,"C","Unit V not examined in IAs. Related: IA-I A7 (capacitive proximity sensing face).","IAs covered Units I-IV, so the ESE must test Unit V; likely first-choice topic. Estimate, not observed."],
+["u5t2","Direct sensor-microcontroller interfacing",82,"M",3,"Concept",7,"C","IA-II 12a(i) (microcontroller-relay chain) partly; both Part C questions need interfacing logic.","Integrates earlier units; strong candidate for the 10M question."],
+["u5t3","Ultrasonic and photo-beam detectors",78,"M",2,"Concept",5,"H","Not observed (Unit V).","Coverage-based estimate; compare-type question plausible."],
+["u5t4","Intelligent sensors",72,"M",2,"Memory",5,"H","Not observed (Unit V).","Definition + block diagram (sensor, conditioning, ADC, processor, communication)."],
+["u5t5","Reed switch",65,"E",1,"Memory",3,"M","Not observed.","Short and easy; good for 2M."],
+["u5t6","Smoke sensors",65,"E",1,"Memory",3,"M","Not observed.","Ionization vs photoelectric; easy marks."]],
+Q:[
+["u5q1","L","Theory","Explain the working of inductive and capacitive proximity detectors; why plastics suit a capacitive sensing face.",5,"IA-I A7 (partial); Unit V coverage","Low-Medium"],
+["u5q2","L","Theory","Explain ultrasonic and photo-beam (through-beam, retro-reflective, diffuse) detectors and compare them.",5,"No direct evidence; coverage","Low"],
+["u5q3","L","Design","Describe direct interfacing of a sensor with a microcontroller and the architecture of an intelligent sensor.",5,"IA-II 12a(i) (partial); both Part C","Low-Medium"],
+["u5q4","S","Theory","What is a reed switch? Give one application.",2,"No direct evidence; coverage","Low"],
+["u5q5","S","Theory","Explain the working principle of a smoke sensor.",2,"No direct evidence; coverage","Low"]],
+S:{seq:"Proximity (inductive/capacitive) → Ultrasonic/photo-beam → Microcontroller interfacing → Intelligent sensors → Reed switch → Smoke sensors",dep:"Needs Unit I-II sensors (inductive, capacitive) and Unit IV relay.",f:["Ultrasonic distance = v x t / 2 (v about 343 m/s)","ADC resolution = Vref / 2^n","Sensor → conditioning → ADC → MCU → GPIO/relay chain"],pr:"Proximity 5M → interfacing chain → 2M definitions."}}
+];
+const CQ=[
+["cq1","L","Design","Design a contactless conveyor system: detect objects (light/proximity), interface to a microcontroller, and drive a stepper/relay mechanism under a load increase. Block diagram, device choice, justification.",10,"IA-II Q13, IA-I Q15 (both Part C design/justify)","Medium"],
+["cq2","L","Design","Design a multi-sensor monitoring system for a high-speed machine: speed and direction, vibration and bearing temperature; select sensors, block diagram, justify.",10,"IA-I Q15","Medium"],
+["cq3","L","Design","Select and justify sensing and actuation for precise position control (encoder/resolver/synchro with stepper or hydraulic drive).",10,"IA-II Q13; IA-I 12b","Low-Medium"]];
+const CQP=[80,70,65];
+
+/* ============ MODEL ============ */
+U.forEach(u=>{u.t=u.T.map(a=>({id:a[0],n:a[1],p:a[2],d:a[3],h:a[4],ty:a[5],m:a[6],pr:a[7],ev:a[8],w:a[9],u}));
+ u.q=u.Q.map(a=>({id:a[0],k:a[1],cat:a[2],q:a[3],m:a[4],ev:a[5],cf:a[6],u}));
+ u.t.sort((a,b)=>b.p-a.p);});
+const TOP=U.flatMap(u=>u.t);
+const CQQ=CQ.map((a,i)=>({id:a[0],k:a[1],cat:a[2],q:a[3],m:a[4],ev:a[5],cf:a[6],p:CQP[i]}));
+const ALLQ=U.flatMap(u=>u.q).concat(CQQ);
+const exp=t=>t.p/100*t.m;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const KEY="ec23029_dashboard_v1";
+const S={done:{},filter:"all"};
+function load(){try{const r=JSON.parse(localStorage.getItem(KEY)||"{}");
+ if(r&&r.done&&typeof r.done==="object"){TOP.concat(ALLQ).forEach(x=>{if(r.done[x.id]===true)S.done[x.id]=true;});}
+ if(["all","done","todo"].includes(r&&r.filter))S.filter=r.filter;}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+/* ============ RENDERING ============ */
+let cur="sum",qf="all";const sub={u1:0,u2:0,u3:0,u4:0,u5:0};
+const MAIN=[["sum","Strategic Summary"]].concat(U.map(u=>[u.id,"Unit "+u.r]));
+function renderProg(){
+ const td=TOP.filter(t=>S.done[t.id]).length,qd=ALLQ.filter(q=>S.done[q.id]).length;
+ const pc=Math.round(100*td/TOP.length),qp=Math.round(100*qd/ALLQ.length);
+ const FL=[["all","All Topics"],["done","Completed"],["todo","Unfinished"]];
+ $("#prog").innerHTML=`<button id="reset">Reset Progress</button><div class="grid"><div><div class="big">${pc}%</div><div class="sm">Syllabus topics completed</div>
+ <div class="bar"><i style="width:${pc}%;--c:#15803d"></i></div>
+ <div>Topics: <b>${td}/${TOP.length}</b> done · ${TOP.length-td} remaining</div>
+ <div>Predicted questions: <b>${qd}/${ALLQ.length}</b> (${qp}%)</div>
+ <div class="bar"><i style="width:${qp}%;--c:#0d9488"></i></div></div>
+ <div><div class="sm">Per-unit topic progress</div><div class="units">${U.map(u=>{const a=u.t.filter(t=>S.done[t.id]).length,b=u.q.filter(q=>S.done[q.id]).length,p=Math.round(100*a/u.t.length);
+ return `<div><b style="color:${u.c}">Unit ${u.r}</b> ${a}/${u.t.length} · Q ${b}/${u.q.length}<div class="bar"><i style="width:${p}%;--c:${u.c}"></i></div></div>`}).join("")}</div>
+ <div style="margin-top:8px"><span class="sm">Topic filter: </span>${FL.map(f=>`<button class="fb ${S.filter===f[0]?"on":""}" data-f="${f[0]}">${f[1]}</button>`).join("")}</div></div></div>`;
+}
+function renderNav(){$("#nav").innerHTML=MAIN.map(m=>`<button class="tab ${cur===m[0]?"on":""}" data-main="${m[0]}">${esc(m[1])}</button>`).join("");}
+const bd=(c,t)=>`<span class="bd ${c}">${esc(t)}</span>`;
+const DL={E:"Easy",M:"Medium",H:"Hard"},PL={C:"Critical",H:"High",M:"Medium",L:"Low"};
+function tcard(t){const d=!!S.done[t.id];
+ return `<div class="card item ${d?"done":""}" style="--c:${t.u.c}"><label class="row"><input type="checkbox" data-id="${t.id}" ${d?"checked":""}><b>${esc(t.n)}</b><span class="pct">${t.p}%</span></label>
+ <div class="bar"><i style="width:${t.p}%"></i></div>
+ <div>${bd("d"+t.d,DL[t.d])}${bd("",t.ty)}${bd("","~"+t.h+" h")}${bd("","~"+t.m+" marks")}${bd("p"+t.pr,PL[t.pr]+" priority")}</div>
+ <details><summary>Why it matters and evidence</summary><p><b>Evidence:</b> ${esc(t.ev)}</p><p>${esc(t.w)}</p></details></div>`;}
+function qcard(q){const d=!!S.done[q.id];
+ return `<div class="card item ${d?"done":""}" style="--c:${q.u?q.u.c:"#1f2937"}"><label class="row"><input type="checkbox" data-id="${q.id}" ${d?"checked":""}><span class="qt">${esc(q.q)}</span></label>
+ <div>${bd("",q.m+" marks")}${bd("",q.cat)}${bd("","Confidence: "+q.cf)}</div><div class="sm">Evidence: ${esc(q.ev)}</div></div>`;}
+function renderUnit(u){
+ const SUB=["Topics","Predicted Questions","Priority","Study Strategy"],i=sub[u.id];
+ let h=`<div class="card" style="border-top:4px solid ${u.c}"><h2>Unit ${u.r} — ${esc(u.name)}</h2><div class="sm">Observed in IAs: ${u.obs} items. Probability = estimated chance of appearing; sorted high to low.</div></div>`;
+ h+=SUB.map((s,k)=>`<button class="sb ${k===i?"on":""}" data-sub="${k}">${s}</button>`).join("");
+ if(i===0){const L=u.t.filter(t=>S.filter==="all"||(S.filter==="done"?S.done[t.id]:!S.done[t.id]));
+  h+=L.length?L.map(tcard).join(""):`<div class="card sm">No topics match this filter.</div>`;}
+ if(i===1){const F=[["all","All"],["L","Long (5M)"],["S","Short (2M)"],["Derivation","Derivations"],["Numerical","Numericals"],["Theory","Theory"],["Design","Design"]];
+  h+=`<div>${F.map(f=>`<button class="fb ${qf===f[0]?"on":""}" data-qf="${f[0]}">${f[1]}</button>`).join("")}</div>`;
+  const ok=q=>qf==="all"||q.k===qf||q.cat===qf;
+  [["L","Long-answer (5-mark Part B items)"],["S","Short-answer (2-mark Part A items)"]].forEach(g=>{const L=u.q.filter(q=>q.k===g[0]&&ok(q));
+   h+=`<h3>${g[1]}</h3>`+(L.length?L.map(qcard).join(""):`<div class="sm">None in this filter.</div>`);});}
+ if(i===2){[["C","#b91c1c"],["H","#c2410c"],["M","#a16207"],["L","#6b7280"]].forEach(l=>{const L=u.t.filter(t=>t.pr===l[0]);
+  h+=`<div class="card"><h3 style="margin-top:0;color:${l[1]}">${PL[l[0]]} priority</h3>`+(L.length?`<ul>${L.map(t=>`<li><b>${esc(t.n)}</b> (${t.p}%) — ${esc(t.w)}${l[0]==="L"||l[0]==="M"?" <span class=sm>Risk if skipped: an untested or short topic can still appear as a 2M.</span>":""}</li>`).join("")}</ul>`:`<div class="sm">None in this unit.</div>`)+`</div>`;});}
+ if(i===3){const s=u.S,hr=u.t.reduce((a,t)=>a+t.h,0);
+  h+=`<div class="card"><h3 style="margin-top:0">Preparation sequence</h3><p>${esc(s.seq)}</p><h3>Dependencies</h3><p>${esc(s.dep)}</p>
+  <h3>Estimated completion time</h3><p>About <b>${hr} hours</b> for all ${u.t.length} topics; critical topics alone: <b>${u.t.filter(t=>t.pr==="C").reduce((a,t)=>a+t.h,0)} hours</b>.</p>
+  <h3>Formulas / derivations to prepare</h3><ul>${s.f.map(x=>`<li>${esc(x)}</li>`).join("")}</ul><h3>Suggested practice order</h3><p>${esc(s.pr)}</p></div>`;}
+ $("#panel").innerHTML=h;}
+function li(t,x){return `<li><b>${esc(t.n)}</b> <span class="sm">(Unit ${t.u.r} · ${x})</span></li>`;}
+function renderSummary(){
+ const n20=Math.ceil(TOP.length*0.2),byExp=TOP.slice().sort((a,b)=>exp(b)-exp(a)),top=byExp.slice(0,n20);
+ const share=Math.round(100*top.reduce((a,t)=>a+exp(t),0)/TOP.reduce((a,t)=>a+exp(t),0));
+ const safe=TOP.filter(t=>t.d==="E"&&t.p>=70).sort((a,b)=>b.p-a.p);
+ const hard=TOP.slice().sort((a,b)=>({H:2,M:1,E:0}[b.d]*10+b.h)-({H:2,M:1,E:0}[a.d]*10+a.h)).slice(0,5);
+ const roi=TOP.slice().sort((a,b)=>exp(b)/b.h-exp(a)/a.h).slice(0,8);
+ const ur=U.map(u=>({u,h:u.t.reduce((a,t)=>a+t.h,0),e:u.t.reduce((a,t)=>a+exp(t),0)})).sort((a,b)=>b.e/b.h-a.e/a.h);
+ const mx=Math.max.apply(null,U.map(u=>u.obs));
+ const seq=["Unit II: rotary encoder and LVDT (high probability, short prep)","Unit I: strain gauge, thermistor/RTD, thermocouple","Unit IV: stepper, relay/solenoid, hydraulic","Unit III: electro-optic, phototransistor/photodiode, fiber optic, LCD","Unit V: proximity detectors and microcontroller interfacing (needed before Part C drills)","Medium topics: resolver, synchro, piezo, bolometer/pyroelectric, ultrasonic, intelligent sensors","Part C cross-unit design drills, then low-priority skims"];
+ let h=`<div class="grid"><div class="card"><h2>Observed paper pattern</h2><div class="tbl"><table><tr><th>Part</th><th>Format (both IAs)</th></tr><tr><td>A</td><td>10 x 2M (20)</td></tr><tr><td>B</td><td>2 x (5M + 5M) with OR (20)</td></tr><tr><td>C</td><td>1 x 10M design/select (10)</td></tr></table></div>
+ <h3>Question items per unit (IA-I: I-II, IA-II: III-IV)</h3>${U.map(u=>`<div class="sm">Unit ${u.r}: ${u.obs} items${u.id==="u5"?" (+2 partial touchpoints)":""}<div class="bar"><i style="width:${100*u.obs/mx}%;--c:${u.c}"></i></div></div>`).join("")}
+ <div class="sm">Part C: 2 items spanning several units.</div></div>
+ <div class="card"><h2>Examiner patterns</h2><ul>
+ <li>All 8 IA-I Part B items are application-style (predict, identify, compare, propose, analyze, choose); IA-II shifts to explain/trace/illustrate (6 of 8).</li>
+ <li>Compare-and-select appears in 4 of 16 Part B items.</li>
+ <li>Quick numericals: 6 of 20 Part A items (thermocouple, encoder x2, hydraulic force, resolver, stepper).</li>
+ <li>Both OR options in a Part B question cover the same unit from different angles; neither half is safe to skip.</li>
+ <li>Part C is a 10M system design with block diagram and justification in both papers.</li>
+ <li>Alternation across sessions cannot be established with two papers.</li></ul></div></div>
+ <div class="card" style="border-top:4px solid #2563eb"><h2>Top 20% topics → maximum marks (${n20} of ${TOP.length})</h2><ol>${top.map(t=>li(t,t.p+"% · ~"+t.m+" marks · "+t.h+" h")).join("")}</ol>
+ <div class="sm">These carry about ${share}% of the modelled expected-mark index (sum of probability x marks). It is a model, not a guarantee.</div></div>
+ <div class="grid"><div class="card" style="border-top:4px solid #15803d"><h2>Safest scoring topics</h2><div class="sm">Easy, probability 70% or more</div><ul>${safe.map(t=>li(t,t.p+"%")).join("")}</ul></div>
+ <div class="card" style="border-top:4px solid #b91c1c"><h2>Hardest topics</h2><ul>${hard.map(t=>li(t,DL[t.d]+" · "+t.h+" h")).join("")}</ul><div class="sm">Allow extra time; they need diagrams plus reasoning.</div></div>
+ <div class="card" style="border-top:4px solid #d97706"><h2>Highest probability-to-effort</h2><div class="sm">Expected marks per study hour</div><ul>${roi.map(t=>li(t,(exp(t)/t.h).toFixed(2)+" marks/h")).join("")}</ul></div></div>
+ <div class="card"><h2>Fastest units to complete</h2><div class="tbl"><table><tr><th>Rank</th><th>Unit</th><th>Study hours</th><th>Exp. mark index</th><th>Index per hour</th></tr>${ur.map((r,i)=>`<tr><td>${i+1}</td><td>Unit ${r.u.r} — ${esc(r.u.name)}</td><td>${r.h}</td><td>${r.e.toFixed(1)}</td><td>${(r.e/r.h).toFixed(2)}</td></tr>`).join("")}</table></div></div>
+ <div class="card"><h2>Recommended study sequence</h2><ol>${seq.map(s=>`<li>${esc(s)}</li>`).join("")}</ol></div>
+ <div class="card"><h2>Predicted Part C (10-mark, cross-unit) questions</h2><div class="sm">Estimated chance that a question of this style appears; track with the checkboxes.</div></div>
+ ${CQQ.map(q=>qcard(q).replace("</label>",` <span class="pct">${q.p}%</span></label>`)).join("")}
+ <div class="card warn"><h2>Limitations</h2><ul>
+ <li>Only two internal papers (IA-I: Units I-II, IA-II: Units III-IV) were available. No end-semester papers, so all probabilities are judgement estimates.</li>
+ <li>Unit V was never examined; its probabilities come from syllabus coverage, not observed frequency.</li>
+ <li>The end-semester mark scheme was not supplied. Marks here follow the IA scheme (2M / 5M / 10M); remap if the final paper weights differ.</li>
+ <li>One Part C paper shows a handwritten mark that may indicate an OR alternative not visible in the photo.</li>
+ <li>The uploaded .pptx files are class notes, not question papers, and were not used as exam evidence (apart from noting LCD coverage).</li></ul></div>`;
+ $("#panel").innerHTML=h;}
+function renderPanel(){cur==="sum"?renderSummary():renderUnit(U.find(u=>u.id===cur));}
+function renderAll(){renderProg();renderNav();renderPanel();}
+
+/* ============ EVENTS ============ */
+document.addEventListener("click",e=>{
+ const b=e.target.closest("[data-main],[data-sub],[data-qf],[data-f],#reset");if(!b)return;
+ if(b.id==="reset"){if(confirm("Reset all progress? This cannot be undone.")){S.done={};save();renderAll();}return;}
+ if(b.dataset.main){cur=b.dataset.main;renderNav();renderPanel();}
+ else if(b.dataset.sub){sub[cur]=+b.dataset.sub;renderPanel();}
+ else if(b.dataset.qf){qf=b.dataset.qf;renderPanel();}
+ else if(b.dataset.f){S.filter=b.dataset.f;save();renderProg();renderPanel();}});
+document.addEventListener("change",e=>{const el=e.target;if(!el.matches||!el.matches("input[data-id]"))return;
+ if(el.checked)S.done[el.dataset.id]=true;else delete S.done[el.dataset.id];
+ save();const it=el.closest(".item");if(it)it.classList.toggle("done",el.checked);
+ renderProg();if(S.filter!=="all"&&cur!=="sum"&&sub[cur]===0)renderPanel();});
+load();renderAll();
+</script></body></html>
